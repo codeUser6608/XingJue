@@ -104,7 +104,10 @@ npm run preview
 项目已针对 GitHub Pages 进行了优化配置：
 
 - ✅ **HashRouter**：使用 Hash 路由（`/#/`），避免 GitHub Pages 的路径问题
-- ✅ **相对路径**：`vite.config.ts` 中设置了 `base: './'`，支持子路径部署
+- ✅ **Base 路径**：`vite.config.ts` 中设置了 `base: '/XingJue/'`，匹配仓库名
+  - ⚠️ **重要**：如果您的仓库名不是 `XingJue`，请修改 `vite.config.ts` 中的 `base` 值
+  - 例如：仓库名是 `my-project`，则改为 `base: '/my-project/'`
+  - 或者使用环境变量：`VITE_BASE_PATH=/your-repo-name/`
 - ✅ **自动部署**：GitHub Actions 工作流已配置，推送到 main 分支即可自动部署
 - ✅ **构建输出**：构建产物输出到 `dist` 目录，符合 GitHub Pages 要求
 
@@ -136,12 +139,22 @@ npm run preview
 
 ### 故障排查
 
-如果遇到问题，请参考：
+如果遇到 404 错误或资源加载失败，请检查：
 
-- [排查 GitHub Pages 404 错误](https://docs.github.com/zh/pages/getting-started-with-github-pages/troubleshooting-github-pages-404-errors)
-- 检查 GitHub Actions 工作流的运行日志
-- 确认 `vite.config.ts` 中的 `base: './'` 配置正确
-- 确认使用的是 `HashRouter` 而不是 `BrowserRouter`
+1. **Base 路径配置**
+   - 确认 `vite.config.ts` 中的 `base` 值与仓库名匹配
+   - 仓库名是 `XingJue`，则 `base` 应该是 `'/XingJue/'`
+   - 如果仓库名不同，请相应修改 `base` 值
+
+2. **常见问题**
+   - [排查 GitHub Pages 404 错误](https://docs.github.com/zh/pages/getting-started-with-github-pages/troubleshooting-github-pages-404-errors)
+   - 检查 GitHub Actions 工作流的运行日志
+   - 确认使用的是 `HashRouter` 而不是 `BrowserRouter`
+   - 清除浏览器缓存后重新访问
+
+3. **验证部署**
+   - 检查构建后的 `dist/index.html` 中的资源路径是否正确
+   - 确认所有静态资源（JS、CSS）路径都包含正确的 base 路径
 
 ## 管理后台
 
