@@ -1,0 +1,243 @@
+{
+  "nav": {
+    "home": "首页",
+    "products": "产品中心",
+    "about": "关于我们",
+    "contact": "联系方式",
+    "admin": "后台"
+  },
+  "languages": {
+    "en": "English",
+    "zh": "中文"
+  },
+  "actions": {
+    "viewCatalog": "查看产品",
+    "requestQuote": "获取报价",
+    "learnMore": "了解更多",
+    "submit": "提交",
+    "reset": "重置",
+    "download": "下载",
+    "copy": "复制",
+    "export": "导出",
+    "import": "导入",
+    "save": "保存",
+    "cancel": "取消",
+    "add": "新增",
+    "edit": "编辑",
+    "delete": "删除",
+    "confirm": "确认",
+    "logout": "退出登录"
+  },
+  "home": {
+    "heroBadge": "全球体育外贸门户",
+    "advantagesTitle": "核心优势",
+    "advantagesSubtitle": "面向国际分销商的企业级能力。",
+    "featuredTitle": "精选产品",
+    "featuredSubtitle": "全球采购商信赖的出口产品。",
+    "partnersTitle": "合作伙伴",
+    "partnersSubtitle": "被全球高端体育品牌信任。",
+    "mapTitle": "全球覆盖",
+    "mapSubtitle": "业务覆盖 60+ 国家和地区。"
+  },
+  "products": {
+    "title": "产品中心",
+    "subtitle": "搜索和筛选我们的出口型体育产品组合。",
+    "searchPlaceholder": "按产品名称、SKU 或关键词搜索",
+    "filter": {
+      "category": "主分类",
+      "subcategory": "子分类",
+      "priceRange": "价格区间",
+      "stock": "库存状态",
+      "all": "全部"
+    },
+    "sort": {
+      "label": "排序方式",
+      "latest": "最新",
+      "nameAsc": "名称 A-Z",
+      "priceAsc": "价格从低到高",
+      "priceDesc": "价格从高到低"
+    },
+    "badge": {
+      "inStock": "有库存",
+      "outOfStock": "缺货"
+    },
+    "pagination": {
+      "prev": "上一页",
+      "next": "下一页",
+      "page": "第 {{page}} / {{total}} 页"
+    },
+    "empty": "当前条件下暂无匹配产品。"
+  },
+  "productDetail": {
+    "specsTitle": "技术参数",
+    "featuresTitle": "产品特性",
+    "certificationsTitle": "认证信息",
+    "relatedTitle": "相关产品推荐",
+    "inquiryTitle": "快速询盘",
+    "inquirySubtitle": "提交需求后 24 小时内获取报价。",
+    "leadTime": "交期",
+    "moq": "起订量",
+    "price": "价格",
+    "unit": "单位",
+    "galleryLabel": "产品图集",
+    "notFound": "未找到该产品。"
+  },
+  "about": {
+    "title": "关于星珏",
+    "subtitle": "您的全球体育产品出口伙伴。",
+    "timelineTitle": "发展里程碑",
+    "teamTitle": "核心团队",
+    "missionTitle": "使命"
+  },
+  "contact": {
+    "title": "联系我们",
+    "subtitle": "与我们的国际贸易团队取得联系。",
+    "formTitle": "发送询盘",
+    "formSubtitle": "提交需求后我们将在 24 小时内回复。",
+    "mapTitle": "地图位置",
+    "infoTitle": "联系信息",
+    "fields": {
+      "name": "姓名",
+      "email": "邮箱",
+      "phone": "电话",
+      "company": "公司",
+      "message": "留言",
+      "quantity": "预期数量"
+    },
+    "address": "地址",
+    "hours": "营业时间",
+    "phone": "电话",
+    "email": "邮箱",
+    "whatsapp": "WhatsApp",
+    "social": "社交媒体"
+  },
+  "admin": {
+    "loginTitle": "后台登录",
+    "passwordLabel": "管理密码",
+    "loginHint": "密码存储在 site-data.json 中",
+    "loginButton": "进入后台",
+    "invalidPassword": "密码错误，请重试。",
+    "dashboardTitle": "后台总览",
+    "nav": {
+      "products": "产品管理",
+      "inquiries": "询盘管理",
+      "settings": "配置中心",
+      "dataSync": "数据同步"
+    },
+    "products": {
+      "title": "产品管理",
+      "newProduct": "新增产品",
+      "editProduct": "编辑产品",
+      "imageHint": "拖拽图片或粘贴 URL 添加图库。",
+      "translations": "翻译状态",
+      "deleteConfirm": "确定删除该产品？",
+      "form": {
+        "id": "产品 ID（slug）",
+        "sku": "SKU",
+        "nameEn": "英文名称",
+        "nameZh": "中文名称",
+        "shortEn": "英文简短描述",
+        "shortZh": "中文简短描述",
+        "descEn": "英文详细描述",
+        "descZh": "中文详细描述",
+        "price": "价格",
+        "currency": "币种",
+        "unitEn": "英文单位",
+        "unitZh": "中文单位",
+        "moq": "起订量",
+        "leadTimeEn": "英文交期",
+        "leadTimeZh": "中文交期",
+        "featuresEn": "英文特性（每行一条）",
+        "featuresZh": "中文特性（每行一条）",
+        "specLabelEn": "英文名称",
+        "specLabelZh": "中文名称",
+        "specValueEn": "英文值",
+        "specValueZh": "中文值",
+        "certifications": "认证信息（逗号分隔）",
+        "imagesTitle": "图片",
+        "imageUrlPlaceholder": "https://",
+        "addUrl": "添加链接",
+        "upload": "上传",
+        "main": "主图"
+      }
+    },
+    "inquiries": {
+      "title": "询盘管理",
+      "export": "导出询盘",
+      "filters": {
+        "status": "状态",
+        "product": "产品",
+        "date": "日期"
+      }
+    },
+    "settings": {
+      "title": "配置中心",
+      "heroTitle": "首页 Hero",
+      "contactTitle": "联系方式",
+      "siteTitle": "网站信息",
+      "form": {
+        "siteNameEn": "英文站点名称",
+        "siteNameZh": "中文站点名称",
+        "taglineEn": "英文标语",
+        "taglineZh": "中文标语",
+        "logoUrl": "Logo 链接",
+        "seoTitleEn": "英文 SEO 标题",
+        "seoTitleZh": "中文 SEO 标题",
+        "seoDescEn": "英文 SEO 描述",
+        "seoDescZh": "中文 SEO 描述",
+        "heroTitleEn": "英文 Hero 标题",
+        "heroTitleZh": "中文 Hero 标题",
+        "heroSubtitleEn": "英文 Hero 副标题",
+        "heroSubtitleZh": "中文 Hero 副标题",
+        "heroCtaEn": "英文 CTA 文案",
+        "heroCtaZh": "中文 CTA 文案",
+        "heroBackgroundImage": "Hero 背景图链接",
+        "heroBackgroundVideo": "Hero 背景视频链接",
+        "phone": "电话",
+        "email": "邮箱",
+        "whatsapp": "WhatsApp",
+        "addressEn": "英文地址",
+        "addressZh": "中文地址",
+        "hoursEn": "英文营业时间",
+        "hoursZh": "中文营业时间",
+        "mapLat": "纬度",
+        "mapLng": "经度",
+        "mapZoom": "缩放级别",
+        "socials": "社交媒体（每行：平台|链接）"
+      }
+    },
+    "dataSync": {
+      "title": "数据同步",
+      "exportHint": "下载或复制更新后的 JSON，并替换 src/data/site-data.json。",
+      "importHint": "粘贴 JSON 以验证并预览更新。",
+      "preview": "预览",
+      "invalidJson": "JSON 格式无效。"
+    },
+    "status": {
+      "new": "新询盘",
+      "processing": "跟进中",
+      "closed": "已关闭"
+    },
+    "empty": "暂无数据。"
+  },
+  "validation": {
+    "required": "此字段必填。",
+    "email": "请输入有效的邮箱。",
+    "min": "至少 {{min}} 个字符。",
+    "max": "最多 {{max}} 个字符。",
+    "number": "请输入有效数字。"
+  },
+  "footer": {
+    "rights": "版权所有。",
+    "privacy": "隐私政策",
+    "terms": "使用条款",
+    "cta": "让我们打造您的下一个出口成功案例。",
+    "tagline": "为全球贸易提供可靠体育产品制造。"
+  },
+  "misc": {
+    "loading": "加载中...",
+    "copied": "已复制到剪贴板。",
+    "updated": "更新成功。",
+    "inquirySent": "询盘已发送，我们将在 24 小时内回复。"
+  }
+}
