@@ -5,6 +5,7 @@ import { useForm } from 'react-hook-form'
 import { z } from 'zod'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { toast } from 'react-hot-toast'
+import { X, ChevronLeft, ChevronRight } from 'lucide-react'
 import { useSiteData } from '../context/SiteDataContext'
 import { Seo } from '../components/common/Seo'
 import { ProductCard } from '../components/products/ProductCard'
@@ -30,10 +31,62 @@ export const ProductDetail = () => {
 
   const product = siteData.products.find((item) => item.id === productId)
   const [activeImage, setActiveImage] = useState(product?.mainImage ?? '')
+  const [lightboxOpen, setLightboxOpen] = useState(false)
+  const [lightboxImage, setLightboxImage] = useState('')
 
   useEffect(() => {
     setActiveImage(product?.mainImage ?? '')
   }, [product])
+
+  useEffect(() => {
+    if (!lightboxOpen || !product) return
+
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') {
+        closeLightbox()
+      } else if (e.key === 'ArrowLeft') {
+        const images = product.images
+        const currentIndex = images.indexOf(lightboxImage)
+        const prevIndex = currentIndex > 0 ? currentIndex - 1 : images.length - 1
+        setLightboxImage(images[prevIndex])
+      } else if (e.key === 'ArrowRight') {
+        const images = product.images
+        const currentIndex = images.indexOf(lightboxImage)
+        const nextIndex = currentIndex < images.length - 1 ? currentIndex + 1 : 0
+        setLightboxImage(images[nextIndex])
+      }
+    }
+
+    window.addEventListener('keydown', handleKeyDown)
+    document.body.style.overflow = 'hidden'
+
+    return () => {
+      window.removeEventListener('keydown', handleKeyDown)
+      document.body.style.overflow = ''
+    }
+  }, [lightboxOpen, lightboxImage, product])
+
+  const openLightbox = (image: string) => {
+    setLightboxImage(image)
+    setLightboxOpen(true)
+  }
+
+  const closeLightbox = () => {
+    setLightboxOpen(false)
+  }
+
+  const navigateImage = (direction: 'prev' | 'next') => {
+    if (!product) return
+    const images = product.images
+    const currentIndex = images.indexOf(lightboxImage)
+    if (direction === 'prev') {
+      const prevIndex = currentIndex > 0 ? currentIndex - 1 : images.length - 1
+      setLightboxImage(images[prevIndex])
+    } else {
+      const nextIndex = currentIndex < images.length - 1 ? currentIndex + 1 : 0
+      setLightboxImage(images[nextIndex])
+    }
+  }
 
   const relatedProducts = useMemo(() => {
     if (!product) return []
@@ -115,11 +168,17 @@ export const ProductDetail = () => {
                 {t('productDetail.galleryLabel')}
               </p>
               <div className="mt-4 overflow-hidden rounded-2xl border border-white/10">
-                <img
-                  src={activeImage}
-                  alt={product.name[locale]}
-                  className="h-80 w-full object-cover"
-                />
+                <button
+                  type="button"
+                  onClick={() => openLightbox(activeImage)}
+                  className="block w-full cursor-zoom-in transition-opacity hover:opacity-90"
+                >
+                  <img
+                    src={activeImage}
+                    alt={product.name[locale]}
+                    className="h-80 w-full object-cover"
+                  />
+                </button>
               </div>
               <div className="mt-4 grid grid-cols-3 gap-3 sm:grid-cols-4">
                 {product.images.map((image) => (
@@ -127,7 +186,7 @@ export const ProductDetail = () => {
                     type="button"
                     key={image}
                     onClick={() => setActiveImage(image)}
-                    className={`overflow-hidden rounded-xl border ${
+                    className={`overflow-hidden rounded-xl border transition-opacity hover:opacity-90 ${
                       activeImage === image ? 'border-amber-300' : 'border-white/10'
                     }`}
                   >
@@ -286,6 +345,59 @@ export const ProductDetail = () => {
           </aside>
         </div>
       </section>
+
+      {/* 图片预览模态框 */}
+      {lightboxOpen && (
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black/90 backdrop-blur-sm"
+          onClick={closeLightbox}
+        >
+          <button
+            type="button"
+            onClick={closeLightbox}
+            className="absolute right-4 top-4 z-10 rounded-full bg-white/10 p-2 text-white transition hover:bg-white/20"
+            aria-label="关闭"
+          >
+            <X className="h-6 w-6" />
+          </button>
+          {product && product.images.length > 1 && (
+            <>
+              <button
+                type="button"
+                onClick={(e) => {
+                  e.stopPropagation()
+                  navigateImage('prev')
+                }}
+                className="absolute left-4 top-1/2 z-10 -translate-y-1/2 rounded-full bg-white/10 p-2 text-white transition hover:bg-white/20"
+                aria-label="上一张"
+              >
+                <ChevronLeft className="h-6 w-6" />
+              </button>
+              <button
+                type="button"
+                onClick={(e) => {
+                  e.stopPropagation()
+                  navigateImage('next')
+                }}
+                className="absolute right-4 top-1/2 z-10 -translate-y-1/2 rounded-full bg-white/10 p-2 text-white transition hover:bg-white/20"
+                aria-label="下一张"
+              >
+                <ChevronRight className="h-6 w-6" />
+              </button>
+            </>
+          )}
+          <div
+            className="relative max-h-[90vh] max-w-[90vw]"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <img
+              src={lightboxImage}
+              alt={product.name[locale]}
+              className="max-h-[90vh] max-w-[90vw] object-contain"
+            />
+          </div>
+        </div>
+      )}
     </>
   )
 }
