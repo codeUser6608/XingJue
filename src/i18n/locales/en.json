@@ -29,19 +29,19 @@
     "logout": "Logout"
   },
   "home": {
-    "heroBadge": "Global Sports Trade Portal",
+    "heroBadge": "Sports Events Trade Portal",
     "advantagesTitle": "Core Advantages",
-    "advantagesSubtitle": "Enterprise-grade capability built for international distributors.",
+    "advantagesSubtitle": "Enterprise-grade capability built for global sports events.",
     "featuredTitle": "Featured Products",
-    "featuredSubtitle": "Curated export-ready items trusted by global buyers.",
+    "featuredSubtitle": "Curated event equipment trusted by organizers.",
     "partnersTitle": "Strategic Partners",
-    "partnersSubtitle": "Trusted by premium sports brands worldwide.",
+    "partnersSubtitle": "Trusted by event agencies and venues worldwide.",
     "mapTitle": "Global Coverage",
-    "mapSubtitle": "Active clients across 60+ countries and regions."
+    "mapSubtitle": "Serving 60+ countries with sports event solutions."
   },
   "products": {
     "title": "Product Catalog",
-    "subtitle": "Search and filter our export-ready sports product portfolio.",
+    "subtitle": "Search and filter our sports event equipment portfolio.",
     "searchPlaceholder": "Search by product name, SKU, or keywords",
     "filter": {
       "category": "Category",
@@ -84,14 +84,14 @@
   },
   "about": {
     "title": "About XingJue",
-    "subtitle": "Your global sports product export partner.",
+    "subtitle": "Your global sports event supply chain partner.",
     "timelineTitle": "Milestones",
     "teamTitle": "Core Team",
     "missionTitle": "Mission"
   },
   "contact": {
     "title": "Contact Us",
-    "subtitle": "Connect with our international trade team.",
+    "subtitle": "Connect with our sports event trade team.",
     "formTitle": "Send an Inquiry",
     "formSubtitle": "Share your requirements and we'll respond within 24 hours.",
     "mapTitle": "Location",
@@ -232,7 +232,7 @@
     "privacy": "Privacy Policy",
     "terms": "Terms of Use",
     "cta": "Let's build your next export success.",
-    "tagline": "Reliable sports product manufacturing for global trade."
+    "tagline": "Reliable sports event equipment for global trade."
   },
   "misc": {
     "loading": "Loading...",
