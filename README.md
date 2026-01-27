@@ -1,83 +1,194 @@
 # XingJue Sports Trade Portal
 
-## ÏîÄ¿¼ò½é
+## é¡¹ç›®ç®€ä»‹
 
-ĞÇ¾ôÌåÓıÍâÃ³ÃÅ»§ÍøÕ¾£¬»ùÓÚ Vite + React 19 + TypeScript + Tailwind CSS 4 ¹¹½¨µÄÏÖ´ú»¯ÌåÓı²úÆ·Õ¹Ê¾ÓëÃ³Ò×Æ½Ì¨¡£
+æ˜Ÿçˆµä½“è‚²å¤–è´¸é—¨æˆ·ç½‘ç«™ï¼ŒåŸºäº Vite + React 19 + TypeScript + Tailwind CSS 4 æ„å»ºçš„ç°ä»£åŒ–ä½“è‚²äº§å“å±•ç¤ºä¸è´¸æ˜“å¹³å°ã€‚
 
-Ö§³Ö GitHub Pages ²¿Êğ£¬Êı¾İÍ¨¹ı `src/data/site-data.json` ½øĞĞ¹ÜÀí¡£
+æ”¯æŒ GitHub Pages éƒ¨ç½²ï¼Œæ•°æ®é€šè¿‡ `src/data/site-data.json` è¿›è¡Œç®¡ç†ã€‚
 
-Ê¹ÓÃ i18next ÊµÏÖ¶àÓïÑÔ¹ú¼Ê»¯Ö§³Ö¡£
+ä½¿ç”¨ i18next å®ç°å¤šè¯­è¨€å›½é™…åŒ–æ”¯æŒã€‚
 
-## Ö÷Òª¹¦ÄÜ
+## ä¸»è¦åŠŸèƒ½
 
-- **²úÆ·Õ¹Ê¾**£ºÏìÓ¦Ê½²úÆ·¿¨Æ¬¡¢ÏêÇéÒ³¡¢·ÖÀàÉ¸Ñ¡
-- **¹ÜÀíºóÌ¨**£ºÍêÕûµÄ CRUD ²Ù×÷£¬Ö§³Ö²úÆ·¡¢Ñ¯ÅÌ¡¢ÉèÖÃ¹ÜÀí
-- **¶àÓïÑÔÖ§³Ö**£ºURL Â·¾¶ + ÓïÑÔÇĞ»»Æ÷£¬Ö§³ÖÖĞÓ¢ÎÄÇĞ»»
-- **SEO ÓÅ»¯**£ºÍêÕûµÄ Meta ±êÇ©¡¢Open Graph¡¢Twitter Card¡¢hreflang ±êÇ©Ö§³Ö
+- **äº§å“å±•ç¤º**ï¼šå“åº”å¼äº§å“å¡ç‰‡ã€è¯¦æƒ…é¡µã€åˆ†ç±»ç­›é€‰
+- **ç®¡ç†åå°**ï¼šå®Œæ•´çš„ CRUD æ“ä½œï¼Œæ”¯æŒäº§å“ã€è¯¢ç›˜ã€è®¾ç½®ç®¡ç†
+- **å¤šè¯­è¨€æ”¯æŒ**ï¼šURL è·¯å¾„ + è¯­è¨€åˆ‡æ¢å™¨ï¼Œæ”¯æŒä¸­è‹±æ–‡åˆ‡æ¢
+- **SEO ä¼˜åŒ–**ï¼šå®Œæ•´çš„ Meta æ ‡ç­¾ã€Open Graphã€Twitter Cardã€hreflang æ ‡ç­¾æ”¯æŒ
 
-## ¿ìËÙ¿ªÊ¼
+## å¿«é€Ÿå¼€å§‹
 
 ```bash
 npm install
 npm run dev
 ```
 
-## ¹¹½¨²¿Êğ
+## æ„å»ºéƒ¨ç½²
 
 ```bash
 npm run build
 npm run preview
 ```
 
-¹¹½¨ºóµÄÎÄ¼ş¿ÉÖ±½Ó²¿Êğµ½ GitHub Pages
-ÅäÖÃÖĞÒÑÉèÖÃ Hash Â·ÓÉºÍÏà¶ÔÂ·¾¶£¬ÇëÈ·±£ `base: "./"` ÅäÖÃÕıÈ·
+## GitHub Pages éƒ¨ç½²æŒ‡å—
 
-## ¹ÜÀíºóÌ¨
+å‚è€ƒï¼š[GitHub Pages å¿«é€Ÿå…¥é—¨](https://docs.github.com/zh/pages/quickstart)
 
-- ·ÃÎÊÂ·¾¶£º`/#/admin`
-- Ä¬ÈÏÃÜÂë£º`XJ-2026-Admin`£¨¿ÉÔÚ `src/data/site-data.json` ÖĞĞŞ¸Ä£©
+### æ–¹æ³•ä¸€ï¼šä½¿ç”¨ GitHub Actions è‡ªåŠ¨éƒ¨ç½²ï¼ˆæ¨èï¼‰
 
-## Êı¾İ¹ÜÀí
+é¡¹ç›®å·²é…ç½® GitHub Actions å·¥ä½œæµï¼Œå¯ä»¥å®ç°è‡ªåŠ¨éƒ¨ç½²ã€‚è¿™æ˜¯ GitHub æ¨èçš„éƒ¨ç½²æ–¹å¼ã€‚
 
-- ÍøÕ¾ÄÚÈİÅäÖÃ£º`src/data/site-data.json`
-- ¶àÓïÑÔ·­Òë£º`src/i18n/locales/*.json`
-- ¹ÜÀíºóÌ¨Êı¾İ´æ´¢ÔÚä¯ÀÀÆ÷ `localStorage`
-  ÈçĞèÖØÖÃ£¬ÇëÇå³ıä¯ÀÀÆ÷»º´æ»òÉ¾³ı¶ÔÓ¦µÄ JSON ¼üÖµ
+#### è¯¦ç»†æ­¥éª¤ï¼š
 
-## ÏîÄ¿½á¹¹
+1. **æ¨é€ä»£ç åˆ° GitHub**
+   ```bash
+   git add .
+   git commit -m "å‡†å¤‡éƒ¨ç½²åˆ° GitHub Pages"
+   git push origin main
+   ```
+   > æ³¨æ„ï¼šå¦‚æœæ‚¨çš„é»˜è®¤åˆ†æ”¯æ˜¯ `master`ï¼Œè¯·å°† `.github/workflows/deploy.yml` ä¸­çš„ `main` æ”¹ä¸º `master`
+
+2. **åœ¨ GitHub ä»“åº“ä¸­å¯ç”¨ Pages**
+   - åœ¨ä»“åº“é¡µé¢ï¼Œç‚¹å‡» **Settings**ï¼ˆè®¾ç½®ï¼‰æ ‡ç­¾
+   - åœ¨å·¦ä¾§è¾¹æ çš„ "ä»£ç å’Œè‡ªåŠ¨åŒ–" éƒ¨åˆ†ï¼Œç‚¹å‡» **Pages**
+   - åœ¨ "ç”Ÿæˆå’Œéƒ¨ç½²" çš„ "æº" ä¸‹ï¼Œé€‰æ‹© **"GitHub Actions"**
+   - ä¿å­˜è®¾ç½®
+
+3. **æŸ¥çœ‹éƒ¨ç½²çŠ¶æ€**
+   - åœ¨ GitHub ä»“åº“é¡µé¢ï¼Œç‚¹å‡» **Actions** æ ‡ç­¾
+   - æŸ¥çœ‹ "Deploy to GitHub Pages" å·¥ä½œæµçš„è¿è¡ŒçŠ¶æ€
+   - ç­‰å¾…éƒ¨ç½²å®Œæˆï¼ˆé€šå¸¸éœ€è¦ 1-3 åˆ†é’Ÿï¼‰
+
+4. **è®¿é—®ç½‘ç«™**
+   - éƒ¨ç½²å®Œæˆåï¼Œåœ¨ **Settings** > **Pages** ä¸­å¯ä»¥çœ‹åˆ°ç½‘ç«™ URL
+   - **é¡¹ç›®ç«™ç‚¹**åœ°å€æ ¼å¼ï¼š`https://<ç”¨æˆ·å>.github.io/<ä»“åº“å>/`
+   - ä¾‹å¦‚ï¼š`https://username.github.io/XingJueWebSite/`
+   - âš ï¸ **æ³¨æ„**ï¼šå¯¹ç«™ç‚¹çš„æ›´æ”¹åœ¨æ¨é€åˆ° GitHub åï¼Œæœ€é•¿å¯èƒ½éœ€è¦ **10 åˆ†é’Ÿ** æ‰ä¼šå‘å¸ƒ
+
+### æ–¹æ³•äºŒï¼šä»åˆ†æ”¯æ‰‹åŠ¨éƒ¨ç½²
+
+å¦‚æœä¸æƒ³ä½¿ç”¨ GitHub Actionsï¼Œä¹Ÿå¯ä»¥ä»åˆ†æ”¯æ‰‹åŠ¨éƒ¨ç½²ï¼š
+
+1. **æ„å»ºé¡¹ç›®**
+   ```bash
+   npm run build
+   ```
+
+2. **åˆ›å»ºå¹¶æ¨é€åˆ° gh-pages åˆ†æ”¯**
+   ```bash
+   git checkout -b gh-pages
+   git add dist
+   git commit -m "éƒ¨ç½²åˆ° GitHub Pages"
+   git subtree push --prefix dist origin gh-pages
+   ```
+   æˆ–è€…ä½¿ç”¨æ›´ç®€å•çš„æ–¹æ³•ï¼š
+   ```bash
+   npm run build
+   cd dist
+   git init
+   git add .
+   git commit -m "éƒ¨ç½²åˆ° GitHub Pages"
+   git branch -M gh-pages
+   git remote add origin https://github.com/<ç”¨æˆ·å>/<ä»“åº“å>.git
+   git push -f origin gh-pages
+   ```
+
+3. **åœ¨ GitHub ä»“åº“è®¾ç½®ä¸­å¯ç”¨ Pages**
+   - è¿›å…¥ **Settings** > **Pages**
+   - åœ¨ "ç”Ÿæˆå’Œéƒ¨ç½²" çš„ "æº" ä¸‹ï¼Œé€‰æ‹© **"ä»åˆ†æ”¯è¿›è¡Œéƒ¨ç½²"**
+   - åœ¨ "åˆ†æ”¯" ä¸‹æ‹‰èœå•ä¸­é€‰æ‹© `gh-pages`
+   - æ–‡ä»¶å¤¹é€‰æ‹© `/ (root)`
+   - ç‚¹å‡» **Save**ï¼ˆä¿å­˜ï¼‰
+
+### é‡è¦é…ç½®è¯´æ˜
+
+é¡¹ç›®å·²é’ˆå¯¹ GitHub Pages è¿›è¡Œäº†ä¼˜åŒ–é…ç½®ï¼š
+
+- âœ… **HashRouter**ï¼šä½¿ç”¨ Hash è·¯ç”±ï¼ˆ`/#/`ï¼‰ï¼Œé¿å… GitHub Pages çš„è·¯å¾„é—®é¢˜
+- âœ… **ç›¸å¯¹è·¯å¾„**ï¼š`vite.config.ts` ä¸­è®¾ç½®äº† `base: './'`ï¼Œæ”¯æŒå­è·¯å¾„éƒ¨ç½²
+- âœ… **è‡ªåŠ¨éƒ¨ç½²**ï¼šGitHub Actions å·¥ä½œæµå·²é…ç½®ï¼Œæ¨é€åˆ° main åˆ†æ”¯å³å¯è‡ªåŠ¨éƒ¨ç½²
+- âœ… **æ„å»ºè¾“å‡º**ï¼šæ„å»ºäº§ç‰©è¾“å‡ºåˆ° `dist` ç›®å½•ï¼Œç¬¦åˆ GitHub Pages è¦æ±‚
+
+### ç«™ç‚¹ç±»å‹è¯´æ˜
+
+æ ¹æ® [GitHub Pages æ–‡æ¡£](https://docs.github.com/zh/pages/quickstart)ï¼Œæœ‰ä¸¤ç§ç±»å‹çš„ç«™ç‚¹ï¼š
+
+1. **ç”¨æˆ·ç«™ç‚¹**ï¼š`<username>.github.io`
+   - éœ€è¦åˆ›å»ºåä¸º `username.github.io` çš„ä»“åº“
+   - è®¿é—®åœ°å€ï¼š`https://username.github.io`
+
+2. **é¡¹ç›®ç«™ç‚¹**ï¼š`<username>.github.io/<repository>`
+   - ä½¿ç”¨å½“å‰ä»“åº“ï¼ˆæ¨èï¼‰
+   - è®¿é—®åœ°å€ï¼š`https://username.github.io/XingJueWebSite/`
+   - æ³¨æ„ï¼šURL æœ«å°¾æœ‰æ–œæ  `/`
+
+### è‡ªå®šä¹‰åŸŸåï¼ˆå¯é€‰ï¼‰
+
+å¦‚æœéœ€è¦ä½¿ç”¨è‡ªå®šä¹‰åŸŸåï¼Œå‚è€ƒ [é…ç½®è‡ªå®šä¹‰åŸŸ](https://docs.github.com/zh/pages/configuring-a-custom-domain-for-your-github-pages-site)ï¼š
+
+1. åœ¨ `public` ç›®å½•ä¸‹åˆ›å»º `CNAME` æ–‡ä»¶ï¼Œå†…å®¹ä¸ºæ‚¨çš„åŸŸåï¼š
+   ```
+   example.com
+   ```
+
+2. åœ¨åŸŸå DNS è®¾ç½®ä¸­æ·»åŠ  CNAME è®°å½•ï¼ŒæŒ‡å‘ `<ç”¨æˆ·å>.github.io`
+
+3. åœ¨ GitHub Pages è®¾ç½®ä¸­å¯ç”¨ **"Enforce HTTPS"**ï¼ˆå¼ºåˆ¶ HTTPSï¼‰
+
+### æ•…éšœæ’æŸ¥
+
+å¦‚æœé‡åˆ°é—®é¢˜ï¼Œè¯·å‚è€ƒï¼š
+
+- [æ’æŸ¥ GitHub Pages 404 é”™è¯¯](https://docs.github.com/zh/pages/getting-started-with-github-pages/troubleshooting-github-pages-404-errors)
+- æ£€æŸ¥ GitHub Actions å·¥ä½œæµçš„è¿è¡Œæ—¥å¿—
+- ç¡®è®¤ `vite.config.ts` ä¸­çš„ `base: './'` é…ç½®æ­£ç¡®
+- ç¡®è®¤ä½¿ç”¨çš„æ˜¯ `HashRouter` è€Œä¸æ˜¯ `BrowserRouter`
+
+## ç®¡ç†åå°
+
+- è®¿é—®è·¯å¾„ï¼š`/#/admin`
+- é»˜è®¤å¯†ç ï¼š`XJ-2026-Admin`ï¼ˆå¯åœ¨ `src/data/site-data.json` ä¸­ä¿®æ”¹ï¼‰
+
+## æ•°æ®ç®¡ç†
+
+- ç½‘ç«™å†…å®¹é…ç½®ï¼š`src/data/site-data.json`
+- å¤šè¯­è¨€ç¿»è¯‘ï¼š`src/i18n/locales/*.json`
+- ç®¡ç†åå°æ•°æ®å­˜å‚¨åœ¨æµè§ˆå™¨ `localStorage`
+  å¦‚éœ€é‡ç½®ï¼Œè¯·æ¸…é™¤æµè§ˆå™¨ç¼“å­˜æˆ–åˆ é™¤å¯¹åº”çš„ JSON é”®å€¼
+
+## é¡¹ç›®ç»“æ„
 
 ```
 src/
-©À©¤©¤ components/     # ×é¼ş
-©À©¤©¤ context/       # ÉÏÏÂÎÄ
-©À©¤©¤ data/          # Êı¾İÎÄ¼ş
-©À©¤©¤ i18n/          # ¹ú¼Ê»¯
-©À©¤©¤ pages/         # Ò³Ãæ
-©À©¤©¤ types/         # ÀàĞÍ¶¨Òå
-©¸©¤©¤ utils/         # ¹¤¾ßº¯Êı
+â”œâ”€â”€ components/     # ç»„ä»¶
+â”œâ”€â”€ context/       # ä¸Šä¸‹æ–‡
+â”œâ”€â”€ data/          # æ•°æ®æ–‡ä»¶
+â”œâ”€â”€ i18n/          # å›½é™…åŒ–
+â”œâ”€â”€ pages/         # é¡µé¢
+â”œâ”€â”€ types/         # ç±»å‹å®šä¹‰
+â””â”€â”€ utils/         # å·¥å…·å‡½æ•°
 ```
 
-## ¼¼ÊõÕ»
+## æŠ€æœ¯æ ˆ
 
-- **¿ò¼Ü**£ºReact 19
-- **¹¹½¨¹¤¾ß**£ºVite 7
-- **ÓïÑÔ**£ºTypeScript
-- **ÑùÊ½**£ºTailwind CSS 4
-- **Â·ÓÉ**£ºReact Router DOM 7
-- **¹ú¼Ê»¯**£ºi18next + react-i18next
-- **±íµ¥**£ºReact Hook Form + Zod
-- **¶¯»­**£ºFramer Motion
-- **Í¼±ê**£ºLucide React
-- **Í¨Öª**£ºReact Hot Toast
+- **æ¡†æ¶**ï¼šReact 19
+- **æ„å»ºå·¥å…·**ï¼šVite 7
+- **è¯­è¨€**ï¼šTypeScript
+- **æ ·å¼**ï¼šTailwind CSS 4
+- **è·¯ç”±**ï¼šReact Router DOM 7 (HashRouter)
+- **å›½é™…åŒ–**ï¼ši18next + react-i18next
+- **è¡¨å•**ï¼šReact Hook Form + Zod
+- **åŠ¨ç”»**ï¼šFramer Motion
+- **å›¾æ ‡**ï¼šLucide React
+- **é€šçŸ¥**ï¼šReact Hot Toast
 
-## ¿ª·¢ËµÃ÷
+## å¼€å‘è¯´æ˜
 
-1. ¿ËÂ¡ÏîÄ¿ºóÔËĞĞ `npm install` °²×°ÒÀÀµ
-2. ÔËĞĞ `npm run dev` Æô¶¯¿ª·¢·şÎñÆ÷
-3. ĞŞ¸Ä `src/data/site-data.json` À´¸üĞÂÍøÕ¾ÄÚÈİ
-4. ĞŞ¸Ä `src/i18n/locales/*.json` À´¸üĞÂ·­ÒëÎÄ±¾
+1. å…‹éš†é¡¹ç›®åè¿è¡Œ `npm install` å®‰è£…ä¾èµ–
+2. è¿è¡Œ `npm run dev` å¯åŠ¨å¼€å‘æœåŠ¡å™¨
+3. ä¿®æ”¹ `src/data/site-data.json` æ¥æ›´æ–°ç½‘ç«™å†…å®¹
+4. ä¿®æ”¹ `src/i18n/locales/*.json` æ¥æ›´æ–°ç¿»è¯‘æ–‡æœ¬
 
-## Ğí¿ÉÖ¤
+## è®¸å¯è¯
 
-Ë½ÓĞÏîÄ¿
+ç§æœ‰é¡¹ç›®
 
