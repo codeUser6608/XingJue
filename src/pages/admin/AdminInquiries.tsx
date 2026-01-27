@@ -41,7 +41,7 @@ export const AdminInquiries = () => {
   }
 
   return (
-    <section className="rounded-3xl border border-white/10 bg-slate-950/60 p-6">
+    <section className="w-full max-w-full rounded-3xl border border-white/10 bg-slate-950/60 p-6">
       <div className="flex flex-wrap items-center justify-between gap-4">
         <h1 className="text-xl font-semibold text-white">{t('admin.inquiries.title')}</h1>
         <button type="button" onClick={exportData} className="btn-ghost">
@@ -50,7 +50,7 @@ export const AdminInquiries = () => {
         </button>
       </div>
 
-      <div className="mt-6 grid gap-4 md:grid-cols-3">
+      <div className="mt-6 grid gap-4 md:grid-cols-3 md:grid-rows-1">
         <select
           value={statusFilter}
           onChange={(event) => setStatusFilter(event.target.value)}
@@ -73,20 +73,20 @@ export const AdminInquiries = () => {
             </option>
           ))}
         </select>
-        <div className="rounded-xl border border-white/10 bg-white/5 px-4 py-3 text-sm text-white/70">
+        <div className="min-w-0 rounded-xl border border-white/10 bg-white/5 px-4 py-3 text-sm text-white/70">
           <p className="text-xs text-white/50">{t('admin.inquiries.filters.date')}</p>
-          <div className="mt-2 flex items-center gap-3">
+          <div className="mt-2 flex items-center gap-2">
             <input
               type="date"
               value={dateFrom}
               onChange={(event) => setDateFrom(event.target.value)}
-              className="w-full rounded-lg border border-white/10 bg-slate-950/60 px-3 py-2 text-xs text-white/70"
+              className="flex-1 min-w-0 rounded-lg border border-white/10 bg-slate-950/60 px-2 py-2 text-xs text-white/70"
             />
             <input
               type="date"
               value={dateTo}
               onChange={(event) => setDateTo(event.target.value)}
-              className="w-full rounded-lg border border-white/10 bg-slate-950/60 px-3 py-2 text-xs text-white/70"
+              className="flex-1 min-w-0 rounded-lg border border-white/10 bg-slate-950/60 px-2 py-2 text-xs text-white/70"
             />
           </div>
         </div>

@@ -80,7 +80,7 @@ export const AdminDataSync = () => {
   }
 
   return (
-    <section className="rounded-3xl border border-white/10 bg-slate-950/60 p-6">
+    <section className="w-full max-w-full rounded-3xl border border-white/10 bg-slate-950/60 p-6">
       <h1 className="text-xl font-semibold text-white">{t('admin.dataSync.title')}</h1>
       <p className="mt-2 text-sm text-white/60">{t('admin.dataSync.exportHint')}</p>
 
@@ -98,15 +98,15 @@ export const AdminDataSync = () => {
       <textarea
         readOnly
         value={exportSiteData()}
-        className="mt-4 min-h-[240px] w-full rounded-2xl border border-white/10 bg-slate-950/80 p-4 text-xs text-white/70"
+        className="mt-4 min-h-[240px] w-full max-w-full rounded-2xl border border-white/10 bg-slate-950/80 p-4 text-xs text-white/70 overflow-x-auto"
       />
 
-      <div className="mt-8">
+      <div className="mt-8 w-full max-w-full">
         <p className="text-sm text-white/60">{t('admin.dataSync.importHint')}</p>
         <textarea
           value={importText}
           onChange={(event) => setImportText(event.target.value)}
-          className="mt-4 min-h-[180px] w-full rounded-2xl border border-white/10 bg-slate-950/80 p-4 text-xs text-white/70"
+          className="mt-4 min-h-[180px] w-full max-w-full rounded-2xl border border-white/10 bg-slate-950/80 p-4 text-xs text-white/70 overflow-x-auto"
         />
         <button type="button" onClick={handleImport} className="btn-primary mt-4">
           <Upload className="h-4 w-4" />
@@ -115,11 +115,11 @@ export const AdminDataSync = () => {
       </div>
 
       {preview && (
-        <div className="mt-6 rounded-2xl border border-white/10 bg-white/5 p-4">
+        <div className="mt-6 w-full max-w-full rounded-2xl border border-white/10 bg-white/5 p-4">
           <p className="text-xs uppercase tracking-widest text-white/50">
             {t('admin.dataSync.preview')}
           </p>
-          <pre className="mt-3 max-h-64 overflow-auto text-xs text-white/70">{preview}</pre>
+          <pre className="mt-3 max-h-64 w-full max-w-full overflow-auto text-xs text-white/70 whitespace-pre-wrap break-words">{preview}</pre>
         </div>
       )}
     </section>

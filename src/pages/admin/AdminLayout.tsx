@@ -28,7 +28,7 @@ export const AdminLayout = () => {
       <Seo title={siteData.seo.pages.admin.title} description={siteData.seo.pages.admin.description} />
       <div className="min-h-screen bg-slate-950/80">
         <div className="mx-auto flex max-w-6xl flex-col gap-6 px-4 py-8 md:flex-row md:px-6">
-          <aside className="glass-panel h-fit w-full rounded-3xl p-6 md:w-60">
+          <aside className="glass-panel sticky top-8 h-fit w-full self-start rounded-3xl p-6 md:w-64">
             <div className="flex items-center gap-3">
               <img
                 src={siteData.settings.logoUrl}
@@ -47,46 +47,46 @@ export const AdminLayout = () => {
                 to="/admin"
                 end
                 className={({ isActive }) =>
-                  `flex items-center gap-2 rounded-2xl px-3 py-2 ${
+                  `flex items-center gap-2 rounded-2xl px-3 py-2 whitespace-nowrap ${
                     isActive ? 'bg-white/10 text-amber-300' : 'text-white/70 hover:text-white'
                   }`
                 }
               >
-                <PackageSearch className="h-4 w-4" />
-                {t('admin.nav.products')}
+                <PackageSearch className="h-4 w-4 flex-shrink-0" />
+                <span>{t('admin.nav.products')}</span>
               </NavLink>
               <NavLink
                 to="/admin/inquiries"
                 className={({ isActive }) =>
-                  `flex items-center gap-2 rounded-2xl px-3 py-2 ${
+                  `flex items-center gap-2 rounded-2xl px-3 py-2 whitespace-nowrap ${
                     isActive ? 'bg-white/10 text-amber-300' : 'text-white/70 hover:text-white'
                   }`
                 }
               >
-                <Inbox className="h-4 w-4" />
-                {t('admin.nav.inquiries')}
+                <Inbox className="h-4 w-4 flex-shrink-0" />
+                <span>{t('admin.nav.inquiries')}</span>
               </NavLink>
               <NavLink
                 to="/admin/settings"
                 className={({ isActive }) =>
-                  `flex items-center gap-2 rounded-2xl px-3 py-2 ${
+                  `flex items-center gap-2 rounded-2xl px-3 py-2 whitespace-nowrap ${
                     isActive ? 'bg-white/10 text-amber-300' : 'text-white/70 hover:text-white'
                   }`
                 }
               >
-                <Settings className="h-4 w-4" />
-                {t('admin.nav.settings')}
+                <Settings className="h-4 w-4 flex-shrink-0" />
+                <span>{t('admin.nav.settings')}</span>
               </NavLink>
               <NavLink
                 to="/admin/data-sync"
                 className={({ isActive }) =>
-                  `flex items-center gap-2 rounded-2xl px-3 py-2 ${
+                  `flex items-center gap-2 rounded-2xl px-3 py-2 whitespace-nowrap ${
                     isActive ? 'bg-white/10 text-amber-300' : 'text-white/70 hover:text-white'
                   }`
                 }
               >
-                <Database className="h-4 w-4" />
-                {t('admin.nav.dataSync')}
+                <Database className="h-4 w-4 flex-shrink-0" />
+                <span>{t('admin.nav.dataSync')}</span>
               </NavLink>
             </nav>
             <button
@@ -95,13 +95,13 @@ export const AdminLayout = () => {
                 localStorage.removeItem(AUTH_KEY)
                 setAuthed(false)
               }}
-              className="mt-6 flex w-full items-center justify-center gap-2 rounded-2xl border border-white/10 px-3 py-2 text-xs text-white/70 hover:border-white/30"
+              className="mt-6 flex w-full items-center justify-center gap-2 rounded-2xl border border-white/10 px-3 py-2 text-xs text-white/70 hover:border-white/30 whitespace-nowrap"
             >
-              <LogOut className="h-4 w-4" />
-              {t('actions.logout')}
+              <LogOut className="h-4 w-4 flex-shrink-0" />
+              <span>{t('actions.logout')}</span>
             </button>
           </aside>
-          <main className="flex-1">
+          <main className="flex-1 min-w-0">
             <Outlet />
           </main>
         </div>
