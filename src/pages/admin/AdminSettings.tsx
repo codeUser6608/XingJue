@@ -48,7 +48,7 @@ export const AdminSettings = () => {
     reset,
     formState: { errors }
   } = useForm<SettingsFormValues>({
-    resolver: zodResolver(settingsSchema),
+    resolver: zodResolver(settingsSchema) as any,
     defaultValues: {
       siteNameEn: siteData.settings.siteName.en,
       siteNameZh: siteData.settings.siteName.zh,
@@ -83,7 +83,7 @@ export const AdminSettings = () => {
     }
   })
 
-  const onSubmit = (values: SettingsFormValues) => {
+  const onSubmit = (values: SettingsFormValues): void => {
     const socials = values.socials
       ? values.socials
           .split('\n')

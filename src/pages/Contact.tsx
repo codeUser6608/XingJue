@@ -47,7 +47,7 @@ export const Contact = () => {
     reset()
   }
 
-  const { lat, lng, zoom } = siteData.contact.map
+  const { lat, lng } = siteData.contact.map
   const mapUrl = `https://www.openstreetmap.org/export/embed.html?bbox=${lng - 0.05}%2C${lat - 0.03}%2C${lng + 0.05}%2C${lat + 0.03}&layer=mapnik&marker=${lat}%2C${lng}`
 
   return (

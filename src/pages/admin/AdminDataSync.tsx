@@ -4,6 +4,7 @@ import { useTranslation } from 'react-i18next'
 import { toast } from 'react-hot-toast'
 import { Download, Upload, Copy } from 'lucide-react'
 import { useSiteData } from '../../context/SiteDataContext'
+import type { SiteData } from '../../types/site'
 
 const siteDataSchema = z
   .object({
@@ -64,8 +65,14 @@ export const AdminDataSync = () => {
     try {
       const data = JSON.parse(importText)
       const parsed = siteDataSchema.parse(data)
-      importSiteData(parsed)
-      setPreview(JSON.stringify(parsed, null, 2))
+      // 确保 locales 是正确的类型
+      const typedData = {
+        ...parsed,
+        locales: parsed.locales as ('en' | 'zh')[],
+        defaultLocale: parsed.defaultLocale as 'en' | 'zh'
+      }
+      importSiteData(typedData as SiteData)
+      setPreview(JSON.stringify(typedData, null, 2))
       toast.success(t('misc.updated'))
     } catch (error) {
       toast.error(t('admin.dataSync.invalidJson'))

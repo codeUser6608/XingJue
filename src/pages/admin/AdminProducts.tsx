@@ -98,7 +98,7 @@ export const AdminProducts = () => {
     reset,
     formState: { errors }
   } = useForm<ProductFormValues>({
-    resolver: zodResolver(productSchema),
+    resolver: zodResolver(productSchema) as any,
     defaultValues: buildFormValues()
   })
 
@@ -141,7 +141,7 @@ export const AdminProducts = () => {
     reader.readAsDataURL(file)
   }
 
-  const onSubmit = (values: ProductFormValues) => {
+  const onSubmit = (values: ProductFormValues): void => {
     if (images.length === 0) {
       toast.error(t('validation.required'))
       return
