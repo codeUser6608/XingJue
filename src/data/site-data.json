@@ -3,111 +3,111 @@
   "defaultLocale": "en",
   "settings": {
     "siteName": {
-      "en": "XingJue Sports Trade",
-      "zh": "星珏体育外贸"
+      "en": "XingJue Sports Events Trade",
+      "zh": "星珏体育赛事外贸"
     },
     "tagline": {
-      "en": "Premium sports equipment manufacturer for global distributors.",
-      "zh": "面向全球分销商的高端体育装备制造商。"
+      "en": "Sports event equipment and operations for global organizers.",
+      "zh": "面向全球主办方的体育赛事装备与运营支持。"
     },
-    "logoUrl": "https://images.unsplash.com/photo-1521412644187-c49fa049e84d?auto=format&fit=crop&w=200&q=80",
+    "logoUrl": "https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=200&q=80",
     "adminPassword": "XJ-2026-Admin",
     "seoDefaults": {
       "title": {
-        "en": "XingJue Sports Trade | Global Sports Product Export",
-        "zh": "星珏体育外贸 | 全球体育产品出口"
+        "en": "XingJue Sports Events Trade | Global Event Supply Chain",
+        "zh": "星珏体育赛事外贸 | 全球赛事供应链"
       },
       "description": {
-        "en": "One-stop sports product manufacturing, OEM/ODM, and global trade solutions.",
-        "zh": "一站式体育产品制造、OEM/ODM 与全球贸易解决方案。"
+        "en": "Event-grade infrastructure, timing & scoring systems, branding, and turnkey logistics.",
+        "zh": "提供赛事级场地、计时计分、品牌露出与一站式物流服务。"
       }
     },
     "twitterHandle": "@xingjuesports"
   },
   "hero": {
     "title": {
-      "en": "Trusted Sports Product Export Partner",
-      "zh": "值得信赖的体育产品出口伙伴"
+      "en": "Global Sports Event Solutions",
+      "zh": "全球体育赛事解决方案"
     },
     "subtitle": {
-      "en": "From stadium-grade equipment to premium fitness gear, we supply 60+ countries with precision manufacturing and fast global fulfillment.",
-      "zh": "从场馆级设备到高端健身器材，我们以精密制造和快速全球履约服务 60+ 国家。"
+      "en": "From venue setup to timing systems and branding, we deliver turnkey event supply chains for international competitions.",
+      "zh": "从场地搭建到计时系统与品牌露出，为国际赛事提供一站式供应链。"
     },
     "ctaLabel": {
-      "en": "Request a Quotation",
-      "zh": "获取报价"
+      "en": "Request Event Proposal",
+      "zh": "获取赛事方案"
     },
-    "backgroundImage": "https://images.unsplash.com/photo-1461896836934-ffe607ba8211?auto=format&fit=crop&w=1600&q=80",
+    "backgroundImage": "https://images.unsplash.com/photo-1504805572947-34fad45aed93?auto=format&fit=crop&w=1600&q=80",
     "backgroundVideo": ""
   },
   "advantages": [
     {
       "id": "adv-1",
-      "icon": "shield-check",
+      "icon": "trophy",
       "title": {
-        "en": "Certified Quality Assurance",
-        "zh": "认证质量保障"
+        "en": "Event Compliance & Safety",
+        "zh": "赛事合规与安全"
       },
       "description": {
-        "en": "ISO, CE, and SGS compliant supply chain with full QA documentation.",
-        "zh": "符合 ISO、CE、SGS 标准，提供完整质检文件。"
+        "en": "Certified materials and safety testing aligned with international event standards.",
+        "zh": "认证材质与安全测试符合国际赛事标准。"
       }
     },
     {
       "id": "adv-2",
-      "icon": "sparkles",
+      "icon": "layers",
       "title": {
-        "en": "ODM & Custom Innovation",
-        "zh": "ODM 与定制创新"
+        "en": "Modular Venue Setup",
+        "zh": "模块化场馆搭建"
       },
       "description": {
-        "en": "In-house designers deliver market-ready concepts in 21 days.",
-        "zh": "自有设计团队 21 天内交付市场化方案。"
+        "en": "Rapid-deploy grandstands, flooring, and barriers for multi-day events.",
+        "zh": "快速部署看台、场地铺装与护栏，支持多日赛事。"
       }
     },
     {
       "id": "adv-3",
-      "icon": "globe",
+      "icon": "shield-check",
       "title": {
-        "en": "Global Logistics Network",
-        "zh": "全球物流网络"
+        "en": "Timing & Scoring Precision",
+        "zh": "精准计时计分"
       },
       "description": {
-        "en": "Tier-1 freight partners ensure stable lead times across 6 continents.",
-        "zh": "与一线物流伙伴合作，覆盖六大洲交期稳定。"
+        "en": "Reliable RFID and LED scoring systems with real-time data feeds.",
+        "zh": "可靠 RFID 与 LED 计分系统，提供实时数据。"
       }
     },
     {
       "id": "adv-4",
-      "icon": "leaf",
+      "icon": "sparkles",
       "title": {
-        "en": "Sustainable Manufacturing",
-        "zh": "可持续制造"
+        "en": "Branding & Sponsorship Visibility",
+        "zh": "品牌赞助露出"
       },
       "description": {
-        "en": "Recycled materials and energy-saving lines reduce carbon footprint.",
-        "zh": "再生材料与节能生产线降低碳足迹。"
+        "en": "LED boards, arches, and signage packages for sponsor activation.",
+        "zh": "LED 围挡、终点拱门与标识包，提升赞助曝光。"
       }
     },
     {
       "id": "adv-5",
-      "icon": "layers",
+      "icon": "globe",
       "title": {
-        "en": "Scalable Production Capacity",
-        "zh": "可扩展产能"
+        "en": "Global Event Logistics",
+        "zh": "全球赛事交付"
       },
       "description": {
-        "en": "Monthly output above 180,000 units with flexible MOQ.",
-        "zh": "月产能超 18 万件，MOQ 灵活。"
+        "en": "Door-to-venue delivery with customs and on-site support.",
+        "zh": "提供门到场地交付、清关与现场支持。"
       }
     }
   ],
   "partners": [
-    { "id": "partner-1", "name": "Velocity Sports" },
-    { "id": "partner-2", "name": "GlobalFit Labs" },
-    { "id": "partner-3", "name": "Apex Athletics" },
-    { "id": "partner-4", "name": "Nordic Play" },
-    { "id": "partner-5", "name": "Prime Motion" }
+    { "id": "partner-1", "name": "Marathon League" },
+    { "id": "partner-2", "name": "ArenaVision" },
+    { "id": "partner-3", "name": "City Games" },
+    { "id": "partner-4", "name": "TimingPro Systems" },
+    { "id": "partner-5", "name": "EventWorks Global" }
   ],
   "tradeRegions": [
     {
@@ -145,155 +145,101 @@
   ],
   "categories": [
     {
-      "id": "team-sports",
-      "name": { "en": "Team Sports", "zh": "团队运动" },
+      "id": "venue-setup",
+      "name": { "en": "Venue Setup", "zh": "场地搭建" },
       "subcategories": [
-        { "id": "soccer", "name": { "en": "Soccer", "zh": "足球" } },
-        { "id": "basketball", "name": { "en": "Basketball", "zh": "篮球" } },
-        { "id": "training", "name": { "en": "Training Gear", "zh": "训练器材" } }
+        { "id": "grandstands", "name": { "en": "Grandstands", "zh": "看台" } },
+        { "id": "court-flooring", "name": { "en": "Court Flooring", "zh": "场地铺装" } },
+        { "id": "barriers", "name": { "en": "Safety Barriers", "zh": "安全护栏" } }
       ]
     },
     {
-      "id": "fitness",
-      "name": { "en": "Fitness", "zh": "健身" },
+      "id": "timing-scoring",
+      "name": { "en": "Timing & Scoring", "zh": "计时计分" },
       "subcategories": [
-        { "id": "strength", "name": { "en": "Strength", "zh": "力量训练" } },
-        { "id": "recovery", "name": { "en": "Recovery", "zh": "恢复" } }
+        { "id": "scoreboards", "name": { "en": "Scoreboards", "zh": "计分牌" } },
+        { "id": "timing-systems", "name": { "en": "Timing Systems", "zh": "计时系统" } },
+        { "id": "rfid", "name": { "en": "RFID Timing", "zh": "RFID 计时" } }
       ]
     },
     {
-      "id": "outdoor",
-      "name": { "en": "Outdoor", "zh": "户外" },
+      "id": "event-branding",
+      "name": { "en": "Branding & Signage", "zh": "赛事形象" },
       "subcategories": [
-        { "id": "water", "name": { "en": "Water Sports", "zh": "水上运动" } },
-        { "id": "camping", "name": { "en": "Camping", "zh": "露营" } }
+        { "id": "arches", "name": { "en": "Finish Arches", "zh": "终点拱门" } },
+        { "id": "led-boards", "name": { "en": "LED Boards", "zh": "LED 围挡" } },
+        { "id": "banners", "name": { "en": "Banners", "zh": "横幅标识" } }
+      ]
+    },
+    {
+      "id": "athlete-services",
+      "name": { "en": "Athlete Services", "zh": "运动员服务" },
+      "subcategories": [
+        { "id": "bib-chips", "name": { "en": "Bib & Chips", "zh": "号码布与芯片" } },
+        { "id": "awards", "name": { "en": "Awards", "zh": "奖牌奖杯" } },
+        { "id": "hydration", "name": { "en": "Hydration", "zh": "补给设备" } }
+      ]
+    },
+    {
+      "id": "broadcast-media",
+      "name": { "en": "Broadcast & Media", "zh": "转播与媒体" },
+      "subcategories": [
+        { "id": "camera-rigs", "name": { "en": "Camera Rigs", "zh": "摄像支架" } },
+        { "id": "audio", "name": { "en": "Audio Systems", "zh": "音响系统" } },
+        { "id": "led-screens", "name": { "en": "LED Screens", "zh": "LED 大屏" } }
       ]
     }
   ],
   "featuredProductIds": [
-    "pro-match-soccer-ball",
-    "elite-kettlebell-set",
-    "inflatable-sup-board"
+    "modular-grandstand",
+    "led-scoreboard-4k",
+    "inflatable-finish-arch"
   ],
   "products": [
     {
-      "id": "pro-match-soccer-ball",
-      "sku": "XJ-SB-9001",
-      "categoryId": "team-sports",
-      "subcategoryId": "soccer",
+      "id": "modular-grandstand",
+      "sku": "XJ-EV-GS-1001",
+      "categoryId": "venue-setup",
+      "subcategoryId": "grandstands",
       "name": {
-        "en": "ProMatch Thermo Soccer Ball",
-        "zh": "ProMatch 热粘合足球"
+        "en": "Modular Grandstand System",
+        "zh": "模块化赛事看台系统"
       },
       "shortDescription": {
-        "en": "FIFA-inspired 12-panel ball with seamless finish.",
-        "zh": "FIFA 灵感 12 片结构，表面无缝热粘合。"
+        "en": "Quick-assemble grandstands with certified load capacity.",
+        "zh": "快速搭建看台，具备认证承载能力。"
       },
       "description": {
-        "en": "Designed for professional leagues and export distributors, the ProMatch ball combines EVA foam layers and micro-textured PU for superior touch in wet conditions.",
-        "zh": "专为职业联赛与出口渠道打造，EVA 发泡层与微纹理 PU 提供湿滑环境下的高触感表现。"
+        "en": "Lightweight aluminum grandstands with anti-slip steps and configurable seat blocks for tournaments, marathons, and multi-sport events.",
+        "zh": "轻量铝合金看台，防滑踏板与可配置座椅模块，适用于综合赛事与马拉松。"
       },
       "price": {
-        "amount": 22.5,
+        "amount": 12000,
         "currency": "USD",
-        "unit": { "en": "per ball", "zh": "每只" },
-        "moq": 500
+        "unit": { "en": "per set", "zh": "每套" },
+        "moq": 2
       },
       "images": [
-        "https://images.unsplash.com/photo-1518091043644-c1d4457512c6?auto=format&fit=crop&w=1200&q=80",
-        "https://images.unsplash.com/photo-1517927033932-b3d18e61fb3a?auto=format&fit=crop&w=1200&q=80",
-        "https://images.unsplash.com/photo-1508098682722-e99c43a406b2?auto=format&fit=crop&w=1200&q=80"
+        "https://images.unsplash.com/photo-1461896836934-ffe607ba8211?auto=format&fit=crop&w=1200&q=80",
+        "https://images.unsplash.com/photo-1483721310020-03333e577078?auto=format&fit=crop&w=1200&q=80",
+        "https://images.unsplash.com/photo-1504805572947-34fad45aed93?auto=format&fit=crop&w=1200&q=80"
       ],
-      "mainImage": "https://images.unsplash.com/photo-1518091043644-c1d4457512c6?auto=format&fit=crop&w=1200&q=80",
+      "mainImage": "https://images.unsplash.com/photo-1461896836934-ffe607ba8211?auto=format&fit=crop&w=1200&q=80",
       "features": [
-        {
-          "en": "Thermo-bonded for zero water absorption",
-          "zh": "热粘合结构，零吸水"
-        },
-        {
-          "en": "Optimized 70 cm circumference",
-          "zh": "70cm 标准周长"
-        }
+        { "en": "Certified 500 kg/m2 load", "zh": "认证承载 500 kg/m2" },
+        { "en": "Rapid assembly under 6 hours", "zh": "6 小时内快速搭建" }
       ],
       "specs": [
         {
           "label": { "en": "Material", "zh": "材质" },
-          "value": { "en": "Micro-fiber PU + EVA", "zh": "超纤 PU + EVA" }
+          "value": { "en": "Anodized aluminum", "zh": "阳极氧化铝" }
         },
         {
-          "label": { "en": "Bladder", "zh": "内胆" },
-          "value": { "en": "Butyl", "zh": "丁基" }
+          "label": { "en": "Capacity", "zh": "容量" },
+          "value": { "en": "500-1500 seats", "zh": "500-1500 座位" }
         }
       ],
-      "certifications": ["CE", "SGS"],
-      "stockStatus": "out_of_stock",
-      "leadTime": {
-        "en": "35-45 days after deposit",
-        "zh": "订金后 35-45 天"
-      },
-      "seo": {
-        "title": {
-          "en": "ProMatch Thermo Soccer Ball",
-          "zh": "ProMatch 热粘合足球"
-        },
-        "description": {
-          "en": "Professional thermo-bonded soccer ball for OEM/ODM export.",
-          "zh": "面向 OEM/ODM 出口的职业级热粘合足球。"
-        }
-      },
-      "translationStatus": { "en": true, "zh": true },
-      "createdAt": "2025-11-01T08:00:00Z",
-      "updatedAt": "2025-11-15T08:00:00Z"
-    },
-    {
-      "id": "carbon-fiber-basketball-hoop",
-      "sku": "XJ-BH-4432",
-      "categoryId": "team-sports",
-      "subcategoryId": "basketball",
-      "name": {
-        "en": "CarbonFlex Basketball Hoop",
-        "zh": "CarbonFlex 篮球架"
-      },
-      "shortDescription": {
-        "en": "Tempered backboard with vibration dampening rim.",
-        "zh": "钢化背板 + 减震篮圈。"
-      },
-      "description": {
-        "en": "Engineered for outdoor courts, the CarbonFlex hoop uses a carbon-reinforced frame to extend durability under high-impact play.",
-        "zh": "面向户外球场，碳纤增强框架提升高强度对抗下的耐用度。"
-      },
-      "price": {
-        "amount": 180,
-        "currency": "USD",
-        "unit": { "en": "per set", "zh": "每套" },
-        "moq": 120
-      },
-      "images": [
-        "https://images.unsplash.com/photo-1505666287591-07d36bba7a2d?auto=format&fit=crop&w=1200&q=80",
-        "https://images.unsplash.com/photo-1495078065017-5647231c5c14?auto=format&fit=crop&w=1200&q=80"
-      ],
-      "mainImage": "https://images.unsplash.com/photo-1505666287591-07d36bba7a2d?auto=format&fit=crop&w=1200&q=80",
-      "features": [
-        {
-          "en": "Weather-resistant powder coating",
-          "zh": "耐候粉末涂层"
-        },
-        {
-          "en": "Breakaway rim with spring damping",
-          "zh": "带弹簧减震的可折篮圈"
-        }
-      ],
-      "specs": [
-        {
-          "label": { "en": "Backboard", "zh": "背板" },
-          "value": { "en": "54 in tempered glass", "zh": "54 英寸钢化玻璃" }
-        },
-        {
-          "label": { "en": "Mount", "zh": "安装" },
-          "value": { "en": "Wall/portable base", "zh": "墙挂/移动底座" }
-        }
-      ],
-      "certifications": ["ISO9001"],
+      "certifications": ["EN 1090", "ISO9001"],
       "stockStatus": "in_stock",
       "leadTime": {
         "en": "45-55 days after confirmation",
@@ -301,407 +247,61 @@
       },
       "seo": {
         "title": {
-          "en": "CarbonFlex Basketball Hoop",
-          "zh": "CarbonFlex 篮球架"
+          "en": "Modular Grandstand System",
+          "zh": "模块化赛事看台系统"
         },
         "description": {
-          "en": "Professional outdoor basketball hoop for distributors.",
-          "zh": "面向经销商的专业户外篮球架。"
+          "en": "Rapid-deploy grandstands for sports events and tournaments.",
+          "zh": "适用于体育赛事与锦标赛的快速搭建看台。"
         }
       },
       "translationStatus": { "en": true, "zh": true },
-      "createdAt": "2025-10-10T08:00:00Z",
-      "updatedAt": "2025-10-20T08:00:00Z"
+      "createdAt": "2025-11-01T08:00:00Z",
+      "updatedAt": "2025-11-12T08:00:00Z"
     },
     {
-      "id": "smart-training-cones",
-      "sku": "XJ-TC-2011",
-      "categoryId": "team-sports",
-      "subcategoryId": "training",
+      "id": "sport-court-tiles",
+      "sku": "XJ-EV-CT-1102",
+      "categoryId": "venue-setup",
+      "subcategoryId": "court-flooring",
       "name": {
-        "en": "Smart Training Cones Kit",
-        "zh": "智能训练标志桶套装"
+        "en": "Anti-slip Sport Court Tiles",
+        "zh": "防滑运动场拼装地板"
       },
       "shortDescription": {
-        "en": "Bluetooth-enabled cones with timing sensor.",
-        "zh": "支持蓝牙计时的训练标志桶。"
+        "en": "Interlocking tiles for temporary event courts.",
+        "zh": "适用于临时赛事场地的拼装地板。"
       },
       "description": {
-        "en": "Coaching-ready kit includes 20 cones, charging dock, and mobile app integration to track agility drills.",
-        "zh": "包含 20 个标志桶、充电底座及训练 App，用于敏捷训练监测。"
-      },
-      "price": {
-        "amount": 68,
-        "currency": "USD",
-        "unit": { "en": "per kit", "zh": "每套" },
-        "moq": 80
-      },
-      "images": [
-        "https://images.unsplash.com/photo-1517649763962-0c623066013b?auto=format&fit=crop&w=1200&q=80",
-        "https://images.unsplash.com/photo-1502904550040-7534597429ae?auto=format&fit=crop&w=1200&q=80"
-      ],
-      "mainImage": "https://images.unsplash.com/photo-1517649763962-0c623066013b?auto=format&fit=crop&w=1200&q=80",
-      "features": [
-        {
-          "en": "Real-time drill analytics",
-          "zh": "实时训练数据分析"
-        },
-        {
-          "en": "UV-resistant TPU",
-          "zh": "抗紫外 TPU 材料"
-        }
-      ],
-      "specs": [
-        {
-          "label": { "en": "Connectivity", "zh": "连接方式" },
-          "value": { "en": "Bluetooth 5.2", "zh": "蓝牙 5.2" }
-        },
-        {
-          "label": { "en": "Battery", "zh": "电池" },
-          "value": { "en": "12 hours active", "zh": "续航 12 小时" }
-        }
-      ],
-      "certifications": ["CE", "RoHS"],
-      "stockStatus": "in_stock",
-      "leadTime": {
-        "en": "30-40 days after confirmation",
-        "zh": "确认后 30-40 天"
-      },
-      "seo": {
-        "title": {
-          "en": "Smart Training Cones Kit",
-          "zh": "智能训练标志桶套装"
-        },
-        "description": {
-          "en": "Bluetooth smart cones for agility training export.",
-          "zh": "用于敏捷训练的蓝牙智能标志桶。"
-        }
-      },
-      "translationStatus": { "en": true, "zh": true },
-      "createdAt": "2025-11-20T08:00:00Z",
-      "updatedAt": "2025-11-22T08:00:00Z"
-    },
-    {
-      "id": "elite-kettlebell-set",
-      "sku": "XJ-KB-7821",
-      "categoryId": "fitness",
-      "subcategoryId": "strength",
-      "name": {
-        "en": "EliteCast Kettlebell Set",
-        "zh": "EliteCast 壶铃套装"
-      },
-      "shortDescription": {
-        "en": "Cast-iron kettlebells with smooth powder finish.",
-        "zh": "铸铁壶铃，顺滑粉末涂层。"
-      },
-      "description": {
-        "en": "Designed for boutique studios and retail chains, includes 6 weight tiers with anti-slip handle texture.",
-        "zh": "适用于精品健身房与零售渠道，包含 6 个重量等级并具防滑手柄纹理。"
-      },
-      "price": {
-        "amount": 96,
-        "currency": "USD",
-        "unit": { "en": "per set", "zh": "每套" },
-        "moq": 60
-      },
-      "images": [
-        "https://images.unsplash.com/photo-1517836357463-d25dfeac3438?auto=format&fit=crop&w=1200&q=80",
-        "https://images.unsplash.com/photo-1526506118085-60ce8714f8c5?auto=format&fit=crop&w=1200&q=80"
-      ],
-      "mainImage": "https://images.unsplash.com/photo-1517836357463-d25dfeac3438?auto=format&fit=crop&w=1200&q=80",
-      "features": [
-        {
-          "en": "Matte grip prevents slip",
-          "zh": "哑光握把防滑"
-        },
-        {
-          "en": "Laser-etched weight marking",
-          "zh": "激光刻重标识"
-        }
-      ],
-      "specs": [
-        {
-          "label": { "en": "Weight Range", "zh": "重量范围" },
-          "value": { "en": "4-24 kg", "zh": "4-24 kg" }
-        },
-        {
-          "label": { "en": "Finish", "zh": "表面" },
-          "value": { "en": "Powder coating", "zh": "粉末涂层" }
-        }
-      ],
-      "certifications": ["SGS"],
-      "stockStatus": "in_stock",
-      "leadTime": {
-        "en": "25-35 days after deposit",
-        "zh": "订金后 25-35 天"
-      },
-      "seo": {
-        "title": {
-          "en": "EliteCast Kettlebell Set",
-          "zh": "EliteCast 壶铃套装"
-        },
-        "description": {
-          "en": "Cast-iron kettlebell set for gym distributors.",
-          "zh": "面向健身渠道的铸铁壶铃套装。"
-        }
-      },
-      "translationStatus": { "en": true, "zh": true },
-      "createdAt": "2025-09-01T08:00:00Z",
-      "updatedAt": "2025-09-10T08:00:00Z"
-    },
-    {
-      "id": "foam-roller-pro",
-      "sku": "XJ-FR-5505",
-      "categoryId": "fitness",
-      "subcategoryId": "recovery",
-      "name": {
-        "en": "FlexRestore Foam Roller",
-        "zh": "FlexRestore 泡沫轴"
-      },
-      "shortDescription": {
-        "en": "High-density foam roller with textured zones.",
-        "zh": "高密度泡沫轴，带分区纹理。"
-      },
-      "description": {
-        "en": "Ideal for physiotherapy channels and fitness retailers, this roller offers 3 textures for deep muscle recovery.",
-        "zh": "适合康复渠道和健身零售，三种纹理用于深层肌肉放松。"
+        "en": "Durable PP tiles with shock absorption and drainage design for indoor and outdoor competitions.",
+        "zh": "耐用 PP 拼装地板，具备缓震与排水结构，适用室内外赛事。"
       },
       "price": {
         "amount": 18,
         "currency": "USD",
-        "unit": { "en": "per unit", "zh": "每件" },
-        "moq": 300
+        "unit": { "en": "per tile", "zh": "每片" },
+        "moq": 800
       },
       "images": [
-        "https://images.unsplash.com/photo-1518611012118-696072aa579a?auto=format&fit=crop&w=1200&q=80",
-        "https://images.unsplash.com/photo-1549576490-b0b4831ef60a?auto=format&fit=crop&w=1200&q=80"
+        "https://images.unsplash.com/photo-1517649763962-0c623066013b?auto=format&fit=crop&w=1200&q=80",
+        "https://images.unsplash.com/photo-1526506118085-60ce8714f8c5?auto=format&fit=crop&w=1200&q=80"
       ],
-      "mainImage": "https://images.unsplash.com/photo-1518611012118-696072aa579a?auto=format&fit=crop&w=1200&q=80",
+      "mainImage": "https://images.unsplash.com/photo-1517649763962-0c623066013b?auto=format&fit=crop&w=1200&q=80",
       "features": [
-        {
-          "en": "Three-zone texture mapping",
-          "zh": "三分区纹理设计"
-        },
-        {
-          "en": "Odor-resistant EVA",
-          "zh": "防异味 EVA 材质"
-        }
+        { "en": "Shock-absorption base", "zh": "缓震底层结构" },
+        { "en": "Tool-free installation", "zh": "免工具安装" }
       ],
       "specs": [
         {
-          "label": { "en": "Size", "zh": "尺寸" },
-          "value": { "en": "33 x 14 cm", "zh": "33 x 14 cm" }
+          "label": { "en": "Tile Size", "zh": "单片尺寸" },
+          "value": { "en": "30 x 30 cm", "zh": "30 x 30 cm" }
         },
         {
-          "label": { "en": "Density", "zh": "密度" },
-          "value": { "en": "40 kg/m3", "zh": "40 kg/m3" }
+          "label": { "en": "Thickness", "zh": "厚度" },
+          "value": { "en": "15 mm", "zh": "15 mm" }
         }
       ],
-      "certifications": ["RoHS"],
-      "stockStatus": "in_stock",
-      "leadTime": {
-        "en": "20-30 days after confirmation",
-        "zh": "确认后 20-30 天"
-      },
-      "seo": {
-        "title": {
-          "en": "FlexRestore Foam Roller",
-          "zh": "FlexRestore 泡沫轴"
-        },
-        "description": {
-          "en": "Recovery foam roller with multi-zone texture.",
-          "zh": "多分区纹理康复泡沫轴。"
-        }
-      },
-      "translationStatus": { "en": true, "zh": true },
-      "createdAt": "2025-08-01T08:00:00Z",
-      "updatedAt": "2025-08-06T08:00:00Z"
-    },
-    {
-      "id": "all-weather-running-jacket",
-      "sku": "XJ-AW-3301",
-      "categoryId": "outdoor",
-      "subcategoryId": "camping",
-      "name": {
-        "en": "All-Weather Running Jacket",
-        "zh": "全天候跑步外套"
-      },
-      "shortDescription": {
-        "en": "Lightweight jacket with reflective seams.",
-        "zh": "轻量外套，反光缝线。"
-      },
-      "description": {
-        "en": "DWR-coated shell and breathable mesh panels deliver all-season protection for running and hiking collections.",
-        "zh": "DWR 防泼水外壳与透气网格拼接，适合跑步与徒步系列。"
-      },
-      "price": {
-        "amount": 34,
-        "currency": "USD",
-        "unit": { "en": "per piece", "zh": "每件" },
-        "moq": 200
-      },
-      "images": [
-        "https://images.unsplash.com/photo-1483721310020-03333e577078?auto=format&fit=crop&w=1200&q=80",
-        "https://images.unsplash.com/photo-1542291026-7eec264c27ff?auto=format&fit=crop&w=1200&q=80"
-      ],
-      "mainImage": "https://images.unsplash.com/photo-1483721310020-03333e577078?auto=format&fit=crop&w=1200&q=80",
-      "features": [
-        {
-          "en": "Reflective safety detailing",
-          "zh": "反光安全细节"
-        },
-        {
-          "en": "Packable travel pouch",
-          "zh": "可收纳便携袋"
-        }
-      ],
-      "specs": [
-        {
-          "label": { "en": "Fabric", "zh": "面料" },
-          "value": { "en": "92% nylon, 8% spandex", "zh": "92% 尼龙，8% 氨纶" }
-        },
-        {
-          "label": { "en": "Waterproof", "zh": "防水等级" },
-          "value": { "en": "10K", "zh": "10K" }
-        }
-      ],
-      "certifications": ["OEKO-TEX"],
-      "stockStatus": "in_stock",
-      "leadTime": {
-        "en": "30-40 days after deposit",
-        "zh": "订金后 30-40 天"
-      },
-      "seo": {
-        "title": {
-          "en": "All-Weather Running Jacket",
-          "zh": "全天候跑步外套"
-        },
-        "description": {
-          "en": "Lightweight running jacket for outdoor collections.",
-          "zh": "面向户外系列的轻量跑步外套。"
-        }
-      },
-      "translationStatus": { "en": true, "zh": true },
-      "createdAt": "2025-07-15T08:00:00Z",
-      "updatedAt": "2025-07-20T08:00:00Z"
-    },
-    {
-      "id": "inflatable-sup-board",
-      "sku": "XJ-SUP-6691",
-      "categoryId": "outdoor",
-      "subcategoryId": "water",
-      "name": {
-        "en": "OceanRide Inflatable SUP",
-        "zh": "OceanRide 充气桨板"
-      },
-      "shortDescription": {
-        "en": "Double-layer drop-stitch board with carry kit.",
-        "zh": "双层拉丝面板，含携带套装。"
-      },
-      "description": {
-        "en": "Export-ready inflatable board featuring reinforced rails, high-pressure valve, and premium accessories kit for water sports distributors.",
-        "zh": "加固侧边结构、高压气阀与高端配件包，适合水上运动渠道。"
-      },
-      "price": {
-        "amount": 128,
-        "currency": "USD",
-        "unit": { "en": "per set", "zh": "每套" },
-        "moq": 80
-      },
-      "images": [
-        "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=1200&q=80",
-        "https://images.unsplash.com/photo-1470770841072-f978cf4d019e?auto=format&fit=crop&w=1200&q=80"
-      ],
-      "mainImage": "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=1200&q=80",
-      "features": [
-        {
-          "en": "15 cm double-layer drop-stitch",
-          "zh": "15cm 双层拉丝面板"
-        },
-        {
-          "en": "Complete travel kit included",
-          "zh": "含完整旅行套装"
-        }
-      ],
-      "specs": [
-        {
-          "label": { "en": "Length", "zh": "长度" },
-          "value": { "en": "320 cm", "zh": "320 cm" }
-        },
-        {
-          "label": { "en": "Max PSI", "zh": "最大气压" },
-          "value": { "en": "15 PSI", "zh": "15 PSI" }
-        }
-      ],
-      "certifications": ["CE"],
-      "stockStatus": "in_stock",
-      "leadTime": {
-        "en": "40-50 days after confirmation",
-        "zh": "确认后 40-50 天"
-      },
-      "seo": {
-        "title": {
-          "en": "OceanRide Inflatable SUP",
-          "zh": "OceanRide 充气桨板"
-        },
-        "description": {
-          "en": "Inflatable SUP with premium accessories for export.",
-          "zh": "含高端配件的充气桨板出口款。"
-        }
-      },
-      "translationStatus": { "en": true, "zh": true },
-      "createdAt": "2025-10-02T08:00:00Z",
-      "updatedAt": "2025-10-08T08:00:00Z"
-    },
-    {
-      "id": "tactical-camping-chair",
-      "sku": "XJ-CC-5521",
-      "categoryId": "outdoor",
-      "subcategoryId": "camping",
-      "name": {
-        "en": "Tactical Camp Lounge Chair",
-        "zh": "战术露营折叠椅"
-      },
-      "shortDescription": {
-        "en": "7075 aluminum frame with breathable mesh.",
-        "zh": "7075 铝合金框架，透气网布。"
-      },
-      "description": {
-        "en": "Built for adventure retailers, this foldable chair offers 150 kg load capacity and fast assembly.",
-        "zh": "面向户外零售的折叠椅，承重 150kg，快速组装。"
-      },
-      "price": {
-        "amount": 42,
-        "currency": "USD",
-        "unit": { "en": "per unit", "zh": "每件" },
-        "moq": 150
-      },
-      "images": [
-        "https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=1200&q=80",
-        "https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=1200&q=80"
-      ],
-      "mainImage": "https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=1200&q=80",
-      "features": [
-        {
-          "en": "Quick-fold design under 15 seconds",
-          "zh": "15 秒快速折叠"
-        },
-        {
-          "en": "Anti-slip foot pads",
-          "zh": "防滑脚垫"
-        }
-      ],
-      "specs": [
-        {
-          "label": { "en": "Frame", "zh": "支架" },
-          "value": { "en": "7075 aluminum alloy", "zh": "7075 铝合金" }
-        },
-        {
-          "label": { "en": "Load", "zh": "承重" },
-          "value": { "en": "150 kg", "zh": "150 kg" }
-        }
-      ],
-      "certifications": ["ISO14001"],
+      "certifications": ["REACH"],
       "stockStatus": "in_stock",
       "leadTime": {
         "en": "20-30 days after deposit",
@@ -709,74 +309,508 @@
       },
       "seo": {
         "title": {
-          "en": "Tactical Camp Lounge Chair",
-          "zh": "战术露营折叠椅"
+          "en": "Anti-slip Sport Court Tiles",
+          "zh": "防滑运动场拼装地板"
         },
         "description": {
-          "en": "Foldable camping chair for outdoor wholesale.",
-          "zh": "面向户外批发的折叠露营椅。"
+          "en": "Temporary sport court flooring for tournaments.",
+          "zh": "适用于赛事的临时场地拼装地板。"
         }
       },
       "translationStatus": { "en": true, "zh": true },
-      "createdAt": "2025-06-20T08:00:00Z",
-      "updatedAt": "2025-06-25T08:00:00Z"
+      "createdAt": "2025-10-10T08:00:00Z",
+      "updatedAt": "2025-10-18T08:00:00Z"
+    },
+    {
+      "id": "led-scoreboard-4k",
+      "sku": "XJ-EV-SB-2203",
+      "categoryId": "timing-scoring",
+      "subcategoryId": "scoreboards",
+      "name": {
+        "en": "LED Event Scoreboard 4K",
+        "zh": "4K LED 赛事计分牌"
+      },
+      "shortDescription": {
+        "en": "High-brightness LED scoreboard with 4K resolution.",
+        "zh": "高亮度 4K LED 计分牌。"
+      },
+      "description": {
+        "en": "Broadcast-ready scoreboard with modular panels, real-time data input, and sponsorship overlay templates.",
+        "zh": "可转播级计分牌，模块化拼接，实时数据输入与赞助商模板。"
+      },
+      "price": {
+        "amount": 32000,
+        "currency": "USD",
+        "unit": { "en": "per set", "zh": "每套" },
+        "moq": 1
+      },
+      "images": [
+        "https://images.unsplash.com/photo-1504817343863-5092a923803e?auto=format&fit=crop&w=1200&q=80",
+        "https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=1200&q=80"
+      ],
+      "mainImage": "https://images.unsplash.com/photo-1504817343863-5092a923803e?auto=format&fit=crop&w=1200&q=80",
+      "features": [
+        { "en": "4K UHD display", "zh": "4K 超高清显示" },
+        { "en": "Live data integration", "zh": "实时数据接入" }
+      ],
+      "specs": [
+        {
+          "label": { "en": "Brightness", "zh": "亮度" },
+          "value": { "en": "6000 nits", "zh": "6000 尼特" }
+        },
+        {
+          "label": { "en": "Panel Pitch", "zh": "点距" },
+          "value": { "en": "P2.9 / P3.9", "zh": "P2.9 / P3.9" }
+        }
+      ],
+      "certifications": ["CE", "FCC"],
+      "stockStatus": "in_stock",
+      "leadTime": {
+        "en": "50-60 days after confirmation",
+        "zh": "确认后 50-60 天"
+      },
+      "seo": {
+        "title": {
+          "en": "LED Event Scoreboard 4K",
+          "zh": "4K LED 赛事计分牌"
+        },
+        "description": {
+          "en": "4K LED scoreboard for stadiums and event venues.",
+          "zh": "适用于体育场馆的 4K LED 计分牌。"
+        }
+      },
+      "translationStatus": { "en": true, "zh": true },
+      "createdAt": "2025-09-04T08:00:00Z",
+      "updatedAt": "2025-09-10T08:00:00Z"
+    },
+    {
+      "id": "rfid-timing-kit",
+      "sku": "XJ-EV-RF-2304",
+      "categoryId": "timing-scoring",
+      "subcategoryId": "rfid",
+      "name": {
+        "en": "RFID Race Timing Kit",
+        "zh": "RFID 赛事计时套装"
+      },
+      "shortDescription": {
+        "en": "Portable RFID system for marathons and road races.",
+        "zh": "适用于马拉松与公路赛的便携 RFID 计时系统。"
+      },
+      "description": {
+        "en": "Includes RFID antennas, timing mats, and cloud dashboard for instant results publishing.",
+        "zh": "包含 RFID 天线、计时地毯与云端面板，支持即时成绩发布。"
+      },
+      "price": {
+        "amount": 4200,
+        "currency": "USD",
+        "unit": { "en": "per kit", "zh": "每套" },
+        "moq": 5
+      },
+      "images": [
+        "https://images.unsplash.com/photo-1461896836934-ffe607ba8211?auto=format&fit=crop&w=1200&q=80",
+        "https://images.unsplash.com/photo-1474546652694-a33dd8161d66?auto=format&fit=crop&w=1200&q=80"
+      ],
+      "mainImage": "https://images.unsplash.com/photo-1461896836934-ffe607ba8211?auto=format&fit=crop&w=1200&q=80",
+      "features": [
+        { "en": "Up to 30,000 tags per event", "zh": "单场支持 30,000 标签" },
+        { "en": "Cloud results dashboard", "zh": "云端成绩面板" }
+      ],
+      "specs": [
+        {
+          "label": { "en": "Read Range", "zh": "读取距离" },
+          "value": { "en": "3-5 m", "zh": "3-5 米" }
+        },
+        {
+          "label": { "en": "Battery", "zh": "电池" },
+          "value": { "en": "12 hours", "zh": "12 小时" }
+        }
+      ],
+      "certifications": ["CE"],
+      "stockStatus": "in_stock",
+      "leadTime": {
+        "en": "25-35 days after deposit",
+        "zh": "订金后 25-35 天"
+      },
+      "seo": {
+        "title": {
+          "en": "RFID Race Timing Kit",
+          "zh": "RFID 赛事计时套装"
+        },
+        "description": {
+          "en": "Portable RFID timing kit for sports events.",
+          "zh": "适用于体育赛事的便携 RFID 计时套装。"
+        }
+      },
+      "translationStatus": { "en": true, "zh": true },
+      "createdAt": "2025-08-12T08:00:00Z",
+      "updatedAt": "2025-08-20T08:00:00Z"
+    },
+    {
+      "id": "inflatable-finish-arch",
+      "sku": "XJ-EV-AR-3305",
+      "categoryId": "event-branding",
+      "subcategoryId": "arches",
+      "name": {
+        "en": "Inflatable Finish Arch Pro",
+        "zh": "专业赛事充气终点拱门"
+      },
+      "shortDescription": {
+        "en": "Custom-branded inflatable arch for start/finish lines.",
+        "zh": "可定制品牌的起终点充气拱门。"
+      },
+      "description": {
+        "en": "Weather-resistant inflatable arch with quick inflation system and sponsor-friendly printing.",
+        "zh": "耐候充气拱门，快速充气系统与赞助商可视化印刷。"
+      },
+      "price": {
+        "amount": 680,
+        "currency": "USD",
+        "unit": { "en": "per unit", "zh": "每件" },
+        "moq": 30
+      },
+      "images": [
+        "https://images.unsplash.com/photo-1474546652694-a33dd8161d66?auto=format&fit=crop&w=1200&q=80",
+        "https://images.unsplash.com/photo-1504805572947-34fad45aed93?auto=format&fit=crop&w=1200&q=80"
+      ],
+      "mainImage": "https://images.unsplash.com/photo-1474546652694-a33dd8161d66?auto=format&fit=crop&w=1200&q=80",
+      "features": [
+        { "en": "Quick inflation blower", "zh": "快速充气鼓风机" },
+        { "en": "Custom sponsor print", "zh": "支持赞助商定制" }
+      ],
+      "specs": [
+        {
+          "label": { "en": "Height", "zh": "高度" },
+          "value": { "en": "4-6 m", "zh": "4-6 米" }
+        },
+        {
+          "label": { "en": "Material", "zh": "材质" },
+          "value": { "en": "420D Oxford + PVC", "zh": "420D 牛津布 + PVC" }
+        }
+      ],
+      "certifications": ["CE"],
+      "stockStatus": "in_stock",
+      "leadTime": {
+        "en": "15-20 days after confirmation",
+        "zh": "确认后 15-20 天"
+      },
+      "seo": {
+        "title": {
+          "en": "Inflatable Finish Arch Pro",
+          "zh": "专业赛事充气终点拱门"
+        },
+        "description": {
+          "en": "Branded inflatable arch for sports events.",
+          "zh": "用于体育赛事的品牌充气拱门。"
+        }
+      },
+      "translationStatus": { "en": true, "zh": true },
+      "createdAt": "2025-07-20T08:00:00Z",
+      "updatedAt": "2025-07-22T08:00:00Z"
+    },
+    {
+      "id": "perimeter-led-boards",
+      "sku": "XJ-EV-AD-4406",
+      "categoryId": "event-branding",
+      "subcategoryId": "led-boards",
+      "name": {
+        "en": "Perimeter LED Advertising Boards",
+        "zh": "赛事 LED 围挡广告屏"
+      },
+      "shortDescription": {
+        "en": "High-bright LED boards for sponsor visibility.",
+        "zh": "高亮 LED 围挡屏，提升赞助曝光。"
+      },
+      "description": {
+        "en": "Stadium-grade LED perimeter boards with remote content management and IP65 protection.",
+        "zh": "体育场级 LED 围挡屏，支持远程内容管理与 IP65 防护。"
+      },
+      "price": {
+        "amount": 5200,
+        "currency": "USD",
+        "unit": { "en": "per 10m", "zh": "每 10 米" },
+        "moq": 3
+      },
+      "images": [
+        "https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=1200&q=80",
+        "https://images.unsplash.com/photo-1504817343863-5092a923803e?auto=format&fit=crop&w=1200&q=80"
+      ],
+      "mainImage": "https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=1200&q=80",
+      "features": [
+        { "en": "Remote content scheduling", "zh": "远程内容排期" },
+        { "en": "IP65 weatherproof", "zh": "IP65 防护" }
+      ],
+      "specs": [
+        {
+          "label": { "en": "Brightness", "zh": "亮度" },
+          "value": { "en": "6500 nits", "zh": "6500 尼特" }
+        },
+        {
+          "label": { "en": "Control", "zh": "控制" },
+          "value": { "en": "Cloud CMS", "zh": "云端 CMS" }
+        }
+      ],
+      "certifications": ["CE", "RoHS"],
+      "stockStatus": "in_stock",
+      "leadTime": {
+        "en": "40-50 days after deposit",
+        "zh": "订金后 40-50 天"
+      },
+      "seo": {
+        "title": {
+          "en": "Perimeter LED Advertising Boards",
+          "zh": "赛事 LED 围挡广告屏"
+        },
+        "description": {
+          "en": "LED boards for sponsorship activation at sports venues.",
+          "zh": "用于体育场馆赞助展示的 LED 围挡屏。"
+        }
+      },
+      "translationStatus": { "en": true, "zh": true },
+      "createdAt": "2025-06-15T08:00:00Z",
+      "updatedAt": "2025-06-20T08:00:00Z"
+    },
+    {
+      "id": "athlete-bib-chip-set",
+      "sku": "XJ-EV-BB-5507",
+      "categoryId": "athlete-services",
+      "subcategoryId": "bib-chips",
+      "name": {
+        "en": "Athlete Bib & Timing Chip Set",
+        "zh": "运动员号码布与计时芯片套装"
+      },
+      "shortDescription": {
+        "en": "Waterproof bibs with RFID timing chips.",
+        "zh": "防水号码布 + RFID 计时芯片。"
+      },
+      "description": {
+        "en": "Includes pre-printed bibs, safety pins, and reusable RFID chips for race management.",
+        "zh": "包含预印号码布、别针与可复用 RFID 芯片。"
+      },
+      "price": {
+        "amount": 4.2,
+        "currency": "USD",
+        "unit": { "en": "per set", "zh": "每套" },
+        "moq": 2000
+      },
+      "images": [
+        "https://images.unsplash.com/photo-1474546652694-a33dd8161d66?auto=format&fit=crop&w=1200&q=80",
+        "https://images.unsplash.com/photo-1461896836934-ffe607ba8211?auto=format&fit=crop&w=1200&q=80"
+      ],
+      "mainImage": "https://images.unsplash.com/photo-1474546652694-a33dd8161d66?auto=format&fit=crop&w=1200&q=80",
+      "features": [
+        { "en": "Waterproof tear-proof paper", "zh": "防水防撕材料" },
+        { "en": "Reusable RFID chips", "zh": "可复用 RFID 芯片" }
+      ],
+      "specs": [
+        {
+          "label": { "en": "Bib Size", "zh": "号码布尺寸" },
+          "value": { "en": "23 x 18 cm", "zh": "23 x 18 cm" }
+        },
+        {
+          "label": { "en": "Chip Type", "zh": "芯片类型" },
+          "value": { "en": "UHF RFID", "zh": "UHF RFID" }
+        }
+      ],
+      "certifications": ["ISO9001"],
+      "stockStatus": "in_stock",
+      "leadTime": {
+        "en": "12-18 days after confirmation",
+        "zh": "确认后 12-18 天"
+      },
+      "seo": {
+        "title": {
+          "en": "Athlete Bib & Timing Chip Set",
+          "zh": "运动员号码布与计时芯片套装"
+        },
+        "description": {
+          "en": "Bib and RFID chip kit for sports events.",
+          "zh": "适用于体育赛事的号码布与 RFID 芯片套装。"
+        }
+      },
+      "translationStatus": { "en": true, "zh": true },
+      "createdAt": "2025-05-18T08:00:00Z",
+      "updatedAt": "2025-05-20T08:00:00Z"
+    },
+    {
+      "id": "awards-medal-set",
+      "sku": "XJ-EV-AW-6608",
+      "categoryId": "athlete-services",
+      "subcategoryId": "awards",
+      "name": {
+        "en": "Awards Medal & Trophy Set",
+        "zh": "赛事奖牌与奖杯套装"
+      },
+      "shortDescription": {
+        "en": "Custom medals and trophies for tournament podiums.",
+        "zh": "赛事颁奖用定制奖牌与奖杯。"
+      },
+      "description": {
+        "en": "Full award set with laser engraving, ribbon options, and premium packaging for championship events.",
+        "zh": "支持激光雕刻、缎带选择与高端包装，适合冠军赛事。"
+      },
+      "price": {
+        "amount": 12,
+        "currency": "USD",
+        "unit": { "en": "per set", "zh": "每套" },
+        "moq": 500
+      },
+      "images": [
+        "https://images.unsplash.com/photo-1503342217505-b0a15ec3261c?auto=format&fit=crop&w=1200&q=80",
+        "https://images.unsplash.com/photo-1483721310020-03333e577078?auto=format&fit=crop&w=1200&q=80"
+      ],
+      "mainImage": "https://images.unsplash.com/photo-1503342217505-b0a15ec3261c?auto=format&fit=crop&w=1200&q=80",
+      "features": [
+        { "en": "Custom engraving", "zh": "支持定制刻字" },
+        { "en": "Premium velvet box", "zh": "高端绒盒包装" }
+      ],
+      "specs": [
+        {
+          "label": { "en": "Medal Diameter", "zh": "奖牌直径" },
+          "value": { "en": "70 mm", "zh": "70 mm" }
+        },
+        {
+          "label": { "en": "Material", "zh": "材质" },
+          "value": { "en": "Zinc alloy", "zh": "锌合金" }
+        }
+      ],
+      "certifications": ["SGS"],
+      "stockStatus": "in_stock",
+      "leadTime": {
+        "en": "18-25 days after deposit",
+        "zh": "订金后 18-25 天"
+      },
+      "seo": {
+        "title": {
+          "en": "Awards Medal & Trophy Set",
+          "zh": "赛事奖牌与奖杯套装"
+        },
+        "description": {
+          "en": "Custom medals and trophies for sports events.",
+          "zh": "体育赛事定制奖牌与奖杯套装。"
+        }
+      },
+      "translationStatus": { "en": true, "zh": true },
+      "createdAt": "2025-04-10T08:00:00Z",
+      "updatedAt": "2025-04-18T08:00:00Z"
+    },
+    {
+      "id": "broadcast-camera-rig",
+      "sku": "XJ-EV-BC-7709",
+      "categoryId": "broadcast-media",
+      "subcategoryId": "camera-rigs",
+      "name": {
+        "en": "Broadcast Camera Rig System",
+        "zh": "赛事转播摄像支架系统"
+      },
+      "shortDescription": {
+        "en": "Stabilized rig for live event broadcasting.",
+        "zh": "用于赛事直播的稳定摄像支架。"
+      },
+      "description": {
+        "en": "Portable camera rig with gimbal mount, cable management, and quick-release assembly for sports broadcasting crews.",
+        "zh": "便携摄像支架，含云台安装、线缆管理与快拆设计，适合转播团队。"
+      },
+      "price": {
+        "amount": 2600,
+        "currency": "USD",
+        "unit": { "en": "per unit", "zh": "每套" },
+        "moq": 8
+      },
+      "images": [
+        "https://images.unsplash.com/photo-1519337265831-281ec6cc8514?auto=format&fit=crop&w=1200&q=80",
+        "https://images.unsplash.com/photo-1496449903678-68ddcb189a24?auto=format&fit=crop&w=1200&q=80"
+      ],
+      "mainImage": "https://images.unsplash.com/photo-1519337265831-281ec6cc8514?auto=format&fit=crop&w=1200&q=80",
+      "features": [
+        { "en": "Quick-release camera mount", "zh": "快拆摄像安装" },
+        { "en": "Portable aluminum frame", "zh": "便携铝合金框架" }
+      ],
+      "specs": [
+        {
+          "label": { "en": "Load Capacity", "zh": "承载" },
+          "value": { "en": "25 kg", "zh": "25 kg" }
+        },
+        {
+          "label": { "en": "Height", "zh": "高度" },
+          "value": { "en": "1.2-2.4 m", "zh": "1.2-2.4 米" }
+        }
+      ],
+      "certifications": ["CE"],
+      "stockStatus": "out_of_stock",
+      "leadTime": {
+        "en": "35-45 days after confirmation",
+        "zh": "确认后 35-45 天"
+      },
+      "seo": {
+        "title": {
+          "en": "Broadcast Camera Rig System",
+          "zh": "赛事转播摄像支架系统"
+        },
+        "description": {
+          "en": "Camera rig system for sports event broadcasting.",
+          "zh": "适用于体育赛事转播的摄像支架系统。"
+        }
+      },
+      "translationStatus": { "en": true, "zh": true },
+      "createdAt": "2025-03-05T08:00:00Z",
+      "updatedAt": "2025-03-10T08:00:00Z"
     }
   ],
   "about": {
     "overview": {
-      "en": "XingJue Sports Trade is a vertically integrated manufacturer specializing in premium sports products for global distributors. We operate three smart factories and partner with certified suppliers across Asia.",
-      "zh": "星珏体育外贸是一家垂直整合的体育产品制造商，专注为全球分销商提供高端产品。我们拥有三座智能工厂，并与亚洲认证供应商合作。"
+      "en": "XingJue Sports Events Trade delivers end-to-end event infrastructure, timing technology, and branding assets for global sports competitions. We support federations, cities, and event agencies with reliable supply chains.",
+      "zh": "星珏体育赛事外贸提供赛事基础设施、计时技术与品牌物料的一站式解决方案，服务协会、城市与赛事公司。"
     },
     "mission": {
-      "en": "Deliver reliable, sustainable, and innovative sports equipment that empowers brands worldwide.",
-      "zh": "提供可靠、可持续与创新的体育装备，赋能全球品牌。"
+      "en": "Enable safe, engaging, and data-driven sports events worldwide.",
+      "zh": "助力全球体育赛事安全、精彩且数据化运营。"
     },
     "timeline": [
       {
-        "year": "2013",
+        "year": "2012",
         "content": {
-          "en": "Established flagship manufacturing line in Shenzhen.",
-          "zh": "深圳旗舰生产线正式投产。"
+          "en": "Delivered our first city marathon event kit.",
+          "zh": "交付首套城市马拉松赛事套装。"
         }
       },
       {
-        "year": "2018",
+        "year": "2017",
         "content": {
-          "en": "Expanded to OEM/ODM solutions for 40+ distributors.",
-          "zh": "扩展 OEM/ODM 业务，服务 40+ 分销商。"
+          "en": "Launched RFID timing and LED scoring solutions.",
+          "zh": "推出 RFID 计时与 LED 计分方案。"
         }
       },
       {
         "year": "2024",
         "content": {
-          "en": "Reached 180,000 units monthly output with carbon-neutral roadmap.",
-          "zh": "月产能达 18 万件，并启动碳中和路线图。"
+          "en": "Supported 120+ international sports events annually.",
+          "zh": "每年支持 120+ 国际体育赛事。"
         }
       }
     ],
     "team": [
       {
         "name": "Olivia Cheng",
-        "role": { "en": "Global Trade Director", "zh": "全球贸易总监" },
+        "role": { "en": "Event Operations Director", "zh": "赛事运营总监" },
         "bio": {
-          "en": "12 years in international sports product sourcing and compliance.",
-          "zh": "12 年体育产品国际采购与合规经验。"
+          "en": "Leads global event delivery and onsite coordination.",
+          "zh": "负责全球赛事交付与现场协同。"
         }
       },
       {
         "name": "Marcus Liu",
-        "role": { "en": "Operations Lead", "zh": "运营负责人" },
+        "role": { "en": "Timing Systems Lead", "zh": "计时系统负责人" },
         "bio": {
-          "en": "Leads smart factory operations and lean manufacturing.",
-          "zh": "负责智能工厂运营与精益生产。"
+          "en": "Specializes in RFID timing and data reporting.",
+          "zh": "专注 RFID 计时与数据报表。"
         }
       },
       {
         "name": "Sophia Zhang",
-        "role": { "en": "Design Studio Head", "zh": "设计工作室主管" },
+        "role": { "en": "Venue Engineering Manager", "zh": "场地工程经理" },
         "bio": {
-          "en": "Award-winning industrial designer in sports equipment.",
-          "zh": "体育装备领域获奖工业设计师。"
+          "en": "Oversees venue setup, safety, and compliance.",
+          "zh": "负责场地搭建、安全与合规。"
         }
       }
     ]
@@ -804,62 +838,62 @@
     "pages": {
       "home": {
         "title": {
-          "en": "XingJue Sports Trade | Global Sports Product Export",
-          "zh": "星珏体育外贸 | 全球体育产品出口"
+          "en": "XingJue Sports Events Trade | Global Event Supply Chain",
+          "zh": "星珏体育赛事外贸 | 全球赛事供应链"
         },
         "description": {
-          "en": "Premium sports products manufacturer offering OEM/ODM services and global logistics.",
-          "zh": "高端体育产品制造商，提供 OEM/ODM 与全球物流服务。"
+          "en": "Event-grade infrastructure, timing systems, and branding for global sports competitions.",
+          "zh": "提供赛事级场地、计时系统与品牌物料，服务全球体育赛事。"
         }
       },
       "products": {
         "title": {
-          "en": "Product Catalog | XingJue Sports Trade",
-          "zh": "产品中心 | 星珏体育外贸"
+          "en": "Sports Event Catalog | XingJue Trade",
+          "zh": "体育赛事产品中心 | 星珏外贸"
         },
         "description": {
-          "en": "Explore multi-category sports equipment for global wholesale and distribution.",
-          "zh": "浏览适用于全球批发分销的多品类体育装备。"
+          "en": "Explore venue setup, scoring technology, and branding assets for sports events.",
+          "zh": "浏览场地搭建、计分技术与赛事形象物料。"
         }
       },
       "productDetail": {
         "title": {
-          "en": "Product Details | XingJue Sports Trade",
-          "zh": "产品详情 | 星珏体育外贸"
+          "en": "Event Product Details | XingJue Trade",
+          "zh": "赛事产品详情 | 星珏外贸"
         },
         "description": {
-          "en": "Detailed specifications, certifications, and inquiry access for export products.",
-          "zh": "提供出口产品详细参数、认证与询盘入口。"
+          "en": "Technical specs, certifications, and inquiry access for event equipment.",
+          "zh": "提供赛事装备技术参数、认证与询盘入口。"
         }
       },
       "about": {
         "title": {
-          "en": "About XingJue Sports Trade",
-          "zh": "关于星珏体育外贸"
+          "en": "About XingJue Sports Events Trade",
+          "zh": "关于星珏体育赛事外贸"
         },
         "description": {
-          "en": "Learn about our manufacturing strength, team, and sustainability commitment.",
-          "zh": "了解我们的制造实力、团队与可持续承诺。"
+          "en": "Learn about our event supply chain capabilities and execution expertise.",
+          "zh": "了解我们的赛事供应链能力与执行经验。"
         }
       },
       "contact": {
         "title": {
-          "en": "Contact XingJue | Global Trade Inquiry",
-          "zh": "联系星珏 | 国际贸易询盘"
+          "en": "Contact XingJue | Sports Event Inquiry",
+          "zh": "联系星珏 | 体育赛事询盘"
         },
         "description": {
-          "en": "Get in touch with our global trade team for quotations and collaboration.",
-          "zh": "联系我们的外贸团队获取报价与合作。"
+          "en": "Reach our event trade team for quotations and collaboration.",
+          "zh": "联系我们的赛事外贸团队获取报价与合作。"
         }
       },
       "admin": {
         "title": {
-          "en": "Admin Portal | XingJue Sports Trade",
-          "zh": "后台管理 | 星珏体育外贸"
+          "en": "Admin Portal | XingJue Sports Events Trade",
+          "zh": "后台管理 | 星珏体育赛事外贸"
         },
         "description": {
-          "en": "Secure admin portal for product and inquiry management.",
-          "zh": "用于产品与询盘管理的安全后台。"
+          "en": "Secure admin portal for event product and inquiry management.",
+          "zh": "用于赛事产品与询盘管理的安全后台。"
         }
       }
     }

@@ -29,19 +29,19 @@
     "logout": "退出登录"
   },
   "home": {
-    "heroBadge": "全球体育外贸门户",
+    "heroBadge": "体育赛事外贸门户",
     "advantagesTitle": "核心优势",
-    "advantagesSubtitle": "面向国际分销商的企业级能力。",
+    "advantagesSubtitle": "面向全球体育赛事的企业级能力。",
     "featuredTitle": "精选产品",
-    "featuredSubtitle": "全球采购商信赖的出口产品。",
+    "featuredSubtitle": "赛事主办方信赖的赛事装备。",
     "partnersTitle": "合作伙伴",
-    "partnersSubtitle": "被全球高端体育品牌信任。",
+    "partnersSubtitle": "被全球赛事公司与场馆信赖。",
     "mapTitle": "全球覆盖",
-    "mapSubtitle": "业务覆盖 60+ 国家和地区。"
+    "mapSubtitle": "服务 60+ 国家和地区的体育赛事。"
   },
   "products": {
     "title": "产品中心",
-    "subtitle": "搜索和筛选我们的出口型体育产品组合。",
+    "subtitle": "搜索和筛选我们的体育赛事装备组合。",
     "searchPlaceholder": "按产品名称、SKU 或关键词搜索",
     "filter": {
       "category": "主分类",
@@ -84,14 +84,14 @@
   },
   "about": {
     "title": "关于星珏",
-    "subtitle": "您的全球体育产品出口伙伴。",
+    "subtitle": "您的全球体育赛事供应链伙伴。",
     "timelineTitle": "发展里程碑",
     "teamTitle": "核心团队",
     "missionTitle": "使命"
   },
   "contact": {
     "title": "联系我们",
-    "subtitle": "与我们的国际贸易团队取得联系。",
+    "subtitle": "与我们的体育赛事外贸团队取得联系。",
     "formTitle": "发送询盘",
     "formSubtitle": "提交需求后我们将在 24 小时内回复。",
     "mapTitle": "地图位置",
@@ -232,7 +232,7 @@
     "privacy": "隐私政策",
     "terms": "使用条款",
     "cta": "让我们打造您的下一个出口成功案例。",
-    "tagline": "为全球贸易提供可靠体育产品制造。"
+    "tagline": "为全球贸易提供可靠体育赛事装备。"
   },
   "misc": {
     "loading": "加载中...",
