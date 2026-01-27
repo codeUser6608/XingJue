@@ -200,21 +200,79 @@ export const AdminProducts = () => {
   }
 
   return (
-    <div className="space-y-8">
-      <section className="rounded-3xl border border-white/10 bg-slate-950/60 p-6">
-        <div className="flex flex-wrap items-center justify-between gap-4">
-          <div>
-            <h1 className="text-xl font-semibold text-white">{t('admin.products.title')}</h1>
-            <p className="text-sm text-white/60">{t('admin.products.imageHint')}</p>
-          </div>
+    <div className="grid gap-6 lg:grid-cols-[280px_1fr]">
+      {/* 左侧：产品列表 */}
+      <section className="rounded-3xl border border-white/10 bg-slate-950/60 p-6 lg:sticky lg:top-6 lg:h-fit">
+        <div className="flex items-center justify-between gap-4 mb-4">
+          <h2 className="text-lg font-semibold text-white">{t('admin.products.title')}</h2>
           <button
             type="button"
             onClick={() => setActiveProduct(null)}
-            className="btn-primary"
+            className="btn-primary text-xs px-3 py-1.5"
           >
-            <Plus className="h-4 w-4" />
+            <Plus className="h-3 w-3" />
             {t('admin.products.newProduct')}
           </button>
+        </div>
+        <div className="space-y-2 max-h-[calc(100vh-200px)] overflow-y-auto">
+          {siteData.products.map((product) => (
+            <div
+              key={product.id}
+              className={`flex flex-wrap items-center justify-between gap-3 rounded-xl border px-3 py-2 text-sm transition ${
+                activeProduct?.id === product.id
+                  ? 'border-amber-300 bg-amber-300/10'
+                  : 'border-white/10 bg-white/5 hover:border-white/20'
+              }`}
+            >
+              <div className="flex-1 min-w-0">
+                <p className="text-sm font-semibold text-white truncate">{product.name[locale]}</p>
+                <p className="text-xs text-white/50">{product.sku}</p>
+              </div>
+              <div className="flex items-center gap-1">
+                <button
+                  type="button"
+                  onClick={() => setActiveProduct(product)}
+                  className="rounded-full border border-white/15 p-1.5 text-white/70 hover:border-white/40 hover:text-white transition"
+                  title={t('actions.edit')}
+                >
+                  <Pencil className="h-3.5 w-3.5" />
+                </button>
+                <button
+                  type="button"
+                  onClick={() => {
+                    if (confirm(t('admin.products.deleteConfirm'))) {
+                      deleteProduct(product.id)
+                      if (activeProduct?.id === product.id) {
+                        setActiveProduct(null)
+                        reset(buildFormValues())
+                        setImages([])
+                        setMainImage('')
+                      }
+                    }
+                  }}
+                  className="rounded-full border border-white/15 p-1.5 text-rose-300 hover:border-rose-300 transition"
+                  title={t('actions.delete')}
+                >
+                  <Trash2 className="h-3.5 w-3.5" />
+                </button>
+              </div>
+            </div>
+          ))}
+          {siteData.products.length === 0 && (
+            <p className="text-sm text-white/50 text-center py-4">{t('admin.empty')}</p>
+          )}
+        </div>
+      </section>
+
+      {/* 右侧：编辑表单 */}
+      <section className="rounded-3xl border border-white/10 bg-slate-950/60 p-6">
+        <div className="flex flex-wrap items-center justify-between gap-4 mb-6">
+          <div>
+            <h1 className="text-xl font-semibold text-white">
+              {activeProduct ? t('admin.products.editProduct') : t('admin.products.newProduct')}
+            </h1>
+            <p className="text-sm text-white/60">{t('admin.products.imageHint')}</p>
+          </div>
         </div>
 
         <form onSubmit={handleSubmit(onSubmit)} className="mt-6 grid gap-6">
@@ -222,16 +280,16 @@ export const AdminProducts = () => {
             <input
               {...register('id')}
               placeholder={t('admin.products.form.id')}
-              className="rounded-xl border border-white/10 bg-white/5 px-4 py-3 text-sm text-white/80"
+              className="rounded-xl border border-white/10 bg-white/5 px-4 py-3 text-sm text-white"
             />
             <input
               {...register('sku')}
               placeholder={t('admin.products.form.sku')}
-              className="rounded-xl border border-white/10 bg-white/5 px-4 py-3 text-sm text-white/80"
+              className="rounded-xl border border-white/10 bg-white/5 px-4 py-3 text-sm text-white"
             />
             <select
               {...register('categoryId')}
-              className="rounded-xl border border-white/10 bg-white/5 px-4 py-3 text-sm text-white/80"
+              className="rounded-xl border border-white/10 bg-white/5 px-4 py-3 text-sm text-white"
             >
               <option value="">{t('products.filter.category')}</option>
               {categories.map((category) => (
@@ -242,7 +300,7 @@ export const AdminProducts = () => {
             </select>
             <select
               {...register('subcategoryId')}
-              className="rounded-xl border border-white/10 bg-white/5 px-4 py-3 text-sm text-white/80"
+              className="rounded-xl border border-white/10 bg-white/5 px-4 py-3 text-sm text-white"
             >
               <option value="">{t('products.filter.subcategory')}</option>
               {subcategories.map((subcategory) => (
@@ -257,12 +315,12 @@ export const AdminProducts = () => {
             <input
               {...register('nameEn')}
               placeholder={t('admin.products.form.nameEn')}
-              className="rounded-xl border border-white/10 bg-white/5 px-4 py-3 text-sm text-white/80"
+              className="rounded-xl border border-white/10 bg-white/5 px-4 py-3 text-sm text-white"
             />
             <input
               {...register('nameZh')}
               placeholder={t('admin.products.form.nameZh')}
-              className="rounded-xl border border-white/10 bg-white/5 px-4 py-3 text-sm text-white/80"
+              className="rounded-xl border border-white/10 bg-white/5 px-4 py-3 text-sm text-white"
             />
             <textarea
               {...register('shortEn')}
@@ -291,32 +349,32 @@ export const AdminProducts = () => {
               {...register('priceAmount')}
               type="number"
               placeholder={t('admin.products.form.price')}
-              className="rounded-xl border border-white/10 bg-white/5 px-4 py-3 text-sm text-white/80"
+              className="rounded-xl border border-white/10 bg-white/5 px-4 py-3 text-sm text-white"
             />
             <input
               {...register('currency')}
               placeholder={t('admin.products.form.currency')}
-              className="rounded-xl border border-white/10 bg-white/5 px-4 py-3 text-sm text-white/80"
+              className="rounded-xl border border-white/10 bg-white/5 px-4 py-3 text-sm text-white"
             />
             <input
               {...register('unitEn')}
               placeholder={t('admin.products.form.unitEn')}
-              className="rounded-xl border border-white/10 bg-white/5 px-4 py-3 text-sm text-white/80"
+              className="rounded-xl border border-white/10 bg-white/5 px-4 py-3 text-sm text-white"
             />
             <input
               {...register('unitZh')}
               placeholder={t('admin.products.form.unitZh')}
-              className="rounded-xl border border-white/10 bg-white/5 px-4 py-3 text-sm text-white/80"
+              className="rounded-xl border border-white/10 bg-white/5 px-4 py-3 text-sm text-white"
             />
             <input
               {...register('moq')}
               type="number"
               placeholder={t('admin.products.form.moq')}
-              className="rounded-xl border border-white/10 bg-white/5 px-4 py-3 text-sm text-white/80"
+              className="rounded-xl border border-white/10 bg-white/5 px-4 py-3 text-sm text-white"
             />
             <select
               {...register('stockStatus')}
-              className="rounded-xl border border-white/10 bg-white/5 px-4 py-3 text-sm text-white/80"
+              className="rounded-xl border border-white/10 bg-white/5 px-4 py-3 text-sm text-white"
             >
               <option value="in_stock">{t('products.badge.inStock')}</option>
               <option value="out_of_stock">{t('products.badge.outOfStock')}</option>
@@ -364,28 +422,28 @@ export const AdminProducts = () => {
                   <input
                     {...register(`specs.${index}.labelEn`)}
                     placeholder={t('admin.products.form.specLabelEn')}
-                    className="rounded-xl border border-white/10 bg-slate-950/60 px-3 py-2 text-xs text-white/70"
+                    className="rounded-xl border border-white/10 bg-slate-950/60 px-3 py-2 text-xs text-white/70 min-w-0"
                   />
                   <input
                     {...register(`specs.${index}.labelZh`)}
                     placeholder={t('admin.products.form.specLabelZh')}
-                    className="rounded-xl border border-white/10 bg-slate-950/60 px-3 py-2 text-xs text-white/70"
+                    className="rounded-xl border border-white/10 bg-slate-950/60 px-3 py-2 text-xs text-white/70 min-w-0"
                   />
                   <input
                     {...register(`specs.${index}.valueEn`)}
                     placeholder={t('admin.products.form.specValueEn')}
-                    className="rounded-xl border border-white/10 bg-slate-950/60 px-3 py-2 text-xs text-white/70"
+                    className="rounded-xl border border-white/10 bg-slate-950/60 px-3 py-2 text-xs text-white/70 min-w-0"
                   />
-                  <div className="flex items-center gap-2">
+                  <div className="flex items-center gap-2 min-w-0">
                     <input
                       {...register(`specs.${index}.valueZh`)}
                       placeholder={t('admin.products.form.specValueZh')}
-                      className="flex-1 rounded-xl border border-white/10 bg-slate-950/60 px-3 py-2 text-xs text-white/70"
+                      className="flex-1 min-w-0 rounded-xl border border-white/10 bg-slate-950/60 px-3 py-2 text-xs text-white/70"
                     />
                     <button
                       type="button"
                       onClick={() => remove(index)}
-                      className="rounded-full border border-white/10 p-2 text-rose-300 hover:border-rose-300"
+                      className="flex-shrink-0 rounded-full border border-white/10 p-2 text-rose-300 hover:border-rose-300"
                     >
                       <Trash2 className="h-4 w-4" />
                     </button>
@@ -399,7 +457,7 @@ export const AdminProducts = () => {
             <input
               {...register('certifications')}
               placeholder={t('admin.products.form.certifications')}
-              className="rounded-xl border border-white/10 bg-white/5 px-4 py-3 text-sm text-white/80"
+              className="rounded-xl border border-white/10 bg-white/5 px-4 py-3 text-sm text-white"
             />
             <div className="flex flex-wrap items-center gap-4 text-xs text-white/70">
               <label className="flex items-center gap-2">
@@ -498,46 +556,6 @@ export const AdminProducts = () => {
             <p className="text-xs text-rose-300">{t('validation.required')}</p>
           )}
         </form>
-      </section>
-
-      <section className="rounded-3xl border border-white/10 bg-slate-950/60 p-6">
-        <h2 className="text-lg font-semibold text-white">{t('admin.products.title')}</h2>
-        <div className="mt-4 space-y-3">
-          {siteData.products.map((product) => (
-            <div
-              key={product.id}
-              className="flex flex-wrap items-center justify-between gap-4 rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-sm text-white/70"
-            >
-              <div>
-                <p className="text-sm font-semibold text-white">{product.name[locale]}</p>
-                <p className="text-xs text-white/50">{product.sku}</p>
-              </div>
-              <div className="flex items-center gap-2">
-                <button
-                  type="button"
-                  onClick={() => setActiveProduct(product)}
-                  className="rounded-full border border-white/15 p-2 text-white/70 hover:border-white/40"
-                >
-                  <Pencil className="h-4 w-4" />
-                </button>
-                <button
-                  type="button"
-                  onClick={() => {
-                    if (confirm(t('admin.products.deleteConfirm'))) {
-                      deleteProduct(product.id)
-                    }
-                  }}
-                  className="rounded-full border border-white/15 p-2 text-rose-300 hover:border-rose-300"
-                >
-                  <Trash2 className="h-4 w-4" />
-                </button>
-              </div>
-            </div>
-          ))}
-          {siteData.products.length === 0 && (
-            <p className="text-sm text-white/50">{t('admin.empty')}</p>
-          )}
-        </div>
       </section>
     </div>
   )

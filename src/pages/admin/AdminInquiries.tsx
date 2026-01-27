@@ -54,7 +54,7 @@ export const AdminInquiries = () => {
         <select
           value={statusFilter}
           onChange={(event) => setStatusFilter(event.target.value)}
-          className="rounded-xl border border-white/10 bg-white/5 px-4 py-3 text-sm text-white/70"
+          className="rounded-xl border border-white/10 bg-white/5 px-4 py-3 text-sm text-white"
         >
           <option value="all">{t('products.filter.all')}</option>
           <option value="new">{t('admin.status.new')}</option>
@@ -64,7 +64,7 @@ export const AdminInquiries = () => {
         <select
           value={productFilter}
           onChange={(event) => setProductFilter(event.target.value)}
-          className="rounded-xl border border-white/10 bg-white/5 px-4 py-3 text-sm text-white/70"
+          className="rounded-xl border border-white/10 bg-white/5 px-4 py-3 text-sm text-white"
         >
           <option value="all">{t('products.filter.all')}</option>
           {siteData.products.map((product) => (
@@ -115,7 +115,7 @@ export const AdminInquiries = () => {
                   onChange={(event) =>
                     updateInquiryStatus(inquiry.id, event.target.value as 'new' | 'processing' | 'closed')
                   }
-                  className="rounded-full border border-white/10 bg-slate-950/60 px-3 py-1 text-xs text-white/70"
+                  className="rounded-full border border-white/10 bg-slate-950/60 px-3 py-1 text-xs text-white"
                 >
                   <option value="new">{t('admin.status.new')}</option>
                   <option value="processing">{t('admin.status.processing')}</option>

@@ -121,7 +121,7 @@ export const Products = () => {
                 setSubcategoryId('all')
                 resetPage()
               }}
-              className="rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-sm text-white/70"
+              className="rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-sm text-white"
             >
               <option value="all">{t('products.filter.all')}</option>
               {categories.map((category) => (
@@ -137,7 +137,7 @@ export const Products = () => {
                 setSubcategoryId(event.target.value)
                 resetPage()
               }}
-              className="rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-sm text-white/70"
+              className="rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-sm text-white"
             >
               <option value="all">{t('products.filter.all')}</option>
               {subcategories.map((subcategory) => (
@@ -186,7 +186,7 @@ export const Products = () => {
                 setStockStatus(event.target.value)
                 resetPage()
               }}
-              className="rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-sm text-white/70"
+              className="rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-sm text-white"
             >
               <option value="all">{t('products.filter.all')}</option>
               <option value="in_stock">{t('products.badge.inStock')}</option>
@@ -199,7 +199,7 @@ export const Products = () => {
                 setSortBy(event.target.value)
                 resetPage()
               }}
-              className="rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-sm text-white/70"
+              className="rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-sm text-white"
             >
               <option value="latest">{t('products.sort.latest')}</option>
               <option value="nameAsc">{t('products.sort.nameAsc')}</option>
