@@ -46,6 +46,8 @@ const PORT = process.env.PORT || 4000
 // 初始化默认数据（如果文件不存在）
 const initDefaultDataIfNeeded = async () => {
   try {
+    console.log('[initDefaultDataIfNeeded] Checking data status...')
+    
     // 检查是否已初始化（检查 settings 是否有实际内容，而不是只有默认值）
     const siteData = await getSiteData()
     const hasRealData = siteData && 
@@ -55,11 +57,35 @@ const initDefaultDataIfNeeded = async () => {
       siteData.settings.siteName.en.trim() !== ''
     
     if (hasRealData) {
-      console.log('✅ Data already initialized, has real content')
+      console.log('✅ [initDefaultDataIfNeeded] Data already initialized, has real content')
+      console.log(`   siteName.en: "${siteData.settings.siteName.en}"`)
       return
     }
     
-    console.log('⚠️ No real data found, attempting to initialize from template...')
+    // 在 Blob Storage 模式下，如果已经有任何 Blob 文件存在，不应该用模板覆盖
+    // 因为用户可能已经导入过数据（即使内容为空）
+    if (useBlobStorage) {
+      console.log('[initDefaultDataIfNeeded] Using Blob Storage, checking if any blobs exist...')
+      try {
+        // 尝试检查 settings.json 是否存在
+        const { head } = await import('@vercel/blob')
+        const blobPath = `xingjue-data/settings.json`
+        try {
+          const blobInfo = await head(blobPath)
+          if (blobInfo) {
+            console.log('⚠️ [initDefaultDataIfNeeded] Blob files exist but appear empty.')
+            console.log('   Not overwriting with template. User should import data via admin panel.')
+            return
+          }
+        } catch {
+          // 文件不存在，可以初始化
+        }
+      } catch (error) {
+        console.warn('[initDefaultDataIfNeeded] Could not check blob existence:', error.message)
+      }
+    }
+    
+    console.log('⚠️ [initDefaultDataIfNeeded] No real data found, attempting to initialize from template...')
     
     // 尝试从多个可能的路径读取模板文件
     const possiblePaths = [
@@ -75,27 +101,27 @@ const initDefaultDataIfNeeded = async () => {
     for (const path of possiblePaths) {
       try {
         if (existsSync(path)) {
-          console.log(`Found template file at: ${path}`)
+          console.log(`[initDefaultDataIfNeeded] Found template file at: ${path}`)
           defaultData = JSON.parse(readFileSync(path, 'utf-8'))
           templatePath = path
           break
         }
       } catch (error) {
-        console.warn(`Could not read template from ${path}:`, error.message)
+        console.warn(`[initDefaultDataIfNeeded] Could not read template from ${path}:`, error.message)
       }
     }
     
     if (defaultData) {
-      console.log('✅ Loading template data, initializing...')
+      console.log('✅ [initDefaultDataIfNeeded] Loading template data, initializing...')
       await initializeDefaultData(defaultData)
-      console.log('✅ Initialized default data from template')
+      console.log('✅ [initDefaultDataIfNeeded] Initialized default data from template')
     } else {
-      console.error('❌ Template file not found in any of the expected paths:', possiblePaths)
-      console.error('Will return empty data structure. Please import data via admin panel.')
+      console.error('❌ [initDefaultDataIfNeeded] Template file not found in any of the expected paths:', possiblePaths)
+      console.error('   Will return empty data structure. Please import data via admin panel.')
     }
   } catch (error) {
-    console.error('Error initializing default data:', error)
-    console.error('Stack:', error.stack)
+    console.error('[initDefaultDataIfNeeded] Error initializing default data:', error)
+    console.error('   Stack:', error.stack)
   }
 }
 
@@ -302,6 +328,18 @@ app.post(`${API_PREFIX}/site-data/upload`, upload.single('file'), async (req, re
     try {
       const fileContent = req.file.buffer.toString('utf-8')
       data = JSON.parse(fileContent)
+      console.log(`[POST /site-data/upload] File parsed successfully, size: ${fileContent.length} bytes`)
+      
+      // 输出关键字段预览，确认收到了真实数据
+      if (data.settings?.siteName?.en) {
+        console.log(`[POST /site-data/upload] Received settings.siteName.en = "${data.settings.siteName.en}"`)
+      }
+      if (data.hero?.title?.en) {
+        console.log(`[POST /site-data/upload] Received hero.title.en = "${data.hero.title.en}"`)
+      }
+      if (data.products && Array.isArray(data.products)) {
+        console.log(`[POST /site-data/upload] Received ${data.products.length} products`)
+      }
     } catch (parseError) {
       console.error('Error parsing JSON file:', parseError)
       return res.status(400).json({ error: '无效的 JSON 文件格式' })
@@ -309,6 +347,7 @@ app.post(`${API_PREFIX}/site-data/upload`, upload.single('file'), async (req, re
 
     // 将整体数据拆分为各个部分并分别更新
     const updatePromises = []
+    console.log(`[POST /site-data/upload] Starting to update ${Object.keys(data).length} sections...`)
     
     if (data.locales !== undefined) updatePromises.push(updateSiteSection('locales', data.locales))
     if (data.defaultLocale !== undefined) updatePromises.push(updateSiteSection('defaultLocale', data.defaultLocale))
@@ -333,18 +372,30 @@ app.post(`${API_PREFIX}/site-data/upload`, upload.single('file'), async (req, re
     await Promise.all(updatePromises)
     
     // 验证数据是否成功保存（在 Vercel 环境下特别重要）
-    console.log('✅ Site data updated successfully via file upload, verifying...')
+    console.log('✅ [POST /site-data/upload] All sections updated, verifying...')
     try {
       const verifyData = await getSiteData()
       const hasProducts = verifyData?.products && verifyData.products.length > 0
       const hasSettings = verifyData?.settings?.siteName?.en?.trim()
-      console.log(`✅ Verification: products=${hasProducts ? verifyData.products.length : 0}, hasSettings=${!!hasSettings}`)
+      const settingsValue = verifyData?.settings?.siteName?.en || ''
+      
+      console.log(`✅ [POST /site-data/upload] Verification results:`)
+      console.log(`   - products: ${hasProducts ? verifyData.products.length : 0}`)
+      console.log(`   - settings.siteName.en: "${settingsValue}"`)
+      console.log(`   - hasSettings: ${!!hasSettings}`)
       
       if (isVercel && !useBlobStorage) {
         console.warn('⚠️ WARNING: Data saved to /tmp but may not persist across serverless instances!')
       }
+      
+      if (!hasSettings && data.settings?.siteName?.en) {
+        console.error('❌ [POST /site-data/upload] CRITICAL: Settings were written but not readable!')
+        console.error('   Original value:', data.settings.siteName.en)
+        console.error('   Read back value:', settingsValue)
+      }
     } catch (verifyError) {
-      console.error('⚠️ Warning: Could not verify saved data:', verifyError.message)
+      console.error('⚠️ [POST /site-data/upload] Warning: Could not verify saved data:', verifyError.message)
+      console.error('   Stack:', verifyError.stack)
     }
     
     res.json({ success: true, message: '站点数据已成功更新' })

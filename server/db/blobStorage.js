@@ -20,6 +20,7 @@ const getBlobPath = (filename) => `${BLOB_PREFIX}/${filename}`
 // 从 Blob 读取 JSON 文件
 const readJsonBlob = async (filename, defaultValue = null) => {
   if (!isBlobAvailable()) {
+    console.log(`[readJsonBlob] Blob Storage not available for ${filename}, returning default`)
     return defaultValue
   }
 
@@ -32,20 +33,30 @@ const readJsonBlob = async (filename, defaultValue = null) => {
       blobInfo = await head(blobPath)
     } catch (error) {
       // 文件不存在，返回默认值
+      console.log(`[readJsonBlob] Blob not found: ${blobPath}, returning default`)
       return defaultValue
     }
 
     // 如果文件存在，使用 fetch 获取内容
     // blobInfo.url 是公开访问的 URL
     if (!blobInfo || !blobInfo.url) {
+      console.log(`[readJsonBlob] Blob info missing for ${blobPath}, returning default`)
       return defaultValue
     }
     
     const response = await fetch(blobInfo.url)
     if (!response.ok) {
+      console.warn(`[readJsonBlob] Failed to fetch blob ${blobPath}: ${response.status} ${response.statusText}`)
       return defaultValue
     }
-    const text = await response.text().trim()
+    const text = (await response.text()).trim()
+    
+    if (!text || text.length === 0) {
+      console.log(`[readJsonBlob] Blob ${blobPath} is empty, returning default`)
+      return defaultValue
+    }
+    
+    console.log(`[readJsonBlob] Successfully read ${filename} (${text.length} bytes) from ${blobPath}`)
     
     // 对于 defaultLocale，特殊处理可能的双重序列化问题
     if (filename === 'defaultLocale.json') {
@@ -98,9 +109,23 @@ const readJsonBlob = async (filename, defaultValue = null) => {
       }
     }
     
-    return JSON.parse(text)
+    const parsed = JSON.parse(text)
+    
+    // 对于非 defaultLocale 文件，输出关键字段预览
+    if (filename !== 'defaultLocale.json' && typeof parsed === 'object' && parsed !== null) {
+      const preview = JSON.stringify(parsed).substring(0, 200)
+      console.log(`[readJsonBlob] Parsed ${filename} preview: ${preview}...`)
+      
+      // 特别检查 settings 和 products 的关键字段
+      if (filename === 'settings.json' && parsed.siteName) {
+        console.log(`[readJsonBlob] settings.siteName.en = "${parsed.siteName.en || ''}"`)
+      }
+    }
+    
+    return parsed
   } catch (error) {
-    console.error(`Error reading blob ${filename}:`, error)
+    console.error(`[readJsonBlob] Error reading blob ${filename}:`, error)
+    console.error(`[readJsonBlob] Raw text (first 200 chars):`, text.substring(0, 200))
     return defaultValue
   }
 }
@@ -113,6 +138,22 @@ const writeJsonBlob = async (filename, data) => {
 
   try {
     const blobPath = getBlobPath(filename)
+    
+    // 输出数据预览（用于调试）
+    if (filename !== 'defaultLocale.json' && typeof data === 'object' && data !== null) {
+      const dataPreview = JSON.stringify(data).substring(0, 200)
+      console.log(`[writeJsonBlob] Writing ${filename}, data preview: ${dataPreview}...`)
+      
+      // 特别检查 settings 和 products 的关键字段
+      if (filename === 'settings.json' && data.siteName) {
+        console.log(`[writeJsonBlob] settings.siteName.en = "${data.siteName.en || ''}"`)
+      }
+      if (filename === 'hero.json' && data.title) {
+        console.log(`[writeJsonBlob] hero.title.en = "${data.title.en || ''}"`)
+      }
+    } else if (filename === 'defaultLocale.json') {
+      console.log(`[writeJsonBlob] Writing defaultLocale = "${data}"`)
+    }
     
     // 对于 defaultLocale，如果值是字符串，直接写入字符串值（不带 JSON.stringify）
     // 因为 defaultLocale.json 应该只包含字符串值，而不是 JSON 对象
@@ -138,10 +179,23 @@ const writeJsonBlob = async (filename, data) => {
       access: 'public',
       addRandomSuffix: false
     })
+    
+    console.log(`✅ [writeJsonBlob] Successfully wrote ${filename} (${content.length} bytes) to ${blobPath}`)
+    
+    // 立即验证写入是否成功（读取回来检查）
+    try {
+      const verifyInfo = await head(blobPath)
+      if (verifyInfo && verifyInfo.url) {
+        console.log(`✅ [writeJsonBlob] Verified ${filename} exists at ${blobPath}`)
+      }
+    } catch (verifyError) {
+      console.warn(`⚠️ [writeJsonBlob] Could not verify ${filename} after write:`, verifyError.message)
+    }
+    
     return true
   } catch (error) {
-    console.error(`Error writing blob ${filename}:`, error)
-    throw new Error(`Failed to write ${filename}`)
+    console.error(`❌ [writeJsonBlob] Error writing blob ${filename}:`, error)
+    throw new Error(`Failed to write ${filename}: ${error.message}`)
   }
 }
 
@@ -252,19 +306,35 @@ export const getSiteData = async () => {
     const defaultContact = getDefaultContact()
     const defaultAbout = getDefaultAbout()
 
-    // 深度合并函数
+    // 深度合并函数：source（用户数据）覆盖 target（默认值）
+    // 确保用户数据优先，默认值只作为后备
     const deepMerge = (target, source) => {
-      if (!source || typeof source !== 'object') return target
-      const result = { ...target }
-      for (const key in source) {
-        if (source[key] && typeof source[key] === 'object' && !Array.isArray(source[key])) {
-          result[key] = deepMerge(result[key] || {}, source[key])
-        } else {
-          result[key] = source[key]
+      if (!source || typeof source !== 'object') {
+        // 如果 source 无效，返回 target（默认值）
+        return target
+      }
+      // 如果 source 是数组，直接返回 source（用户数据优先）
+      if (Array.isArray(source)) {
+        return source
+      }
+      // 从 source 开始（用户数据优先），然后合并 target（默认值）中缺失的字段
+      const result = { ...source }
+      for (const key in target) {
+        // 如果 source 中没有这个 key，使用 target 的默认值
+        if (!(key in source)) {
+          result[key] = target[key]
+        } else if (target[key] && typeof target[key] === 'object' && !Array.isArray(target[key]) &&
+                   source[key] && typeof source[key] === 'object' && !Array.isArray(source[key])) {
+          // 如果两者都是对象，递归合并（source 优先）
+          result[key] = deepMerge(target[key], source[key])
         }
+        // 如果 source 中有值，直接使用 source 的值（已经在上面的 ...source 中处理了）
       }
       return result
     }
+    
+    console.log(`[getSiteData] Reading all sections from Blob Storage...`)
+    console.log(`[getSiteData] settings: ${settings ? 'exists' : 'null'}, hero: ${hero ? 'exists' : 'null'}, products: ${products.length}`)
 
     // 确保 seo.pages 有完整的结构
     const defaultSeo = {
@@ -277,9 +347,11 @@ export const getSiteData = async () => {
       }
     }
     
+    // 合并 SEO：用户数据优先，默认值作为后备
     const mergedSeo = seo ? deepMerge(defaultSeo, seo) : defaultSeo
 
-    return {
+    // 构建最终结果：用户数据优先，默认值作为后备
+    const result = {
       locales: locales || ['en', 'zh'],
       defaultLocale: defaultLocale || 'en',
       settings: settings ? deepMerge(defaultSettings, settings) : defaultSettings,
@@ -294,6 +366,14 @@ export const getSiteData = async () => {
       contact: contact ? deepMerge(defaultContact, contact) : defaultContact,
       seo: mergedSeo
     }
+    
+    // 输出关键字段用于调试
+    const hasRealData = result.settings?.siteName?.en?.trim() || 
+                       result.hero?.title?.en?.trim() || 
+                       result.products.length > 0
+    console.log(`[getSiteData] Final result: hasRealData=${hasRealData}, products=${result.products.length}, settings.siteName.en="${result.settings?.siteName?.en || ''}"`)
+    
+    return result
   } catch (error) {
     console.error('Error getting site data:', error)
     throw new Error('Failed to get site data')
@@ -323,11 +403,26 @@ export const updateSiteSection = async (section, data) => {
   }
 
   try {
+    console.log(`[updateSiteSection] Updating ${section} (${filename})...`)
+    const dataPreview = typeof data === 'object' && data !== null
+      ? JSON.stringify(data).substring(0, 200)
+      : String(data).substring(0, 200)
+    console.log(`[updateSiteSection] Data preview for ${section}: ${dataPreview}...`)
+    
     await writeJsonBlob(filename, data)
+    
+    // 立即验证文件是否可读
+    const verifyRead = await readJsonBlob(filename, null)
+    if (verifyRead === null && data !== null && data !== undefined) {
+      console.warn(`⚠️ [updateSiteSection] Warning: ${section} was written but read back as null`)
+    } else {
+      console.log(`✅ [updateSiteSection] Successfully updated ${section}, verified read back`)
+    }
+    
     return true
   } catch (error) {
-    console.error(`Error updating site section ${section}:`, error)
-    throw new Error(`Failed to update ${section}`)
+    console.error(`❌ [updateSiteSection] Error updating site section ${section}:`, error)
+    throw new Error(`Failed to update ${section}: ${error.message}`)
   }
 }
 
@@ -480,6 +575,8 @@ export const updateInquiry = async (id, updates) => {
 // 初始化默认数据（从模板文件）
 export const initializeDefaultData = async (defaultData) => {
   try {
+    console.log('[initializeDefaultData] Checking if data already exists...')
+    
     // 检查是否已初始化（检查是否有实际内容，而不是只有默认值）
     const existing = await readJsonBlob('settings.json', null)
     const hasRealData = existing && 
@@ -488,11 +585,27 @@ export const initializeDefaultData = async (defaultData) => {
       existing.siteName.en.trim() !== ''
     
     if (hasRealData) {
-      console.log('Data already initialized, skipping...')
+      console.log('✅ [initializeDefaultData] Data already initialized with real content, skipping...')
+      console.log(`   Existing siteName.en: "${existing.siteName.en}"`)
       return
     }
+    
+    // 检查是否有任何 Blob 文件存在（即使内容为空）
+    // 如果已经有文件存在，说明用户可能已经导入过数据，不应该用默认数据覆盖
+    try {
+      const testBlob = await head(getBlobPath('settings.json'))
+      if (testBlob) {
+        console.log('⚠️ [initializeDefaultData] Blob files exist but appear empty. Not overwriting with defaults.')
+        console.log('   User should import data via admin panel instead.')
+        return
+      }
+    } catch {
+      // 文件不存在，可以初始化
+    }
 
-    // 初始化各个部分
+    console.log('[initializeDefaultData] No existing data found, initializing from template...')
+
+    // 初始化各个部分（只在完全没有数据时）
     await Promise.all([
       updateSiteSection('locales', defaultData.locales || ['en', 'zh']),
       updateSiteSection('defaultLocale', defaultData.defaultLocale || 'en'),
@@ -527,4 +640,5 @@ export const initializeDefaultData = async (defaultData) => {
     throw error
   }
 }
+
 
