@@ -89,38 +89,45 @@ export const SiteDataProvider = ({ children }: { children: ReactNode }) => {
         api.getInquiries()
       ])
       
-      // 检查返回的数据是否有实际内容
-      if (hasRealData(siteDataResponse)) {
+      // 优先使用服务器返回的数据（无论是否为空），确保获取最新数据
+      // 只有在服务器数据完全无效时才使用后备方案
+      if (siteDataResponse && typeof siteDataResponse === 'object') {
         setSiteDataState(siteDataResponse)
-        setInquiries(inquiriesResponse)
-        // 同步到 localStorage 作为后备
+        setInquiries(inquiriesResponse || [])
+        // 同步到 localStorage 作为后备（仅当服务器数据有效时）
         saveDataToStorage(siteDataResponse)
-        saveInquiriesToStorage(inquiriesResponse)
+        saveInquiriesToStorage(inquiriesResponse || [])
+        
+        // 如果服务器数据看起来是空的，给出提示但不使用缓存
+        if (!hasRealData(siteDataResponse)) {
+          console.warn('Server returned data but it appears empty. Using server data anyway to ensure consistency.')
+          setError('Server data appears empty, but using it to ensure consistency across devices')
+        }
       } else {
-        // 如果后端返回的是空数据，尝试使用 localStorage 或默认数据
-        console.warn('Server returned empty data, trying fallback...')
+        // 服务器返回了无效数据格式，尝试使用 localStorage
+        console.warn('Server returned invalid data format, trying fallback...')
         const storedData = getStoredData()
         const storedInquiries = getStoredInquiries()
         
         if (storedData && hasRealData(storedData)) {
           setSiteDataState(storedData)
           setInquiries(storedInquiries)
-          setError('Using cached data (server returned empty data)')
+          setError('Using cached data (server returned invalid format)')
         } else {
           // 使用默认数据
           const defaultData = getDefaultData()
           setSiteDataState(defaultData)
           setInquiries([])
-          // 保存默认数据到 localStorage
           saveDataToStorage(defaultData)
-          setError('Using default data (server returned empty data)')
+          setError('Using default data (server returned invalid format)')
         }
       }
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : 'Failed to load data'
       console.warn('Failed to load data from server, using fallback:', err)
       
-      // 尝试从 localStorage 加载
+      // 只有在网络错误或API不可用时才使用 localStorage
+      // 这样可以确保其他电脑访问时能获取服务器最新数据
       const storedData = getStoredData()
       const storedInquiries = getStoredInquiries()
       
@@ -133,7 +140,6 @@ export const SiteDataProvider = ({ children }: { children: ReactNode }) => {
         const defaultData = getDefaultData()
         setSiteDataState(defaultData)
         setInquiries([])
-        // 保存默认数据到 localStorage
         saveDataToStorage(defaultData)
         setError(`Using default data (server and cache unavailable: ${errorMessage})`)
       }
