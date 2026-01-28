@@ -205,14 +205,14 @@ VITE_API_BASE_URL=http://localhost:4000/api
 📖 **快速部署指南**：请参考 [QUICK_DEPLOY.md](QUICK_DEPLOY.md) 获取详细的部署步骤（5 分钟完成）。
 
 1. **部署后端到云平台**（Vercel、Render、Railway 等）
-   - 获取后端 API 的完整 URL，例如：`https://your-api.vercel.app/api`
+   - 获取后端 API 的根 URL，例如：`https://your-api.vercel.app`（不需要 `/api` 后缀）
 
 2. **配置 GitHub Secrets**：
    - 进入 GitHub 仓库：Settings > Secrets and variables > Actions
    - 点击 "New repository secret"
    - 添加以下 secret：
      - **Name**: `VITE_API_BASE_URL`
-     - **Value**: 你的后端 API 完整 URL（例如：`https://your-api.vercel.app/api`）
+     - **Value**: 你的后端 API 根 URL（例如：`https://your-api.vercel.app`，不需要 `/api` 后缀）
    - 点击 "Add secret" 保存
 
 3. **重新触发部署**：
@@ -228,7 +228,7 @@ VITE_API_BASE_URL=http://localhost:4000/api
 5. **故障排查**：
    - 检查 GitHub Actions 构建日志，确认 `VITE_API_BASE_URL` 是否正确显示
    - 确认 secret 名称完全匹配：`VITE_API_BASE_URL`（区分大小写）
-   - 确认 API URL 格式正确：应该以 `/api` 结尾，例如：`https://your-api.vercel.app/api`
+   - 确认 API URL 格式正确：应该是根 URL，例如：`https://your-api.vercel.app`（不需要 `/api` 后缀）
    - 如果使用相对路径，确保后端部署在同一域名下
 
 **注意**：

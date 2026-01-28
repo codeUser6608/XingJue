@@ -191,7 +191,7 @@ const saveInquiries = (inquiries) => {
 }
 
 // API 路由
-// 在 Vercel 中，路径会自动包含 /api 前缀，所以这里不需要 /api 前缀
+// 在 Vercel 中，所有请求都路由到根路径，所以不需要 /api 前缀
 // 在本地开发中，需要 /api 前缀
 const API_PREFIX = isVercel ? '' : '/api'
 
