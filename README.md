@@ -200,6 +200,10 @@ VITE_API_BASE_URL=http://localhost:4000/api
 
 **重要**：生产环境必须配置后端 API 地址，否则前端会使用 localStorage 作为后备。
 
+⚠️ **GitHub Pages 不能运行后端服务器**：如果你访问 `https://codeuser6608.github.io/XingJue/api/` 返回 404，这是正常的。GitHub Pages 只托管静态文件，后端必须部署到其他平台（Vercel、Render、Railway 等）。
+
+📖 **快速部署指南**：请参考 [QUICK_DEPLOY.md](QUICK_DEPLOY.md) 获取详细的部署步骤（5 分钟完成）。
+
 1. **部署后端到云平台**（Vercel、Render、Railway 等）
    - 获取后端 API 的完整 URL，例如：`https://your-api.vercel.app/api`
 
