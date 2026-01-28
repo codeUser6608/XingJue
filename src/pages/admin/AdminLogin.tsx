@@ -15,7 +15,7 @@ const AUTH_KEY = 'xj-admin-auth'
 
 export const AdminLogin = ({ onSuccess }: { onSuccess: () => void }) => {
   const { t } = useTranslation()
-  const { siteData } = useSiteData()
+  const { siteData, isLoading } = useSiteData()
 
   const {
     register,
@@ -26,9 +26,20 @@ export const AdminLogin = ({ onSuccess }: { onSuccess: () => void }) => {
   })
 
   const onSubmit = (values: LoginValues) => {
-    // 如果服务器数据为空，使用默认密码
-    const adminPassword = siteData?.settings?.adminPassword || 'XJ-2026-Admin'
-    
+    // 仅使用服务器返回的密码进行校验，避免本地默认值造成不一致
+    const adminPasswordFromServer = siteData?.settings?.adminPassword || ''
+
+    // 本地开发环境允许使用默认密码，方便调试；线上环境必须依赖服务器密码
+    const isLocalhost =
+      typeof window !== 'undefined' && window.location.hostname === 'localhost'
+    const adminPassword =
+      adminPasswordFromServer || (isLocalhost ? 'XJ-2026-Admin' : '')
+
+    if (!adminPassword) {
+      toast.error(t('admin.passwordNotConfigured') || 'Admin password is not configured on server')
+      return
+    }
+
     if (values.password === adminPassword) {
       localStorage.setItem(AUTH_KEY, 'true')
       onSuccess()
@@ -53,8 +64,8 @@ export const AdminLogin = ({ onSuccess }: { onSuccess: () => void }) => {
           {errors.password && (
             <p className="text-xs text-rose-300">{t('validation.required')}</p>
           )}
-          <button type="submit" className="btn-primary w-full">
-            {t('admin.loginButton')}
+          <button type="submit" className="btn-primary w-full" disabled={isLoading}>
+            {isLoading ? t('misc.loading') : t('admin.loginButton')}
           </button>
         </form>
       </div>

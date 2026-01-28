@@ -92,20 +92,19 @@ export const SiteDataProvider = ({ children }: { children: ReactNode }) => {
       // 优先使用服务器返回的数据（无论是否为空），确保获取最新数据
       // 只有在服务器数据完全无效时才使用后备方案
       if (siteDataResponse && typeof siteDataResponse === 'object') {
-        // 如果服务器数据为空，合并默认数据以确保完整结构
+        // 如果服务器数据为空，合并默认数据以确保结构完整（但不覆盖服务器上的密码等敏感字段）
         let finalData = siteDataResponse
         if (!hasRealData(siteDataResponse)) {
-          console.warn('Server returned empty data, merging with defaults to ensure UI works')
+          console.warn('Server returned empty data, merging with defaults to ensure UI works (without touching admin password)')
           const defaultData = getDefaultData()
-          // 深度合并：默认数据作为基础，服务器数据覆盖（即使为空也保留服务器结构）
+          // 深度合并：默认数据作为基础，服务器数据覆盖
+          // 注意：adminPassword 只从服务器读取，不再使用本地默认值，避免本地密码与服务器不一致
           finalData = {
             ...defaultData,
             ...siteDataResponse,
             settings: {
               ...defaultData.settings,
-              ...siteDataResponse.settings,
-              // 确保 adminPassword 有默认值
-              adminPassword: siteDataResponse.settings?.adminPassword || defaultData.settings.adminPassword
+              ...siteDataResponse.settings
             },
             seo: {
               ...defaultData.seo,
