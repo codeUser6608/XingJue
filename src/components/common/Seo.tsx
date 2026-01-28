@@ -51,9 +51,9 @@ export const Seo = ({ title, description, structuredData }: SeoProps) => {
 
   useEffect(() => {
     const lang = i18n.language as 'en' | 'zh'
-    const pageTitle = title[lang] || siteData.settings.seoDefaults.title[lang]
+    const pageTitle = title[lang] || siteData.settings?.seoDefaults?.title?.[lang] || ''
     const pageDescription =
-      description[lang] || siteData.settings.seoDefaults.description[lang]
+      description[lang] || siteData.settings?.seoDefaults?.description?.[lang] || ''
 
     document.title = pageTitle
     ensureMetaTag('name', 'description').content = pageDescription
@@ -70,13 +70,13 @@ export const Seo = ({ title, description, structuredData }: SeoProps) => {
     const routeHash = `#${hashPath}`
     const canonicalUrl = `${baseUrl}${routeHash}`
 
-    siteData.locales.forEach((locale) => {
+    siteData.locales?.forEach((locale) => {
       const link = ensureLinkTag('alternate', locale)
       link.href = `${baseUrl}${routeHash}?lang=${locale}`
     })
 
     const xDefault = ensureLinkTag('alternate', 'x-default')
-    xDefault.href = `${baseUrl}${routeHash}?lang=${siteData.defaultLocale}`
+    xDefault.href = `${baseUrl}${routeHash}?lang=${siteData.defaultLocale || 'en'}`
 
     ensureCanonical().href = canonicalUrl
 

@@ -106,14 +106,14 @@ export const Home = () => {
               {t('home.heroBadge')}
             </span>
             <h1 className="mt-4 text-3xl font-semibold text-white md:text-5xl">
-              {siteData.hero.title[locale]}
+              {siteData.hero?.title?.[locale] || ''}
             </h1>
             <p className="mt-4 text-base text-white/70 md:text-lg">
-              {siteData.hero.subtitle[locale]}
+              {siteData.hero?.subtitle?.[locale] || ''}
             </p>
             <div className="mt-8 flex flex-wrap gap-4">
               <Link to="/contact" className="btn-primary">
-                {siteData.hero.ctaLabel[locale]}
+                {siteData.hero?.ctaLabel?.[locale] || ''}
               </Link>
               <Link to="/products" className="btn-ghost">
                 {t('actions.viewCatalog')}
@@ -127,10 +127,10 @@ export const Home = () => {
             className="glass-panel flex-1 rounded-3xl p-6"
           >
             <div className="grid gap-4 sm:grid-cols-2">
-              {siteData.tradeRegions.map((region) => (
+              {siteData.tradeRegions?.map((region) => (
                 <div key={region.id} className="rounded-2xl border border-white/10 p-4">
-                  <p className="text-sm font-semibold text-white">{region.name[locale]}</p>
-                  <p className="mt-2 text-xs text-white/60">{region.markets[locale]}</p>
+                  <p className="text-sm font-semibold text-white">{region.name?.[locale] || ''}</p>
+                  <p className="mt-2 text-xs text-white/60">{region.markets?.[locale] || ''}</p>
                 </div>
               ))}
             </div>
@@ -151,7 +151,7 @@ export const Home = () => {
             <p className="section-subtitle">{t('home.advantagesSubtitle')}</p>
           </div>
           <div className="mt-8 grid gap-6 md:grid-cols-2 xl:grid-cols-3">
-            {siteData.advantages.map((advantage) => {
+            {siteData.advantages?.map((advantage) => {
               const Icon = iconMap[advantage.icon as keyof typeof iconMap] ?? iconMap.default
               return (
                 <motion.div
@@ -163,10 +163,10 @@ export const Home = () => {
                     <Icon className="h-6 w-6 text-amber-300" />
                   </div>
                   <h3 className="mt-4 text-lg font-semibold text-white">
-                    {advantage.title[locale]}
+                    {advantage.title?.[locale] || ''}
                   </h3>
                   <p className="mt-3 text-sm text-white/60">
-                    {advantage.description[locale]}
+                    {advantage.description?.[locale] || ''}
                   </p>
                 </motion.div>
               )
