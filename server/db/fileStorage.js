@@ -33,7 +33,30 @@ const readJsonFile = (filename, defaultValue = null) => {
     if (!existsSync(filePath)) {
       return defaultValue
     }
-    const content = readFileSync(filePath, 'utf-8')
+    const content = readFileSync(filePath, 'utf-8').trim()
+    
+    // 对于 defaultLocale，特殊处理可能的双重序列化问题
+    if (filename === 'defaultLocale.json') {
+      try {
+        const parsed = JSON.parse(content)
+        // 如果解析后仍然是字符串（可能是双重序列化），再次解析
+        if (typeof parsed === 'string' && parsed.startsWith('"') && parsed.endsWith('"')) {
+          try {
+            return JSON.parse(parsed)
+          } catch {
+            // 如果再次解析失败，返回解析后的值
+            return parsed
+          }
+        }
+        return parsed
+      } catch (error) {
+        // 如果解析失败，尝试直接返回内容（去除引号）
+        console.warn(`Error parsing defaultLocale.json, trying to extract string value:`, error)
+        const trimmed = content.replace(/^["']|["']$/g, '')
+        return trimmed || defaultValue
+      }
+    }
+    
     return JSON.parse(content)
   } catch (error) {
     console.error(`Error reading file ${filename}:`, error)
@@ -53,7 +76,24 @@ const writeJsonFile = (filename, data) => {
       mkdirSync(dirPath, { recursive: true })
     }
     
-    writeFileSync(filePath, JSON.stringify(data, null, 2), 'utf-8')
+    // 对于 defaultLocale，如果值是字符串，直接写入字符串值（不带 JSON.stringify）
+    // 因为 defaultLocale.json 应该只包含字符串值，而不是 JSON 对象
+    if (filename === 'defaultLocale.json' && typeof data === 'string') {
+      // 如果字符串已经是 JSON 字符串（带引号），先解析再写入
+      let value = data
+      try {
+        // 检查是否是双重序列化的字符串
+        const parsed = JSON.parse(data)
+        if (typeof parsed === 'string') {
+          value = parsed
+        }
+      } catch {
+        // 不是 JSON 字符串，直接使用原值
+      }
+      writeFileSync(filePath, JSON.stringify(value), 'utf-8')
+    } else {
+      writeFileSync(filePath, JSON.stringify(data, null, 2), 'utf-8')
+    }
     return true
   } catch (error) {
     console.error(`Error writing file ${filename}:`, error)

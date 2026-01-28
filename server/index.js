@@ -363,6 +363,19 @@ app.patch(`${API_PREFIX}/site-data/:section`, async (req, res) => {
         const originalData = data
         data = String(data).trim()
         console.log(`[defaultLocale] Converted from ${typeof originalData} to string:`, data)
+      } else {
+        // 如果已经是字符串，检查是否是双重序列化的 JSON 字符串
+        try {
+          const parsed = JSON.parse(data)
+          if (typeof parsed === 'string') {
+            console.log(`[defaultLocale] Detected double-serialized JSON string, extracting value`)
+            data = parsed
+          }
+        } catch {
+          // 不是 JSON 字符串，直接使用
+        }
+        // 去除可能的引号
+        data = data.replace(/^["']|["']$/g, '').trim()
       }
       
       // 验证是否是有效的 locale
@@ -376,7 +389,7 @@ app.patch(`${API_PREFIX}/site-data/:section`, async (req, res) => {
         console.warn(`[defaultLocale] Warning: locale value "${data}" is not 'en' or 'zh', but proceeding anyway`)
       }
       
-      console.log(`[defaultLocale] Final value to save: "${data}"`)
+      console.log(`[defaultLocale] Final value to save: "${data}" (type: ${typeof data})`)
     } else {
       // 其他 section 的验证
       if (data === undefined) {

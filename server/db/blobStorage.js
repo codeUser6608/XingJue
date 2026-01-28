@@ -45,7 +45,30 @@ const readJsonBlob = async (filename, defaultValue = null) => {
     if (!response.ok) {
       return defaultValue
     }
-    const text = await response.text()
+    const text = await response.text().trim()
+    
+    // 对于 defaultLocale，特殊处理可能的双重序列化问题
+    if (filename === 'defaultLocale.json') {
+      try {
+        const parsed = JSON.parse(text)
+        // 如果解析后仍然是字符串（可能是双重序列化），再次解析
+        if (typeof parsed === 'string' && parsed.startsWith('"') && parsed.endsWith('"')) {
+          try {
+            return JSON.parse(parsed)
+          } catch {
+            // 如果再次解析失败，返回解析后的值
+            return parsed
+          }
+        }
+        return parsed
+      } catch (error) {
+        // 如果解析失败，尝试直接返回内容（去除引号）
+        console.warn(`Error parsing defaultLocale blob, trying to extract string value:`, error)
+        const trimmed = text.replace(/^["']|["']$/g, '')
+        return trimmed || defaultValue
+      }
+    }
+    
     return JSON.parse(text)
   } catch (error) {
     console.error(`Error reading blob ${filename}:`, error)
@@ -61,7 +84,27 @@ const writeJsonBlob = async (filename, data) => {
 
   try {
     const blobPath = getBlobPath(filename)
-    const content = JSON.stringify(data, null, 2)
+    
+    // 对于 defaultLocale，如果值是字符串，直接写入字符串值（不带 JSON.stringify）
+    // 因为 defaultLocale.json 应该只包含字符串值，而不是 JSON 对象
+    let content
+    if (filename === 'defaultLocale.json' && typeof data === 'string') {
+      // 如果字符串已经是 JSON 字符串（带引号），先解析再写入
+      let value = data
+      try {
+        // 检查是否是双重序列化的字符串
+        const parsed = JSON.parse(data)
+        if (typeof parsed === 'string') {
+          value = parsed
+        }
+      } catch {
+        // 不是 JSON 字符串，直接使用原值
+      }
+      content = JSON.stringify(value)
+    } else {
+      content = JSON.stringify(data, null, 2)
+    }
+    
     await put(blobPath, content, {
       access: 'public',
       addRandomSuffix: false
