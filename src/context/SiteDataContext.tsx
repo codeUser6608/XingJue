@@ -299,13 +299,50 @@ export const SiteDataProvider = ({ children }: { children: ReactNode }) => {
   const importSiteData = async (data: SiteData) => {
     try {
       // 先保存到服务器
+      // 如果遇到 413 错误，尝试使用部分更新
       try {
         await api.updateSiteData(data)
         console.log('✅ Data successfully saved to server')
       } catch (serverError) {
-        console.error('Failed to import to server:', serverError)
-        // 如果服务器保存失败，抛出错误让用户知道
-        throw new Error(`Failed to save to server: ${serverError instanceof Error ? serverError.message : 'Unknown error'}`)
+        // 检查是否是 413 错误（内容太大）
+        const errorMessage = serverError instanceof Error ? serverError.message : 'Unknown error'
+        if (errorMessage.includes('413') || errorMessage.includes('Content Too Large')) {
+          console.warn('Data too large for single request, using partial updates...')
+          // 使用部分更新 API
+          try {
+            // 分别更新各个部分
+            await Promise.all([
+              api.updateSiteSection('locales', data.locales),
+              api.updateSiteSection('defaultLocale', data.defaultLocale),
+              api.updateSiteSection('settings', data.settings),
+              api.updateSiteSection('hero', data.hero),
+              api.updateSiteSection('advantages', data.advantages),
+              api.updateSiteSection('partners', data.partners),
+              api.updateSiteSection('tradeRegions', data.tradeRegions),
+              api.updateSiteSection('categories', data.categories),
+              api.updateSiteSection('featuredProductIds', data.featuredProductIds),
+              api.updateSiteSection('about', data.about),
+              api.updateSiteSection('contact', data.contact),
+              api.updateSiteSection('seo', data.seo)
+            ])
+            
+            // 分批更新产品（避免一次性更新太多）
+            const batchSize = 10
+            for (let i = 0; i < data.products.length; i += batchSize) {
+              const batch = data.products.slice(i, i + batchSize)
+              await Promise.all(batch.map(product => api.upsertProduct(product)))
+            }
+            
+            console.log('✅ Data successfully saved to server using partial updates')
+          } catch (partialError) {
+            console.error('Failed to import using partial updates:', partialError)
+            throw new Error(`Failed to save to server (data too large): ${partialError instanceof Error ? partialError.message : 'Unknown error'}`)
+          }
+        } else {
+          // 其他错误
+          console.error('Failed to import to server:', serverError)
+          throw new Error(`Failed to save to server: ${errorMessage}`)
+        }
       }
       
       // 服务器保存成功后，更新本地状态和 localStorage

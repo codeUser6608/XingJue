@@ -87,19 +87,34 @@ app.use(cors({
   origin: (origin, callback) => {
     // 允许无 origin 的请求（如 Postman、curl）
     if (!origin) return callback(null, true)
-    // 检查是否在允许列表中
-    if (allowedOrigins.some(allowed => origin.startsWith(allowed))) {
+    
+    // 检查是否在允许列表中（支持子路径匹配）
+    const isAllowed = allowedOrigins.some(allowed => {
+      if (origin.startsWith(allowed)) {
+        return true
+      }
+      // 也允许 GitHub Pages 的所有子路径
+      if (allowed.includes('codeuser6608.github.io') && origin.includes('codeuser6608.github.io')) {
+        return true
+      }
+      return false
+    })
+    
+    if (isAllowed) {
       callback(null, true)
     } else {
       // 开发环境允许所有来源
       if (process.env.NODE_ENV !== 'production') {
         callback(null, true)
       } else {
+        console.warn(`CORS blocked origin: ${origin}`)
         callback(new Error('Not allowed by CORS'))
       }
     }
   },
-  credentials: true
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization']
 }))
 // 增加请求体大小限制到 50mb（用于整体更新，但推荐使用部分更新）
 app.use(express.json({ limit: '50mb' }))
