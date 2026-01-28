@@ -157,13 +157,17 @@ app.put(`${API_PREFIX}/site-data`, async (req, res) => {
     
     // 更新产品
     if (data.products && Array.isArray(data.products)) {
+      const productIds = []
       for (const product of data.products) {
-        updatePromises.push(upsertProduct(product))
+        await upsertProduct(product)
+        productIds.push(product.id)
       }
+      // upsertProduct 已经会自动更新产品 ID 列表，所以这里不需要额外操作
     }
     
     await Promise.all(updatePromises)
     
+    console.log('✅ Site data updated successfully')
     res.json({ success: true, message: 'Site data updated successfully' })
   } catch (error) {
     console.error('Error updating site data:', error)

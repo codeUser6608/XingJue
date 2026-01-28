@@ -298,15 +298,22 @@ export const SiteDataProvider = ({ children }: { children: ReactNode }) => {
 
   const importSiteData = async (data: SiteData) => {
     try {
-      setSiteDataState(data)
-      // 先保存到 localStorage
-      saveDataToStorage(data)
-      // 尝试保存到服务器
+      // 先保存到服务器
       try {
         await api.updateSiteData(data)
+        console.log('✅ Data successfully saved to server')
       } catch (serverError) {
-        console.warn('Failed to import to server, saved to localStorage:', serverError)
+        console.error('Failed to import to server:', serverError)
+        // 如果服务器保存失败，抛出错误让用户知道
+        throw new Error(`Failed to save to server: ${serverError instanceof Error ? serverError.message : 'Unknown error'}`)
       }
+      
+      // 服务器保存成功后，更新本地状态和 localStorage
+      setSiteDataState(data)
+      saveDataToStorage(data)
+      
+      // 刷新数据以确保同步
+      await refreshData()
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : 'Failed to import site data'
       setError(errorMessage)
