@@ -95,12 +95,12 @@ export const SiteDataProvider = ({ children }: { children: ReactNode }) => {
       if (storedData) {
         setSiteDataState(storedData)
         setInquiries(storedInquiries)
-        setError('Using cached data (server unavailable)')
+        setError(`Using cached data (server unavailable: ${errorMessage})`)
       } else {
         // 如果 localStorage 也没有，使用默认数据
         setSiteDataState(getDefaultData())
         setInquiries([])
-        setError('Using default data (server and cache unavailable)')
+        setError(`Using default data (server and cache unavailable: ${errorMessage})`)
       }
     } finally {
       setIsLoading(false)
