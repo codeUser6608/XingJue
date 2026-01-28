@@ -83,50 +83,13 @@ const allowedOrigins = [
   process.env.FRONTEND_URL // 环境变量配置的前端 URL
 ].filter(Boolean) // 移除 undefined 值
 
-// 更宽松的 CORS 配置
-app.use(cors({
-  origin: (origin, callback) => {
-    // 允许无 origin 的请求（如 Postman、curl）
-    if (!origin) return callback(null, true)
-    
-    // 检查是否在允许列表中（支持子路径匹配）
-    const isAllowed = allowedOrigins.some(allowed => {
-      if (origin.startsWith(allowed)) {
-        return true
-      }
-      // 也允许 GitHub Pages 的所有子路径
-      if (allowed.includes('codeuser6608.github.io') && origin.includes('codeuser6608.github.io')) {
-        return true
-      }
-      return false
-    })
-    
-    if (isAllowed) {
-      callback(null, true)
-    } else {
-      // 开发环境允许所有来源
-      if (process.env.NODE_ENV !== 'production') {
-        callback(null, true)
-      } else {
-        // 生产环境：记录被阻止的来源，但仍然允许（临时解决方案）
-        console.warn(`CORS: Unlisted origin ${origin}, but allowing for now`)
-        callback(null, true)
-        // 如果需要严格限制，取消上面的注释，启用下面的代码：
-        // callback(new Error('Not allowed by CORS'))
-      }
-    }
-  },
-  credentials: true,
-  methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With'],
-  exposedHeaders: ['Content-Length', 'Content-Type'],
-  maxAge: 86400 // 24 小时
-}))
-
-// 处理 OPTIONS 预检请求（确保在所有路由之前）
+// 处理 OPTIONS 预检请求（必须在 CORS 中间件之前）
 app.options('*', (req, res) => {
   const origin = req.headers.origin
-  if (origin && (allowedOrigins.some(allowed => origin.includes(allowed)) || process.env.NODE_ENV !== 'production')) {
+  console.log(`OPTIONS request from origin: ${origin}`)
+  
+  // 允许所有来源（临时解决方案，确保 CORS 不会阻止请求）
+  if (origin) {
     res.header('Access-Control-Allow-Origin', origin)
     res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, PATCH, DELETE, OPTIONS')
     res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization, X-Requested-With')
@@ -135,6 +98,15 @@ app.options('*', (req, res) => {
   }
   res.sendStatus(200)
 })
+
+// CORS 配置：允许所有来源（确保不会阻止任何请求）
+app.use(cors({
+  origin: true, // 允许所有来源
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With'],
+  exposedHeaders: ['Content-Length', 'Content-Type']
+}))
 // 增加请求体大小限制到 50mb（用于整体更新，但推荐使用部分更新）
 app.use(express.json({ limit: '50mb' }))
 
@@ -213,8 +185,9 @@ app.put(`${API_PREFIX}/site-data`, async (req, res) => {
 app.patch(`${API_PREFIX}/site-data/:section`, async (req, res) => {
   try {
     const { section } = req.params
-    const data = req.body
+    let data = req.body
     
+    // 验证 section 是否有效
     const validSections = [
       'settings', 'hero', 'advantages', 'partners', 'tradeRegions',
       'categories', 'featuredProductIds', 'about', 'contact', 'seo',
@@ -222,14 +195,36 @@ app.patch(`${API_PREFIX}/site-data/:section`, async (req, res) => {
     ]
     
     if (!validSections.includes(section)) {
-      return res.status(400).json({ error: `Invalid section: ${section}` })
+      console.error(`Invalid section: ${section}, valid sections: ${validSections.join(', ')}`)
+      return res.status(400).json({ error: `Invalid section: ${section}. Valid sections: ${validSections.join(', ')}` })
     }
     
+    // 验证数据是否存在
+    if (data === undefined) {
+      console.error(`No data provided for section: ${section}`)
+      return res.status(400).json({ error: `No data provided for section: ${section}` })
+    }
+    
+    // 对于 defaultLocale，确保它是字符串
+    if (section === 'defaultLocale' && typeof data !== 'string') {
+      // 如果传入的是对象，尝试提取值
+      if (typeof data === 'object' && data !== null) {
+        data = Object.values(data)[0] || data
+      }
+      // 如果仍然是对象，转换为字符串
+      if (typeof data !== 'string') {
+        data = String(data)
+      }
+    }
+    
+    console.log(`Updating section: ${section}, data type: ${typeof data}, isArray: ${Array.isArray(data)}, value: ${typeof data === 'string' ? data : JSON.stringify(data).substring(0, 100)}`)
+    
     await updateSiteSection(section, data)
+    console.log(`✅ Section ${section} updated successfully`)
     res.json({ success: true, message: `${section} updated successfully` })
   } catch (error) {
     console.error(`Error updating site section ${req.params.section}:`, error)
-    res.status(500).json({ error: error.message })
+    res.status(500).json({ error: error.message || 'Internal server error' })
   }
 })
 

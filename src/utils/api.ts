@@ -95,17 +95,26 @@ export const api = {
     if (!url) {
       throw new Error('API_BASE_URL not configured')
     }
-    const response = await fetch(url, {
-      method: 'PATCH',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(data),
-    })
-    if (!response.ok) {
-      throw new Error(`Failed to update ${section}: ${response.statusText}`)
+    try {
+      const response = await fetch(url, {
+        method: 'PATCH',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(data),
+      })
+      if (!response.ok) {
+        const errorText = await response.text().catch(() => response.statusText)
+        throw new Error(`Failed to update ${section}: ${response.status} ${errorText}`)
+      }
+      return response.json()
+    } catch (error) {
+      // 如果是网络错误，提供更详细的错误信息
+      if (error instanceof TypeError && error.message.includes('Failed to fetch')) {
+        throw new Error(`Network error when updating ${section}: ${error.message}. This might be a CORS issue.`)
+      }
+      throw error
     }
-    return response.json()
   },
 
   // 产品 CRUD
