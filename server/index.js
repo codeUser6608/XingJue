@@ -3,7 +3,22 @@ import cors from 'cors'
 import { readFileSync, existsSync } from 'fs'
 import { fileURLToPath } from 'url'
 import { dirname, join } from 'path'
-import {
+// 根据环境选择存储方式
+// Vercel 环境：使用 Blob Storage（如果配置了 BLOB_READ_WRITE_TOKEN）
+// 本地开发：使用文件系统
+const isVercel = process.env.VERCEL === '1'
+const useBlobStorage = isVercel && !!process.env.BLOB_READ_WRITE_TOKEN
+
+let storageModule
+if (useBlobStorage) {
+  storageModule = await import('./db/blobStorage.js')
+  console.log('Using Vercel Blob Storage')
+} else {
+  storageModule = await import('./db/fileStorage.js')
+  console.log('Using file system storage')
+}
+
+const {
   getSiteData,
   updateSiteSection,
   getProduct,
@@ -14,14 +29,13 @@ import {
   createInquiry,
   updateInquiry,
   initializeDefaultData
-} from './db/fileStorage.js'
+} = storageModule
 
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = dirname(__filename)
 
 const app = express()
 const PORT = process.env.PORT || 4000
-const isVercel = process.env.VERCEL === '1'
 
 // 初始化默认数据（如果文件不存在）
 const initDefaultDataIfNeeded = async () => {
