@@ -398,65 +398,44 @@ app.patch(`${API_PREFIX}/site-data/:section`, async (req, res) => {
       return res.status(400).json({ error: `Invalid section: ${section}. Valid sections: ${validSections.join(', ')}` })
     }
     
-    // 对于 defaultLocale，特殊处理
+    // 对于 defaultLocale，特殊处理（仅做提取和清洗，不再对纯字符串做 JSON.parse）
     if (section === 'defaultLocale') {
       console.log(`[defaultLocale] Processing defaultLocale update`)
       console.log(`[defaultLocale] Original data:`, data, `Type:`, typeof data)
-      
-      // defaultLocale 应该是字符串，但可能以不同格式传入
+
+      // 必须有值
       if (data === undefined || data === null) {
-        console.error(`[defaultLocale] No data provided (undefined or null)`)
+        console.error('[defaultLocale] No data provided (undefined or null)')
         return res.status(400).json({ error: 'No data provided for defaultLocale' })
       }
-      
-      // 如果是对象，尝试提取值
+
+      // 如果是对象或数组，尽量从中提取一个候选值
       if (typeof data === 'object' && data !== null) {
-        console.log(`[defaultLocale] Data is object, extracting value...`)
-        // 如果是数组，取第一个元素
+        console.log('[defaultLocale] Data is object, extracting value...')
         if (Array.isArray(data)) {
-          data = data[0] || 'en'
-          console.log(`[defaultLocale] Extracted from array:`, data)
+          data = data[0] ?? 'en'
+          console.log('[defaultLocale] Extracted from array:', data)
         } else {
-          // 如果是对象，尝试提取第一个值或 'value' 属性
           const keys = Object.keys(data)
-          console.log(`[defaultLocale] Object keys:`, keys)
-          data = data.value || data.defaultLocale || Object.values(data)[0] || 'en'
-          console.log(`[defaultLocale] Extracted from object:`, data)
+          console.log('[defaultLocale] Object keys:', keys)
+          data = data.defaultLocale ?? data.value ?? Object.values(data)[0] ?? 'en'
+          console.log('[defaultLocale] Extracted from object:', data)
         }
       }
-      
-      // 确保最终是字符串
-      if (typeof data !== 'string') {
-        const originalData = data
-        data = String(data).trim()
-        console.log(`[defaultLocale] Converted from ${typeof originalData} to string:`, data)
-      } else {
-        // 如果已经是字符串，检查是否是双重序列化的 JSON 字符串
-        try {
-          const parsed = JSON.parse(data)
-          if (typeof parsed === 'string') {
-            console.log(`[defaultLocale] Detected double-serialized JSON string, extracting value`)
-            data = parsed
-          }
-        } catch {
-          // 不是 JSON 字符串，直接使用
-        }
-        // 去除可能的引号
-        data = data.replace(/^["']|["']$/g, '').trim()
-      }
-      
-      // 验证是否是有效的 locale
-      if (!data || data.length === 0) {
-        console.error(`[defaultLocale] Invalid value: empty string after processing`)
-        return res.status(400).json({ error: 'defaultLocale cannot be empty' })
-      }
-      
-      // 验证 locale 值是否有效（只允许 'en' 或 'zh'）
+
+      // 统一转成字符串
+      data = String(data).trim()
+
+      // 去掉外层引号（例如 "\"en\"" -> en）
+      data = data.replace(/^["']|["']$/g, '').trim()
+
+      // 只允许 'en' 或 'zh'，否则回退为 'en'
       if (data !== 'en' && data !== 'zh') {
-        console.warn(`[defaultLocale] Warning: locale value "${data}" is not 'en' or 'zh', but proceeding anyway`)
+        console.warn(`[defaultLocale] Invalid value "${data}", fallback to 'en'`)
+        data = 'en'
       }
-      
-      console.log(`[defaultLocale] Final value to save: "${data}" (type: ${typeof data})`)
+
+      console.log(`[defaultLocale] Final value to save: "${data}"`)
     } else {
       // 其他 section 的验证
       if (data === undefined) {
