@@ -317,21 +317,51 @@ export const SiteDataProvider = ({ children }: { children: ReactNode }) => {
             console.warn('File upload failed, falling back to partial updates:', uploadError)
             // 回退到部分更新方式
             try {
-              // 分别更新各个部分
-              await Promise.all([
-                api.updateSiteSection('locales', data.locales),
-                api.updateSiteSection('defaultLocale', data.defaultLocale),
-                api.updateSiteSection('settings', data.settings),
-                api.updateSiteSection('hero', data.hero),
-                api.updateSiteSection('advantages', data.advantages),
-                api.updateSiteSection('partners', data.partners),
-                api.updateSiteSection('tradeRegions', data.tradeRegions),
-                api.updateSiteSection('categories', data.categories),
-                api.updateSiteSection('featuredProductIds', data.featuredProductIds),
-                api.updateSiteSection('about', data.about),
-                api.updateSiteSection('contact', data.contact),
-                api.updateSiteSection('seo', data.seo)
-              ])
+              // 分别更新各个部分（只更新存在的字段，避免发送 undefined）
+              const updatePromises = []
+              
+              if (data.locales !== undefined) {
+                updatePromises.push(api.updateSiteSection('locales', data.locales))
+              }
+              if (data.defaultLocale !== undefined && data.defaultLocale !== null) {
+                // 确保 defaultLocale 是字符串
+                const defaultLocaleValue = typeof data.defaultLocale === 'string' 
+                  ? data.defaultLocale 
+                  : String(data.defaultLocale)
+                updatePromises.push(api.updateSiteSection('defaultLocale', defaultLocaleValue))
+              }
+              if (data.settings) {
+                updatePromises.push(api.updateSiteSection('settings', data.settings))
+              }
+              if (data.hero) {
+                updatePromises.push(api.updateSiteSection('hero', data.hero))
+              }
+              if (data.advantages) {
+                updatePromises.push(api.updateSiteSection('advantages', data.advantages))
+              }
+              if (data.partners) {
+                updatePromises.push(api.updateSiteSection('partners', data.partners))
+              }
+              if (data.tradeRegions) {
+                updatePromises.push(api.updateSiteSection('tradeRegions', data.tradeRegions))
+              }
+              if (data.categories) {
+                updatePromises.push(api.updateSiteSection('categories', data.categories))
+              }
+              if (data.featuredProductIds) {
+                updatePromises.push(api.updateSiteSection('featuredProductIds', data.featuredProductIds))
+              }
+              if (data.about) {
+                updatePromises.push(api.updateSiteSection('about', data.about))
+              }
+              if (data.contact) {
+                updatePromises.push(api.updateSiteSection('contact', data.contact))
+              }
+              if (data.seo) {
+                updatePromises.push(api.updateSiteSection('seo', data.seo))
+              }
+              
+              await Promise.all(updatePromises)
               
               // 分批更新产品（避免一次性更新太多）
               const batchSize = 10
@@ -374,21 +404,51 @@ export const SiteDataProvider = ({ children }: { children: ReactNode }) => {
             console.warn('Data too large for single request, using partial updates...')
             // 使用部分更新 API
             try {
-              // 分别更新各个部分
-              await Promise.all([
-                api.updateSiteSection('locales', data.locales),
-                api.updateSiteSection('defaultLocale', data.defaultLocale),
-                api.updateSiteSection('settings', data.settings),
-                api.updateSiteSection('hero', data.hero),
-                api.updateSiteSection('advantages', data.advantages),
-                api.updateSiteSection('partners', data.partners),
-                api.updateSiteSection('tradeRegions', data.tradeRegions),
-                api.updateSiteSection('categories', data.categories),
-                api.updateSiteSection('featuredProductIds', data.featuredProductIds),
-                api.updateSiteSection('about', data.about),
-                api.updateSiteSection('contact', data.contact),
-                api.updateSiteSection('seo', data.seo)
-              ])
+              // 分别更新各个部分（只更新存在的字段，避免发送 undefined）
+              const updatePromises2 = []
+              
+              if (data.locales !== undefined) {
+                updatePromises2.push(api.updateSiteSection('locales', data.locales))
+              }
+              if (data.defaultLocale !== undefined && data.defaultLocale !== null) {
+                // 确保 defaultLocale 是字符串
+                const defaultLocaleValue = typeof data.defaultLocale === 'string' 
+                  ? data.defaultLocale 
+                  : String(data.defaultLocale)
+                updatePromises2.push(api.updateSiteSection('defaultLocale', defaultLocaleValue))
+              }
+              if (data.settings) {
+                updatePromises2.push(api.updateSiteSection('settings', data.settings))
+              }
+              if (data.hero) {
+                updatePromises2.push(api.updateSiteSection('hero', data.hero))
+              }
+              if (data.advantages) {
+                updatePromises2.push(api.updateSiteSection('advantages', data.advantages))
+              }
+              if (data.partners) {
+                updatePromises2.push(api.updateSiteSection('partners', data.partners))
+              }
+              if (data.tradeRegions) {
+                updatePromises2.push(api.updateSiteSection('tradeRegions', data.tradeRegions))
+              }
+              if (data.categories) {
+                updatePromises2.push(api.updateSiteSection('categories', data.categories))
+              }
+              if (data.featuredProductIds) {
+                updatePromises2.push(api.updateSiteSection('featuredProductIds', data.featuredProductIds))
+              }
+              if (data.about) {
+                updatePromises2.push(api.updateSiteSection('about', data.about))
+              }
+              if (data.contact) {
+                updatePromises2.push(api.updateSiteSection('contact', data.contact))
+              }
+              if (data.seo) {
+                updatePromises2.push(api.updateSiteSection('seo', data.seo))
+              }
+              
+              await Promise.all(updatePromises2)
               
               // 分批更新产品（避免一次性更新太多）
               const batchSize = 10

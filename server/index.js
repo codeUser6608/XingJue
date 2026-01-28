@@ -121,6 +121,18 @@ app.use((req, res, next) => {
 // 增加请求体大小限制到 50mb（用于整体更新，但推荐使用部分更新）
 app.use(express.json({ limit: '50mb' }))
 
+// 请求日志中间件（用于调试）
+app.use((req, res, next) => {
+  if (req.path.includes('site-data')) {
+    console.log(`[${new Date().toISOString()}] ${req.method} ${req.path}`)
+    console.log('Headers:', JSON.stringify(req.headers, null, 2))
+    if (req.body && Object.keys(req.body).length > 0) {
+      console.log('Body:', JSON.stringify(req.body, null, 2).substring(0, 500))
+    }
+  }
+  next()
+})
+
 // 配置 multer 用于文件上传（内存存储，最大 4MB，因为 Vercel 限制约 4.5MB）
 const upload = multer({
   storage: multer.memoryStorage(),
@@ -294,10 +306,18 @@ app.patch(`${API_PREFIX}/site-data/:section`, async (req, res) => {
     res.header('Access-Control-Allow-Origin', origin)
     res.header('Access-Control-Allow-Credentials', 'true')
   }
+  // 确保响应是 JSON 格式
+  res.setHeader('Content-Type', 'application/json')
 
   try {
     const { section } = req.params
     let data = req.body
+    
+    // 详细日志
+    console.log(`[PATCH /site-data/${section}] Received request`)
+    console.log(`Section: ${section}`)
+    console.log(`Data type: ${typeof data}, isArray: ${Array.isArray(data)}`)
+    console.log(`Data value:`, data)
     
     // 验证 section 是否有效
     const validSections = [
@@ -313,35 +333,50 @@ app.patch(`${API_PREFIX}/site-data/:section`, async (req, res) => {
     
     // 对于 defaultLocale，特殊处理
     if (section === 'defaultLocale') {
+      console.log(`[defaultLocale] Processing defaultLocale update`)
+      console.log(`[defaultLocale] Original data:`, data, `Type:`, typeof data)
+      
       // defaultLocale 应该是字符串，但可能以不同格式传入
       if (data === undefined || data === null) {
-        console.error(`No data provided for defaultLocale`)
+        console.error(`[defaultLocale] No data provided (undefined or null)`)
         return res.status(400).json({ error: 'No data provided for defaultLocale' })
       }
       
       // 如果是对象，尝试提取值
       if (typeof data === 'object' && data !== null) {
+        console.log(`[defaultLocale] Data is object, extracting value...`)
         // 如果是数组，取第一个元素
         if (Array.isArray(data)) {
           data = data[0] || 'en'
+          console.log(`[defaultLocale] Extracted from array:`, data)
         } else {
           // 如果是对象，尝试提取第一个值或 'value' 属性
-          data = data.value || Object.values(data)[0] || 'en'
+          const keys = Object.keys(data)
+          console.log(`[defaultLocale] Object keys:`, keys)
+          data = data.value || data.defaultLocale || Object.values(data)[0] || 'en'
+          console.log(`[defaultLocale] Extracted from object:`, data)
         }
       }
       
       // 确保最终是字符串
       if (typeof data !== 'string') {
+        const originalData = data
         data = String(data).trim()
+        console.log(`[defaultLocale] Converted from ${typeof originalData} to string:`, data)
       }
       
       // 验证是否是有效的 locale
       if (!data || data.length === 0) {
-        console.error(`Invalid defaultLocale value: empty string`)
+        console.error(`[defaultLocale] Invalid value: empty string after processing`)
         return res.status(400).json({ error: 'defaultLocale cannot be empty' })
       }
       
-      console.log(`Updating defaultLocale to: "${data}"`)
+      // 验证 locale 值是否有效（只允许 'en' 或 'zh'）
+      if (data !== 'en' && data !== 'zh') {
+        console.warn(`[defaultLocale] Warning: locale value "${data}" is not 'en' or 'zh', but proceeding anyway`)
+      }
+      
+      console.log(`[defaultLocale] Final value to save: "${data}"`)
     } else {
       // 其他 section 的验证
       if (data === undefined) {
@@ -476,6 +511,47 @@ if (!isVercel) {
     console.log(`API endpoints available at http://localhost:${PORT}/api`)
   })
 }
+
+// 全局错误处理中间件（必须在所有路由之后）
+app.use((err, req, res, next) => {
+  // 设置 CORS 头
+  const origin = req.headers.origin
+  if (origin) {
+    res.header('Access-Control-Allow-Origin', origin)
+    res.header('Access-Control-Allow-Credentials', 'true')
+  }
+  // 确保响应是 JSON 格式
+  res.setHeader('Content-Type', 'application/json')
+  
+  console.error('Global error handler:', err)
+  
+  // 如果是 multer 错误（文件上传相关）
+  if (err.name === 'MulterError') {
+    return res.status(400).json({ error: `File upload error: ${err.message}` })
+  }
+  
+  // 其他错误
+  const statusCode = err.statusCode || err.status || 500
+  res.status(statusCode).json({ 
+    error: err.message || 'Internal server error',
+    ...(process.env.NODE_ENV === 'development' && { stack: err.stack })
+  })
+})
+
+// 404 处理（必须在所有路由之后）
+app.use((req, res) => {
+  // 设置 CORS 头
+  const origin = req.headers.origin
+  if (origin) {
+    res.header('Access-Control-Allow-Origin', origin)
+    res.header('Access-Control-Allow-Credentials', 'true')
+  }
+  // 确保响应是 JSON 格式
+  res.setHeader('Content-Type', 'application/json')
+  
+  console.error(`404 - Route not found: ${req.method} ${req.path}`)
+  res.status(404).json({ error: `Route not found: ${req.method} ${req.path}` })
+})
 
 // 导出 app 供 Vercel Serverless Functions 使用
 export default app
