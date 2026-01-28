@@ -390,9 +390,14 @@ export const updateInquiry = async (id, updates) => {
 // 初始化默认数据（从模板文件）
 export const initializeDefaultData = async (defaultData) => {
   try {
-    // 检查是否已初始化
+    // 检查是否已初始化（检查是否有实际内容，而不是只有默认值）
     const existing = readJsonFile('settings.json', null)
-    if (existing && Object.keys(existing).length > 0) {
+    const hasRealData = existing && 
+      existing.siteName && 
+      existing.siteName.en && 
+      existing.siteName.en.trim() !== ''
+    
+    if (hasRealData) {
       console.log('Data already initialized, skipping...')
       return
     }

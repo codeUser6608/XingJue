@@ -70,6 +70,15 @@ export const SiteDataProvider = ({ children }: { children: ReactNode }) => {
   const [isLoading, setIsLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
 
+  // 检查数据是否有实际内容（不是只有默认的空值）
+  const hasRealData = (data: SiteData): boolean => {
+    return !!(
+      data?.settings?.siteName?.en?.trim() ||
+      data?.hero?.title?.en?.trim() ||
+      (data?.products && data.products.length > 0)
+    )
+  }
+
   // 从服务器加载数据，如果失败则使用 localStorage 后备
   const loadData = async () => {
     setIsLoading(true)
@@ -79,11 +88,34 @@ export const SiteDataProvider = ({ children }: { children: ReactNode }) => {
         api.getSiteData(),
         api.getInquiries()
       ])
-      setSiteDataState(siteDataResponse)
-      setInquiries(inquiriesResponse)
-      // 同步到 localStorage 作为后备
-      saveDataToStorage(siteDataResponse)
-      saveInquiriesToStorage(inquiriesResponse)
+      
+      // 检查返回的数据是否有实际内容
+      if (hasRealData(siteDataResponse)) {
+        setSiteDataState(siteDataResponse)
+        setInquiries(inquiriesResponse)
+        // 同步到 localStorage 作为后备
+        saveDataToStorage(siteDataResponse)
+        saveInquiriesToStorage(inquiriesResponse)
+      } else {
+        // 如果后端返回的是空数据，尝试使用 localStorage 或默认数据
+        console.warn('Server returned empty data, trying fallback...')
+        const storedData = getStoredData()
+        const storedInquiries = getStoredInquiries()
+        
+        if (storedData && hasRealData(storedData)) {
+          setSiteDataState(storedData)
+          setInquiries(storedInquiries)
+          setError('Using cached data (server returned empty data)')
+        } else {
+          // 使用默认数据
+          const defaultData = getDefaultData()
+          setSiteDataState(defaultData)
+          setInquiries([])
+          // 保存默认数据到 localStorage
+          saveDataToStorage(defaultData)
+          setError('Using default data (server returned empty data)')
+        }
+      }
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : 'Failed to load data'
       console.warn('Failed to load data from server, using fallback:', err)
@@ -92,14 +124,17 @@ export const SiteDataProvider = ({ children }: { children: ReactNode }) => {
       const storedData = getStoredData()
       const storedInquiries = getStoredInquiries()
       
-      if (storedData) {
+      if (storedData && hasRealData(storedData)) {
         setSiteDataState(storedData)
         setInquiries(storedInquiries)
         setError(`Using cached data (server unavailable: ${errorMessage})`)
       } else {
         // 如果 localStorage 也没有，使用默认数据
-        setSiteDataState(getDefaultData())
+        const defaultData = getDefaultData()
+        setSiteDataState(defaultData)
         setInquiries([])
+        // 保存默认数据到 localStorage
+        saveDataToStorage(defaultData)
         setError(`Using default data (server and cache unavailable: ${errorMessage})`)
       }
     } finally {

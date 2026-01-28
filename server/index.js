@@ -26,9 +26,15 @@ const isVercel = process.env.VERCEL === '1'
 // 初始化默认数据（如果文件不存在）
 const initDefaultDataIfNeeded = async () => {
   try {
-    // 检查是否已初始化
+    // 检查是否已初始化（检查 settings 是否有实际内容，而不是只有默认值）
     const siteData = await getSiteData()
-    if (siteData && siteData.settings && Object.keys(siteData.settings).length > 0) {
+    const hasRealData = siteData && 
+      siteData.settings && 
+      siteData.settings.siteName && 
+      siteData.settings.siteName.en && 
+      siteData.settings.siteName.en.trim() !== ''
+    
+    if (hasRealData) {
       console.log('Data already initialized in file storage')
       return
     }
@@ -39,7 +45,9 @@ const initDefaultDataIfNeeded = async () => {
       if (existsSync(templatePath)) {
         const defaultData = JSON.parse(readFileSync(templatePath, 'utf-8'))
         await initializeDefaultData(defaultData)
-        console.log('Initialized default data from template')
+        console.log('✅ Initialized default data from template')
+      } else {
+        console.warn('Template file not found:', templatePath)
       }
     } catch (error) {
       console.warn('Could not read template file:', error.message)
@@ -50,9 +58,8 @@ const initDefaultDataIfNeeded = async () => {
 }
 
 // 异步初始化（不阻塞服务器启动）
-if (!isVercel) {
-  initDefaultDataIfNeeded().catch(console.error)
-}
+// 在 Vercel 环境下，每次函数调用时都会检查并初始化（如果需要）
+initDefaultDataIfNeeded().catch(console.error)
 
 // 中间件
 // CORS 配置：允许前端域名访问
@@ -101,6 +108,10 @@ app.get(`${API_PREFIX}/health`, (req, res) => {
 // GET /site-data - 获取站点数据
 app.get(`${API_PREFIX}/site-data`, async (req, res) => {
   try {
+    // 在 Vercel 环境下，每次请求时检查是否需要初始化
+    if (isVercel) {
+      await initDefaultDataIfNeeded()
+    }
     const data = await getSiteData()
     res.json(data)
   } catch (error) {
