@@ -13,10 +13,15 @@ const useBlobStorage = isVercel && !!process.env.BLOB_READ_WRITE_TOKEN
 let storageModule
 if (useBlobStorage) {
   storageModule = await import('./db/blobStorage.js')
-  console.log('Using Vercel Blob Storage')
+  console.log('✅ Using Vercel Blob Storage (persistent)')
 } else {
+  if (isVercel) {
+    console.warn('⚠️ WARNING: Running on Vercel without BLOB_READ_WRITE_TOKEN!')
+    console.warn('⚠️ File system storage (/tmp) is NOT persistent across serverless function instances.')
+    console.warn('⚠️ Data may be lost between requests. Please configure BLOB_READ_WRITE_TOKEN in Vercel.')
+  }
   storageModule = await import('./db/fileStorage.js')
-  console.log('Using file system storage')
+  console.log(`Using file system storage${isVercel ? ' (⚠️ NOT PERSISTENT on Vercel!)' : ''}`)
 }
 
 const {
@@ -327,7 +332,21 @@ app.post(`${API_PREFIX}/site-data/upload`, upload.single('file'), async (req, re
     
     await Promise.all(updatePromises)
     
-    console.log('✅ Site data updated successfully via file upload')
+    // 验证数据是否成功保存（在 Vercel 环境下特别重要）
+    console.log('✅ Site data updated successfully via file upload, verifying...')
+    try {
+      const verifyData = await getSiteData()
+      const hasProducts = verifyData?.products && verifyData.products.length > 0
+      const hasSettings = verifyData?.settings?.siteName?.en?.trim()
+      console.log(`✅ Verification: products=${hasProducts ? verifyData.products.length : 0}, hasSettings=${!!hasSettings}`)
+      
+      if (isVercel && !useBlobStorage) {
+        console.warn('⚠️ WARNING: Data saved to /tmp but may not persist across serverless instances!')
+      }
+    } catch (verifyError) {
+      console.error('⚠️ Warning: Could not verify saved data:', verifyError.message)
+    }
+    
     res.json({ success: true, message: '站点数据已成功更新' })
   } catch (error) {
     console.error('Error updating site data from file:', error)

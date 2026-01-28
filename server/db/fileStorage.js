@@ -31,16 +31,18 @@ const readJsonFile = (filename, defaultValue = null) => {
   try {
     const filePath = getFilePath(filename)
     if (!existsSync(filePath)) {
-      console.log(`[readJsonFile] File not found: ${filename}, returning default:`, defaultValue)
+      console.log(`[readJsonFile] File not found: ${filename} at ${filePath}, returning default`)
       return defaultValue
     }
     const content = readFileSync(filePath, 'utf-8').trim()
     
     // 如果文件内容为空，返回默认值
     if (!content || content.length === 0) {
-      console.log(`[readJsonFile] File is empty: ${filename}, returning default:`, defaultValue)
+      console.log(`[readJsonFile] File is empty: ${filename} at ${filePath}, returning default`)
       return defaultValue
     }
+    
+    console.log(`[readJsonFile] Reading ${filename} (${content.length} bytes) from ${filePath}`)
     
     // 对于 defaultLocale，特殊处理可能的双重序列化问题
     if (filename === 'defaultLocale.json') {
@@ -114,6 +116,7 @@ const writeJsonFile = (filename, data) => {
     
     // 对于 defaultLocale，如果值是字符串，直接写入字符串值（不带 JSON.stringify）
     // 因为 defaultLocale.json 应该只包含字符串值，而不是 JSON 对象
+    let contentToWrite
     if (filename === 'defaultLocale.json' && typeof data === 'string') {
       // 如果字符串已经是 JSON 字符串（带引号），先解析再写入
       let value = data
@@ -126,14 +129,39 @@ const writeJsonFile = (filename, data) => {
       } catch {
         // 不是 JSON 字符串，直接使用原值
       }
-      writeFileSync(filePath, JSON.stringify(value), 'utf-8')
+      contentToWrite = JSON.stringify(value)
     } else {
-      writeFileSync(filePath, JSON.stringify(data, null, 2), 'utf-8')
+      contentToWrite = JSON.stringify(data, null, 2)
     }
+    
+    writeFileSync(filePath, contentToWrite, 'utf-8')
+    
+    // 立即验证文件是否写入成功
+    if (existsSync(filePath)) {
+      const verifyContent = readFileSync(filePath, 'utf-8')
+      console.log(`✅ [writeJsonFile] Successfully wrote ${filename} (${verifyContent.length} bytes) to ${filePath}`)
+      
+      // 对于非空数据，验证内容是否正确
+      if (verifyContent.trim().length > 0) {
+        try {
+          const parsed = JSON.parse(verifyContent)
+          const dataPreview = typeof parsed === 'object' && parsed !== null 
+            ? JSON.stringify(parsed).substring(0, 100) 
+            : String(parsed).substring(0, 100)
+          console.log(`✅ [writeJsonFile] Verified ${filename} content preview: ${dataPreview}...`)
+        } catch (parseError) {
+          console.warn(`⚠️ [writeJsonFile] Could not parse written file ${filename} for verification:`, parseError.message)
+        }
+      }
+    } else {
+      console.error(`❌ [writeJsonFile] File ${filename} was not created at ${filePath}`)
+      throw new Error(`File was not created: ${filename}`)
+    }
+    
     return true
   } catch (error) {
-    console.error(`Error writing file ${filename}:`, error)
-    throw new Error(`Failed to write ${filename}`)
+    console.error(`❌ [writeJsonFile] Error writing file ${filename}:`, error)
+    throw new Error(`Failed to write ${filename}: ${error.message}`)
   }
 }
 
@@ -283,11 +311,26 @@ export const updateSiteSection = async (section, data) => {
   }
 
   try {
+    console.log(`[updateSiteSection] Updating ${section} (${filename})...`)
+    const dataPreview = typeof data === 'object' && data !== null
+      ? JSON.stringify(data).substring(0, 200)
+      : String(data).substring(0, 200)
+    console.log(`[updateSiteSection] Data preview for ${section}: ${dataPreview}...`)
+    
     writeJsonFile(filename, data)
+    
+    // 立即验证文件是否可读
+    const verifyRead = readJsonFile(filename, null)
+    if (verifyRead === null && data !== null && data !== undefined) {
+      console.warn(`⚠️ [updateSiteSection] Warning: ${section} was written but read back as null`)
+    } else {
+      console.log(`✅ [updateSiteSection] Successfully updated ${section}, verified read back`)
+    }
+    
     return true
   } catch (error) {
-    console.error(`Error updating site section ${section}:`, error)
-    throw new Error(`Failed to update ${section}`)
+    console.error(`❌ [updateSiteSection] Error updating site section ${section}:`, error)
+    throw new Error(`Failed to update ${section}: ${error.message}`)
   }
 }
 
