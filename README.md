@@ -218,9 +218,19 @@ VITE_API_BASE_URL=http://localhost:4000/api
 4. **验证配置**：
    - 部署完成后，打开浏览器开发者工具
    - 检查 Network 标签，确认 API 请求指向正确的后端地址
-   - 如果看到 `localhost:4000`，说明 `VITE_API_BASE_URL` 未正确配置
+   - 打开 Console 标签，查看是否有 API 相关的警告或错误
+   - 如果看到 `localhost:4000` 或请求失败，说明 `VITE_API_BASE_URL` 未正确配置
 
-**注意**：如果不配置 `VITE_API_BASE_URL`，前端会自动使用 localStorage 作为后备，数据仅存储在浏览器本地，不会同步到服务器。
+5. **故障排查**：
+   - 检查 GitHub Actions 构建日志，确认 `VITE_API_BASE_URL` 是否正确显示
+   - 确认 secret 名称完全匹配：`VITE_API_BASE_URL`（区分大小写）
+   - 确认 API URL 格式正确：应该以 `/api` 结尾，例如：`https://your-api.vercel.app/api`
+   - 如果使用相对路径，确保后端部署在同一域名下
+
+**注意**：
+- 如果不配置 `VITE_API_BASE_URL`，前端会自动使用 localStorage 作为后备，数据仅存储在浏览器本地，不会同步到服务器
+- 构建时启动的本地后端服务器（localhost:4000）仅用于构建过程，不会在生产环境中使用
+- 生产环境必须使用实际部署的后端服务器地址
 
 ### 数据存储说明
 

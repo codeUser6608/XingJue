@@ -71,14 +71,22 @@ jobs:
         env:
           # 生产环境必须配置 VITE_API_BASE_URL，否则使用空字符串（会触发后备方案）
           # 如果未配置，构建时会使用 localStorage 作为后备
+          # 注意：这里不使用本地后端，因为生产环境应该使用实际部署的后端服务器
           VITE_API_BASE_URL: ${{ secrets.VITE_API_BASE_URL || '' }}
           VITE_BASE_PATH: ${{ secrets.VITE_BASE_PATH || '/XingJue/' }}
         run: |
+          echo "=========================================="
+          echo "Building frontend with configuration:"
+          echo "VITE_BASE_PATH: $VITE_BASE_PATH"
           if [ -z "$VITE_API_BASE_URL" ]; then
-            echo "⚠️  Warning: VITE_API_BASE_URL not configured. Frontend will use localStorage fallback."
+            echo "⚠️  WARNING: VITE_API_BASE_URL not configured!"
+            echo "   Frontend will use localStorage fallback."
+            echo "   To fix: Add VITE_API_BASE_URL secret in GitHub Settings > Secrets"
+            echo "   Example: https://your-api.vercel.app/api"
           else
-            echo "✅ Using API URL: $VITE_API_BASE_URL"
+            echo "✅ VITE_API_BASE_URL: $VITE_API_BASE_URL"
           fi
+          echo "=========================================="
           npm run build
 
       - name: Stop backend server

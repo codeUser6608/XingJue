@@ -14,6 +14,30 @@ export const Home = () => {
   const { t, i18n } = useTranslation()
   const locale = i18n.language as Locale
 
+  // 所有 Hooks 必须在条件返回之前调用
+  const [activeIndex, setActiveIndex] = useState(0)
+
+  // 计算精选产品（需要处理加载状态）
+  const featuredProducts = isLoading
+    ? []
+    : siteData.products.filter((product) =>
+        siteData.featuredProductIds.includes(product.id)
+      )
+
+  useEffect(() => {
+    if (isLoading || featuredProducts.length === 0) return
+    const timer = setInterval(() => {
+      setActiveIndex((prev) => (prev + 1) % featuredProducts.length)
+    }, 5000)
+    return () => clearInterval(timer)
+  }, [featuredProducts.length, isLoading])
+
+  useEffect(() => {
+    if (!isLoading && activeIndex >= featuredProducts.length) {
+      setActiveIndex(0)
+    }
+  }, [activeIndex, featuredProducts.length, isLoading])
+
   if (isLoading) {
     return (
       <div className="flex items-center justify-center min-h-screen">
@@ -24,25 +48,6 @@ export const Home = () => {
       </div>
     )
   }
-
-  const featuredProducts = siteData.products.filter((product) =>
-    siteData.featuredProductIds.includes(product.id)
-  )
-  const [activeIndex, setActiveIndex] = useState(0)
-
-  useEffect(() => {
-    if (featuredProducts.length === 0) return
-    const timer = setInterval(() => {
-      setActiveIndex((prev) => (prev + 1) % featuredProducts.length)
-    }, 5000)
-    return () => clearInterval(timer)
-  }, [featuredProducts.length])
-
-  useEffect(() => {
-    if (activeIndex >= featuredProducts.length) {
-      setActiveIndex(0)
-    }
-  }, [activeIndex, featuredProducts.length])
 
   const organizationSchema = {
     '@context': 'https://schema.org',

@@ -5,7 +5,12 @@ const getApiBaseUrl = () => {
   // 如果明确设置了环境变量（且不为空字符串），使用它
   const envApiUrl = import.meta.env.VITE_API_BASE_URL
   if (envApiUrl && envApiUrl.trim() !== '') {
-    return envApiUrl.trim()
+    const url = envApiUrl.trim()
+    // 确保 URL 以 /api 结尾（如果没有）
+    if (!url.endsWith('/api')) {
+      return url.endsWith('/') ? `${url}api` : `${url}/api`
+    }
+    return url
   }
   
   // 开发环境
@@ -16,10 +21,18 @@ const getApiBaseUrl = () => {
   // 生产环境：如果未配置 API 地址，返回空字符串
   // 这会触发后备方案（localStorage）
   // 注意：生产环境应该配置 VITE_API_BASE_URL 指向实际的后端服务器
+  if (import.meta.env.PROD) {
+    console.warn('[API] VITE_API_BASE_URL not configured in production. Using localStorage fallback.')
+  }
   return ''
 }
 
 const API_BASE_URL = getApiBaseUrl()
+
+// 开发环境下输出当前使用的 API 地址（便于调试）
+if (import.meta.env.DEV) {
+  console.log('[API] Using API base URL:', API_BASE_URL || '(fallback: localStorage)')
+}
 
 // 构建完整的 API URL
 const buildApiUrl = (endpoint: string): string | null => {

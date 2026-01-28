@@ -13,6 +13,36 @@ export const Products = () => {
   const { t, i18n } = useTranslation()
   const locale = i18n.language as Locale
 
+  // 所有 Hooks 必须在条件返回之前调用
+  const [search, setSearch] = useState('')
+  const [categoryId, setCategoryId] = useState('all')
+  const [subcategoryId, setSubcategoryId] = useState('all')
+  const [stockStatus, setStockStatus] = useState('all')
+  const [sortBy, setSortBy] = useState('latest')
+  const [page, setPage] = useState(1)
+
+  // 计算价格范围（需要处理加载状态）
+  const priceRange = useMemo(() => {
+    if (isLoading || !siteData.products || siteData.products.length === 0) {
+      return { min: 0, max: 1000 }
+    }
+    const prices = siteData.products.map((product) => product.price.amount)
+    return {
+      min: Math.min(...prices),
+      max: Math.max(...prices)
+    }
+  }, [siteData.products, isLoading])
+
+  const [minPrice, setMinPrice] = useState(0)
+  const [maxPrice, setMaxPrice] = useState(1000)
+
+  useEffect(() => {
+    if (!isLoading && siteData.products && siteData.products.length > 0) {
+      setMinPrice(priceRange.min)
+      setMaxPrice(priceRange.max)
+    }
+  }, [priceRange.min, priceRange.max, isLoading, siteData.products])
+
   if (isLoading) {
     return (
       <div className="flex items-center justify-center min-h-screen">
@@ -23,29 +53,6 @@ export const Products = () => {
       </div>
     )
   }
-
-  const [search, setSearch] = useState('')
-  const [categoryId, setCategoryId] = useState('all')
-  const [subcategoryId, setSubcategoryId] = useState('all')
-  const [stockStatus, setStockStatus] = useState('all')
-  const [sortBy, setSortBy] = useState('latest')
-  const [page, setPage] = useState(1)
-
-  const priceRange = useMemo(() => {
-    const prices = siteData.products.map((product) => product.price.amount)
-    return {
-      min: Math.min(...prices),
-      max: Math.max(...prices)
-    }
-  }, [siteData.products])
-
-  const [minPrice, setMinPrice] = useState(priceRange.min)
-  const [maxPrice, setMaxPrice] = useState(priceRange.max)
-
-  useEffect(() => {
-    setMinPrice(priceRange.min)
-    setMaxPrice(priceRange.max)
-  }, [priceRange.max, priceRange.min])
 
   const categories = siteData.categories
   const subcategories =
