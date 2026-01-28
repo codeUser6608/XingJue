@@ -92,17 +92,38 @@ export const SiteDataProvider = ({ children }: { children: ReactNode }) => {
       // 优先使用服务器返回的数据（无论是否为空），确保获取最新数据
       // 只有在服务器数据完全无效时才使用后备方案
       if (siteDataResponse && typeof siteDataResponse === 'object') {
-        setSiteDataState(siteDataResponse)
+        // 如果服务器数据为空，合并默认数据以确保完整结构
+        let finalData = siteDataResponse
+        if (!hasRealData(siteDataResponse)) {
+          console.warn('Server returned empty data, merging with defaults to ensure UI works')
+          const defaultData = getDefaultData()
+          // 深度合并：默认数据作为基础，服务器数据覆盖（即使为空也保留服务器结构）
+          finalData = {
+            ...defaultData,
+            ...siteDataResponse,
+            settings: {
+              ...defaultData.settings,
+              ...siteDataResponse.settings,
+              // 确保 adminPassword 有默认值
+              adminPassword: siteDataResponse.settings?.adminPassword || defaultData.settings.adminPassword
+            },
+            seo: {
+              ...defaultData.seo,
+              ...siteDataResponse.seo,
+              pages: {
+                ...defaultData.seo?.pages,
+                ...siteDataResponse.seo?.pages
+              }
+            }
+          }
+          setError('Server data appears empty, merged with defaults to ensure functionality')
+        }
+        
+        setSiteDataState(finalData)
         setInquiries(inquiriesResponse || [])
         // 同步到 localStorage 作为后备（仅当服务器数据有效时）
-        saveDataToStorage(siteDataResponse)
+        saveDataToStorage(finalData)
         saveInquiriesToStorage(inquiriesResponse || [])
-        
-        // 如果服务器数据看起来是空的，给出提示但不使用缓存
-        if (!hasRealData(siteDataResponse)) {
-          console.warn('Server returned data but it appears empty. Using server data anyway to ensure consistency.')
-          setError('Server data appears empty, but using it to ensure consistency across devices')
-        }
       } else {
         // 服务器返回了无效数据格式，尝试使用 localStorage
         console.warn('Server returned invalid data format, trying fallback...')

@@ -25,19 +25,22 @@ export const AdminLayout = () => {
 
   return (
     <>
-      <Seo title={siteData.seo.pages.admin.title} description={siteData.seo.pages.admin.description} />
+      <Seo 
+        title={siteData?.seo?.pages?.admin?.title || { en: '', zh: '' }} 
+        description={siteData?.seo?.pages?.admin?.description || { en: '', zh: '' }} 
+      />
       <div className="min-h-screen bg-slate-950/80">
         <div className="mx-auto flex max-w-6xl flex-col gap-6 px-4 py-8 md:flex-row md:px-6">
           <aside className="glass-panel sticky top-8 h-fit w-full self-start rounded-3xl p-6 md:w-64">
             <div className="flex items-center gap-3">
               <img
-                src={siteData.settings.logoUrl}
-                alt={siteData.settings.siteName[locale]}
+                src={siteData?.settings?.logoUrl || ''}
+                alt={siteData?.settings?.siteName?.[locale] || 'Admin'}
                 className="h-10 w-10 rounded-full object-cover ring-1 ring-white/20"
               />
               <div>
                 <p className="text-sm font-semibold text-white">
-                  {siteData.settings.siteName[locale]}
+                  {siteData?.settings?.siteName?.[locale] || 'Admin'}
                 </p>
                 <p className="text-xs text-white/60">{t('admin.dashboardTitle')}</p>
               </div>

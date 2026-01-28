@@ -26,7 +26,10 @@ export const AdminLogin = ({ onSuccess }: { onSuccess: () => void }) => {
   })
 
   const onSubmit = (values: LoginValues) => {
-    if (values.password === siteData.settings.adminPassword) {
+    // 如果服务器数据为空，使用默认密码
+    const adminPassword = siteData?.settings?.adminPassword || 'XJ-2026-Admin'
+    
+    if (values.password === adminPassword) {
       localStorage.setItem(AUTH_KEY, 'true')
       onSuccess()
       toast.success(t('misc.updated'))
