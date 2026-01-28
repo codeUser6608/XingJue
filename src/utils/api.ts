@@ -89,6 +89,26 @@ export const api = {
     }
   },
 
+  // 通过文件上传更新站点数据（推荐方式，避免 413 错误）
+  async uploadSiteData(file: File) {
+    const url = buildApiUrl('/site-data/upload')
+    if (!url) {
+      throw new Error('API_BASE_URL not configured')
+    }
+    const formData = new FormData()
+    formData.append('file', file)
+    
+    const response = await fetch(url, {
+      method: 'POST',
+      body: formData,
+    })
+    if (!response.ok) {
+      const errorText = await response.text().catch(() => response.statusText)
+      throw new Error(`Failed to upload site data: ${response.status} ${errorText}`)
+    }
+    return response.json()
+  },
+
   // 部分更新站点数据的指定部分
   async updateSiteSection(section: string, data: unknown) {
     const url = buildApiUrl(`/site-data/${section}`)

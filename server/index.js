@@ -1,5 +1,6 @@
 import express from 'express'
 import cors from 'cors'
+import multer from 'multer'
 import { readFileSync, existsSync } from 'fs'
 import { fileURLToPath } from 'url'
 import { dirname, join } from 'path'
@@ -107,8 +108,34 @@ app.use(cors({
   allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With'],
   exposedHeaders: ['Content-Length', 'Content-Type']
 }))
+
+// 额外的 CORS 响应头中间件（作为双重保险，确保所有响应都包含 CORS 头）
+app.use((req, res, next) => {
+  const origin = req.headers.origin
+  if (origin) {
+    res.header('Access-Control-Allow-Origin', origin)
+    res.header('Access-Control-Allow-Credentials', 'true')
+  }
+  next()
+})
 // 增加请求体大小限制到 50mb（用于整体更新，但推荐使用部分更新）
 app.use(express.json({ limit: '50mb' }))
+
+// 配置 multer 用于文件上传（内存存储，最大 50MB）
+const upload = multer({
+  storage: multer.memoryStorage(),
+  limits: {
+    fileSize: 50 * 1024 * 1024 // 50MB
+  },
+  fileFilter: (req, file, cb) => {
+    // 只接受 JSON 文件
+    if (file.mimetype === 'application/json' || file.originalname.endsWith('.json')) {
+      cb(null, true)
+    } else {
+      cb(new Error('只允许上传 JSON 文件'))
+    }
+  }
+})
 
 // API 路由
 // 在 Vercel 中，所有请求都路由到根路径，所以不需要 /api 前缀
@@ -136,6 +163,56 @@ app.get(`${API_PREFIX}/site-data`, async (req, res) => {
     res.json(data)
   } catch (error) {
     console.error('Error getting site data:', error)
+    res.status(500).json({ error: error.message })
+  }
+})
+
+// POST /site-data/upload - 通过文件上传更新站点数据（推荐方式）
+app.post(`${API_PREFIX}/site-data/upload`, upload.single('file'), async (req, res) => {
+  try {
+    if (!req.file) {
+      return res.status(400).json({ error: '未上传文件' })
+    }
+
+    // 解析 JSON 文件内容
+    let data
+    try {
+      const fileContent = req.file.buffer.toString('utf-8')
+      data = JSON.parse(fileContent)
+    } catch (parseError) {
+      console.error('Error parsing JSON file:', parseError)
+      return res.status(400).json({ error: '无效的 JSON 文件格式' })
+    }
+
+    // 将整体数据拆分为各个部分并分别更新
+    const updatePromises = []
+    
+    if (data.locales !== undefined) updatePromises.push(updateSiteSection('locales', data.locales))
+    if (data.defaultLocale !== undefined) updatePromises.push(updateSiteSection('defaultLocale', data.defaultLocale))
+    if (data.settings) updatePromises.push(updateSiteSection('settings', data.settings))
+    if (data.hero) updatePromises.push(updateSiteSection('hero', data.hero))
+    if (data.advantages) updatePromises.push(updateSiteSection('advantages', data.advantages))
+    if (data.partners) updatePromises.push(updateSiteSection('partners', data.partners))
+    if (data.tradeRegions) updatePromises.push(updateSiteSection('tradeRegions', data.tradeRegions))
+    if (data.categories) updatePromises.push(updateSiteSection('categories', data.categories))
+    if (data.featuredProductIds) updatePromises.push(updateSiteSection('featuredProductIds', data.featuredProductIds))
+    if (data.about) updatePromises.push(updateSiteSection('about', data.about))
+    if (data.contact) updatePromises.push(updateSiteSection('contact', data.contact))
+    if (data.seo) updatePromises.push(updateSiteSection('seo', data.seo))
+    
+    // 更新产品
+    if (data.products && Array.isArray(data.products)) {
+      for (const product of data.products) {
+        await upsertProduct(product)
+      }
+    }
+    
+    await Promise.all(updatePromises)
+    
+    console.log('✅ Site data updated successfully via file upload')
+    res.json({ success: true, message: '站点数据已成功更新' })
+  } catch (error) {
+    console.error('Error updating site data from file:', error)
     res.status(500).json({ error: error.message })
   }
 })

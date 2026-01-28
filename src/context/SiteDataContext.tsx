@@ -58,7 +58,7 @@ interface SiteDataContextValue {
   addInquiry: (inquiry: Omit<Inquiry, 'id' | 'createdAt' | 'status'>) => Promise<void>
   updateInquiryStatus: (id: string, status: Inquiry['status']) => Promise<void>
   exportSiteData: () => string
-  importSiteData: (data: SiteData) => Promise<void>
+  importSiteData: (data: SiteData, file?: File) => Promise<void>
   refreshData: () => Promise<void>
 }
 
@@ -296,61 +296,73 @@ export const SiteDataProvider = ({ children }: { children: ReactNode }) => {
 
   const exportSiteData = () => JSON.stringify(siteData, null, 2)
 
-  const importSiteData = async (data: SiteData) => {
+  const importSiteData = async (data: SiteData, file?: File) => {
     try {
-      // 先保存到服务器
-      // 如果遇到 413 错误，尝试使用部分更新
-      try {
-        await api.updateSiteData(data)
-        console.log('✅ Data successfully saved to server')
-      } catch (serverError) {
-        // 检查是否是 413 错误（内容太大）或网络错误（可能是 CORS 或 413）
-        const errorMessage = serverError instanceof Error ? serverError.message : 'Unknown error'
-        const is413Error = errorMessage.includes('413') || 
-                          errorMessage.includes('Content Too Large') ||
-                          errorMessage.includes('Request too large')
-        
-        // 如果是网络错误，也可能是 413（因为 413 可能导致 CORS 预检失败）
-        const isNetworkError = serverError instanceof TypeError && 
-                              (errorMessage.includes('Failed to fetch') || 
-                               errorMessage.includes('NetworkError'))
-        
-        if (is413Error || isNetworkError) {
-          console.warn('Data too large for single request, using partial updates...')
-          // 使用部分更新 API
-          try {
-            // 分别更新各个部分
-            await Promise.all([
-              api.updateSiteSection('locales', data.locales),
-              api.updateSiteSection('defaultLocale', data.defaultLocale),
-              api.updateSiteSection('settings', data.settings),
-              api.updateSiteSection('hero', data.hero),
-              api.updateSiteSection('advantages', data.advantages),
-              api.updateSiteSection('partners', data.partners),
-              api.updateSiteSection('tradeRegions', data.tradeRegions),
-              api.updateSiteSection('categories', data.categories),
-              api.updateSiteSection('featuredProductIds', data.featuredProductIds),
-              api.updateSiteSection('about', data.about),
-              api.updateSiteSection('contact', data.contact),
-              api.updateSiteSection('seo', data.seo)
-            ])
-            
-            // 分批更新产品（避免一次性更新太多）
-            const batchSize = 10
-            for (let i = 0; i < data.products.length; i += batchSize) {
-              const batch = data.products.slice(i, i + batchSize)
-              await Promise.all(batch.map(product => api.upsertProduct(product)))
+      // 如果提供了文件，优先使用文件上传方式（避免 413 错误和 CORS 问题）
+      if (file) {
+        try {
+          await api.uploadSiteData(file)
+          console.log('✅ Data successfully uploaded to server via file upload')
+        } catch (uploadError) {
+          console.error('Failed to upload file:', uploadError)
+          throw new Error(`文件上传失败: ${uploadError instanceof Error ? uploadError.message : 'Unknown error'}`)
+        }
+      } else {
+        // 如果没有文件，使用原来的方式（向后兼容）
+        // 先保存到服务器
+        // 如果遇到 413 错误，尝试使用部分更新
+        try {
+          await api.updateSiteData(data)
+          console.log('✅ Data successfully saved to server')
+        } catch (serverError) {
+          // 检查是否是 413 错误（内容太大）或网络错误（可能是 CORS 或 413）
+          const errorMessage = serverError instanceof Error ? serverError.message : 'Unknown error'
+          const is413Error = errorMessage.includes('413') || 
+                            errorMessage.includes('Content Too Large') ||
+                            errorMessage.includes('Request too large')
+          
+          // 如果是网络错误，也可能是 413（因为 413 可能导致 CORS 预检失败）
+          const isNetworkError = serverError instanceof TypeError && 
+                                (errorMessage.includes('Failed to fetch') || 
+                                 errorMessage.includes('NetworkError'))
+          
+          if (is413Error || isNetworkError) {
+            console.warn('Data too large for single request, using partial updates...')
+            // 使用部分更新 API
+            try {
+              // 分别更新各个部分
+              await Promise.all([
+                api.updateSiteSection('locales', data.locales),
+                api.updateSiteSection('defaultLocale', data.defaultLocale),
+                api.updateSiteSection('settings', data.settings),
+                api.updateSiteSection('hero', data.hero),
+                api.updateSiteSection('advantages', data.advantages),
+                api.updateSiteSection('partners', data.partners),
+                api.updateSiteSection('tradeRegions', data.tradeRegions),
+                api.updateSiteSection('categories', data.categories),
+                api.updateSiteSection('featuredProductIds', data.featuredProductIds),
+                api.updateSiteSection('about', data.about),
+                api.updateSiteSection('contact', data.contact),
+                api.updateSiteSection('seo', data.seo)
+              ])
+              
+              // 分批更新产品（避免一次性更新太多）
+              const batchSize = 10
+              for (let i = 0; i < data.products.length; i += batchSize) {
+                const batch = data.products.slice(i, i + batchSize)
+                await Promise.all(batch.map(product => api.upsertProduct(product)))
+              }
+              
+              console.log('✅ Data successfully saved to server using partial updates')
+            } catch (partialError) {
+              console.error('Failed to import using partial updates:', partialError)
+              throw new Error(`Failed to save to server (data too large): ${partialError instanceof Error ? partialError.message : 'Unknown error'}`)
             }
-            
-            console.log('✅ Data successfully saved to server using partial updates')
-          } catch (partialError) {
-            console.error('Failed to import using partial updates:', partialError)
-            throw new Error(`Failed to save to server (data too large): ${partialError instanceof Error ? partialError.message : 'Unknown error'}`)
+          } else {
+            // 其他错误
+            console.error('Failed to import to server:', serverError)
+            throw new Error(`Failed to save to server: ${errorMessage}`)
           }
-        } else {
-          // 其他错误
-          console.error('Failed to import to server:', serverError)
-          throw new Error(`Failed to save to server: ${errorMessage}`)
         }
       }
       
