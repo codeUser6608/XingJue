@@ -33,7 +33,14 @@ jobs:
 
       - name: Install backend dependencies
         working-directory: ./server
-        run: npm ci
+        run: |
+          # 如果存在 package-lock.json，使用 npm ci（更快更可靠）
+          # 否则使用 npm install
+          if [ -f package-lock.json ]; then
+            npm ci
+          else
+            npm install
+          fi
 
       - name: Start backend server
         working-directory: ./server
