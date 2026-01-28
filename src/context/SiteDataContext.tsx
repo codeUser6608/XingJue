@@ -323,13 +323,6 @@ export const SiteDataProvider = ({ children }: { children: ReactNode }) => {
               if (data.locales !== undefined) {
                 updatePromises.push(api.updateSiteSection('locales', data.locales))
               }
-              if (data.defaultLocale !== undefined && data.defaultLocale !== null) {
-                // 确保 defaultLocale 是字符串
-                const defaultLocaleValue = typeof data.defaultLocale === 'string' 
-                  ? data.defaultLocale 
-                  : String(data.defaultLocale)
-                updatePromises.push(api.updateSiteSection('defaultLocale', defaultLocaleValue))
-              }
               if (data.settings) {
                 updatePromises.push(api.updateSiteSection('settings', data.settings))
               }
@@ -409,13 +402,6 @@ export const SiteDataProvider = ({ children }: { children: ReactNode }) => {
               
               if (data.locales !== undefined) {
                 updatePromises2.push(api.updateSiteSection('locales', data.locales))
-              }
-              if (data.defaultLocale !== undefined && data.defaultLocale !== null) {
-                // 确保 defaultLocale 是字符串
-                const defaultLocaleValue = typeof data.defaultLocale === 'string' 
-                  ? data.defaultLocale 
-                  : String(data.defaultLocale)
-                updatePromises2.push(api.updateSiteSection('defaultLocale', defaultLocaleValue))
               }
               if (data.settings) {
                 updatePromises2.push(api.updateSiteSection('settings', data.settings))
