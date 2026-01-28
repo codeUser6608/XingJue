@@ -150,6 +150,19 @@ export const getSiteData = async () => {
       return result
     }
 
+    // 确保 seo.pages 有完整的结构
+    const defaultSeo = {
+      pages: {
+        home: { title: { en: '', zh: '' }, description: { en: '', zh: '' } },
+        products: { title: { en: '', zh: '' }, description: { en: '', zh: '' } },
+        about: { title: { en: '', zh: '' }, description: { en: '', zh: '' } },
+        contact: { title: { en: '', zh: '' }, description: { en: '', zh: '' } },
+        admin: { title: { en: '', zh: '' }, description: { en: '', zh: '' } }
+      }
+    }
+    
+    const mergedSeo = seo ? deepMerge(defaultSeo, seo) : defaultSeo
+
     return {
       locales: locales || ['en', 'zh'],
       defaultLocale: defaultLocale || 'en',
@@ -163,7 +176,7 @@ export const getSiteData = async () => {
       products: products,
       about: about ? deepMerge(defaultAbout, about) : defaultAbout,
       contact: contact ? deepMerge(defaultContact, contact) : defaultContact,
-      seo: seo || { pages: {} }
+      seo: mergedSeo
     }
   } catch (error) {
     console.error('Error getting site data:', error)

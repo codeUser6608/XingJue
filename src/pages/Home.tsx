@@ -69,8 +69,8 @@ export const Home = () => {
   return (
     <>
       <Seo
-        title={siteData.seo.pages.home.title}
-        description={siteData.seo.pages.home.description}
+        title={siteData.seo?.pages?.home?.title || { en: '', zh: '' }}
+        description={siteData.seo?.pages?.home?.description || { en: '', zh: '' }}
         structuredData={organizationSchema}
       />
 

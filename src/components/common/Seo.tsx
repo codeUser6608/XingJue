@@ -50,10 +50,14 @@ export const Seo = ({ title, description, structuredData }: SeoProps) => {
   const { siteData } = useSiteData()
 
   useEffect(() => {
+    // 确保 title 和 description 是有效的对象
+    const safeTitle = title && typeof title === 'object' ? title : { en: '', zh: '' }
+    const safeDescription = description && typeof description === 'object' ? description : { en: '', zh: '' }
+    
     const lang = i18n.language as 'en' | 'zh'
-    const pageTitle = title[lang] || siteData.settings?.seoDefaults?.title?.[lang] || ''
+    const pageTitle = safeTitle[lang] || siteData.settings?.seoDefaults?.title?.[lang] || ''
     const pageDescription =
-      description[lang] || siteData.settings?.seoDefaults?.description?.[lang] || ''
+      safeDescription[lang] || siteData.settings?.seoDefaults?.description?.[lang] || ''
 
     document.title = pageTitle
     ensureMetaTag('name', 'description').content = pageDescription
