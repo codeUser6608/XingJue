@@ -108,20 +108,20 @@ export const ProductDetail = () => {
     ? {
         '@context': 'https://schema.org',
         '@type': 'Product',
-        name: product.name[locale],
-        description: product.description[locale],
-        sku: product.sku,
-        image: product.images,
+        name: product?.name?.[locale] || '',
+        description: product?.description?.[locale] || '',
+        sku: product?.sku || '',
+        image: product?.images || [],
         brand: {
           '@type': 'Brand',
-          name: siteData.settings.siteName[locale]
+          name: siteData?.settings?.siteName?.[locale] || ''
         },
         offers: {
           '@type': 'Offer',
-          priceCurrency: product.price.currency,
-          price: product.price.amount,
+          priceCurrency: product?.price?.currency || 'USD',
+          price: product?.price?.amount || 0,
           availability:
-            product.stockStatus === 'in_stock'
+            product?.stockStatus === 'in_stock'
               ? 'https://schema.org/InStock'
               : 'https://schema.org/OutOfStock'
         }
@@ -160,8 +160,8 @@ export const ProductDetail = () => {
   return (
     <>
       <Seo
-        title={product.seo.title}
-        description={product.seo.description}
+        title={product.seo?.title || { en: '', zh: '' }}
+        description={product.seo?.description || { en: '', zh: '' }}
         structuredData={productSchema}
       />
       <section className="px-4 py-12 md:px-6">
@@ -179,7 +179,7 @@ export const ProductDetail = () => {
                 >
                   <img
                     src={activeImage}
-                    alt={product.name[locale]}
+                    alt={product.name?.[locale] || ''}
                     className="h-80 w-full object-cover"
                   />
                 </button>
@@ -201,26 +201,26 @@ export const ProductDetail = () => {
             </div>
 
             <div className="rounded-3xl border border-white/10 bg-slate-950/60 p-6">
-              <h1 className="text-2xl font-semibold text-white">{product.name[locale]}</h1>
-              <p className="mt-3 text-sm text-white/60">{product.description[locale]}</p>
+              <h1 className="text-2xl font-semibold text-white">{product.name?.[locale] || ''}</h1>
+              <p className="mt-3 text-sm text-white/60">{product.description?.[locale] || ''}</p>
               <div className="mt-6 grid gap-4 rounded-2xl border border-white/10 bg-white/5 p-4 text-sm">
                 <div className="flex justify-between text-white/70">
                   <span>{t('productDetail.price')}</span>
                   <span className="text-amber-300">
-                    {formatCurrency(product.price.amount, product.price.currency, locale)}
+                    {formatCurrency(product.price?.amount || 0, product.price?.currency || 'USD', locale)}
                   </span>
                 </div>
                 <div className="flex justify-between text-white/70">
                   <span>{t('productDetail.unit')}</span>
-                  <span>{product.price.unit[locale]}</span>
+                  <span>{product.price?.unit?.[locale] || ''}</span>
                 </div>
                 <div className="flex justify-between text-white/70">
                   <span>{t('productDetail.moq')}</span>
-                  <span>{product.price.moq}</span>
+                  <span>{product.price?.moq || 0}</span>
                 </div>
                 <div className="flex justify-between text-white/70">
                   <span>{t('productDetail.leadTime')}</span>
-                  <span>{product.leadTime[locale]}</span>
+                  <span>{product.leadTime?.[locale] || ''}</span>
                 </div>
               </div>
             </div>
@@ -231,10 +231,10 @@ export const ProductDetail = () => {
                   {t('productDetail.featuresTitle')}
                 </h2>
                 <ul className="mt-4 space-y-3 text-sm text-white/60">
-                  {product.features.map((feature, index) => (
-                    <li key={`${feature.en}-${index}`} className="flex gap-2">
+                  {product.features?.map((feature, index) => (
+                    <li key={`${feature?.en || index}-${index}`} className="flex gap-2">
                       <span className="mt-1 h-2 w-2 rounded-full bg-amber-300" />
-                      <span>{feature[locale]}</span>
+                      <span>{feature?.[locale] || ''}</span>
                     </li>
                   ))}
                 </ul>
@@ -244,7 +244,7 @@ export const ProductDetail = () => {
                   {t('productDetail.certificationsTitle')}
                 </h2>
                 <div className="mt-4 flex flex-wrap gap-2">
-                  {product.certifications.map((cert) => (
+                  {product.certifications?.map((cert) => (
                     <span
                       key={cert}
                       className="rounded-full border border-white/15 px-3 py-1 text-xs text-white/70"
@@ -261,13 +261,13 @@ export const ProductDetail = () => {
                 {t('productDetail.specsTitle')}
               </h2>
               <div className="mt-4 space-y-3 text-sm">
-                {product.specs.map((spec) => (
+                {product.specs?.map((spec, index) => (
                   <div
-                    key={spec.label.en}
+                    key={spec?.label?.en || index}
                     className="flex items-center justify-between rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-white/70"
                   >
-                    <span>{spec.label[locale]}</span>
-                    <span>{spec.value[locale]}</span>
+                    <span>{spec?.label?.[locale] || ''}</span>
+                    <span>{spec?.value?.[locale] || ''}</span>
                   </div>
                 ))}
               </div>

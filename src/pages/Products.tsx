@@ -54,22 +54,22 @@ export const Products = () => {
     )
   }
 
-  const categories = siteData.categories
+  const categories = siteData.categories || []
   const subcategories =
     categoryId === 'all'
-      ? categories.flatMap((category) => category.subcategories)
+      ? categories.flatMap((category) => category.subcategories || [])
       : categories.find((category) => category.id === categoryId)?.subcategories ?? []
 
   const filteredProducts = useMemo(() => {
     const keyword = search.trim().toLowerCase()
-    let result = siteData.products.filter((product) => {
+    let result = (siteData.products || []).filter((product) => {
       const matchesKeyword =
         !keyword ||
-        product.name.en.toLowerCase().includes(keyword) ||
-        product.name.zh.toLowerCase().includes(keyword) ||
-        product.sku.toLowerCase().includes(keyword) ||
-        product.description.en.toLowerCase().includes(keyword) ||
-        product.description.zh.toLowerCase().includes(keyword)
+        product.name?.en?.toLowerCase().includes(keyword) ||
+        product.name?.zh?.toLowerCase().includes(keyword) ||
+        product.sku?.toLowerCase().includes(keyword) ||
+        product.description?.en?.toLowerCase().includes(keyword) ||
+        product.description?.zh?.toLowerCase().includes(keyword)
 
       const matchesCategory =
         categoryId === 'all' || product.categoryId === categoryId
@@ -78,7 +78,7 @@ export const Products = () => {
       const matchesStock =
         stockStatus === 'all' || product.stockStatus === stockStatus
       const matchesPrice =
-        product.price.amount >= minPrice && product.price.amount <= maxPrice
+        (product.price?.amount || 0) >= minPrice && (product.price?.amount || 0) <= maxPrice
 
       return (
         matchesKeyword &&
@@ -90,10 +90,10 @@ export const Products = () => {
     })
 
     result = [...result].sort((a, b) => {
-      if (sortBy === 'latest') return b.createdAt.localeCompare(a.createdAt)
-      if (sortBy === 'nameAsc') return a.name[locale].localeCompare(b.name[locale])
-      if (sortBy === 'priceAsc') return a.price.amount - b.price.amount
-      if (sortBy === 'priceDesc') return b.price.amount - a.price.amount
+      if (sortBy === 'latest') return (b.createdAt || '').localeCompare(a.createdAt || '')
+      if (sortBy === 'nameAsc') return (a.name?.[locale] || '').localeCompare(b.name?.[locale] || '')
+      if (sortBy === 'priceAsc') return (a.price?.amount || 0) - (b.price?.amount || 0)
+      if (sortBy === 'priceDesc') return (b.price?.amount || 0) - (a.price?.amount || 0)
       return 0
     })
 
@@ -108,8 +108,8 @@ export const Products = () => {
   return (
     <>
       <Seo
-        title={siteData.seo.pages.products.title}
-        description={siteData.seo.pages.products.description}
+        title={siteData.seo?.pages?.products?.title || { en: '', zh: '' }}
+        description={siteData.seo?.pages?.products?.description || { en: '', zh: '' }}
       />
       <section className="px-4 py-12 md:px-6">
         <div className="mx-auto max-w-6xl">
@@ -142,9 +142,9 @@ export const Products = () => {
               className="rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-sm text-white"
             >
               <option value="all">{t('products.filter.all')}</option>
-              {categories.map((category) => (
+              {categories?.map((category) => (
                 <option key={category.id} value={category.id}>
-                  {category.name[locale]}
+                  {category.name?.[locale] || ''}
                 </option>
               ))}
             </select>
@@ -158,9 +158,9 @@ export const Products = () => {
               className="rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-sm text-white"
             >
               <option value="all">{t('products.filter.all')}</option>
-              {subcategories.map((subcategory) => (
+              {subcategories?.map((subcategory) => (
                 <option key={subcategory.id} value={subcategory.id}>
-                  {subcategory.name[locale]}
+                  {subcategory.name?.[locale] || ''}
                 </option>
               ))}
             </select>

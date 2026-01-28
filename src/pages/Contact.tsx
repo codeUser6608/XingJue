@@ -51,12 +51,15 @@ export const Contact = () => {
     }
   }
 
-  const { lat, lng } = siteData.contact.map
+  const { lat = 0, lng = 0 } = siteData.contact?.map || {}
   const mapUrl = `https://www.openstreetmap.org/export/embed.html?bbox=${lng - 0.05}%2C${lat - 0.03}%2C${lng + 0.05}%2C${lat + 0.03}&layer=mapnik&marker=${lat}%2C${lng}`
 
   return (
     <>
-      <Seo title={siteData.seo.pages.contact.title} description={siteData.seo.pages.contact.description} />
+      <Seo 
+        title={siteData.seo?.pages?.contact?.title || { en: '', zh: '' }} 
+        description={siteData.seo?.pages?.contact?.description || { en: '', zh: '' }} 
+      />
       <section className="px-4 py-12 md:px-6">
         <div className="mx-auto max-w-6xl">
           <div className="flex flex-col gap-3">
