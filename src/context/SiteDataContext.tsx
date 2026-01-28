@@ -304,9 +304,18 @@ export const SiteDataProvider = ({ children }: { children: ReactNode }) => {
         await api.updateSiteData(data)
         console.log('✅ Data successfully saved to server')
       } catch (serverError) {
-        // 检查是否是 413 错误（内容太大）
+        // 检查是否是 413 错误（内容太大）或网络错误（可能是 CORS 或 413）
         const errorMessage = serverError instanceof Error ? serverError.message : 'Unknown error'
-        if (errorMessage.includes('413') || errorMessage.includes('Content Too Large')) {
+        const is413Error = errorMessage.includes('413') || 
+                          errorMessage.includes('Content Too Large') ||
+                          errorMessage.includes('Request too large')
+        
+        // 如果是网络错误，也可能是 413（因为 413 可能导致 CORS 预检失败）
+        const isNetworkError = serverError instanceof TypeError && 
+                              (errorMessage.includes('Failed to fetch') || 
+                               errorMessage.includes('NetworkError'))
+        
+        if (is413Error || isNetworkError) {
           console.warn('Data too large for single request, using partial updates...')
           // 使用部分更新 API
           try {

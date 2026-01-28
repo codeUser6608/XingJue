@@ -83,6 +83,7 @@ const allowedOrigins = [
   process.env.FRONTEND_URL // 环境变量配置的前端 URL
 ].filter(Boolean) // 移除 undefined 值
 
+// 更宽松的 CORS 配置
 app.use(cors({
   origin: (origin, callback) => {
     // 允许无 origin 的请求（如 Postman、curl）
@@ -107,15 +108,33 @@ app.use(cors({
       if (process.env.NODE_ENV !== 'production') {
         callback(null, true)
       } else {
-        console.warn(`CORS blocked origin: ${origin}`)
-        callback(new Error('Not allowed by CORS'))
+        // 生产环境：记录被阻止的来源，但仍然允许（临时解决方案）
+        console.warn(`CORS: Unlisted origin ${origin}, but allowing for now`)
+        callback(null, true)
+        // 如果需要严格限制，取消上面的注释，启用下面的代码：
+        // callback(new Error('Not allowed by CORS'))
       }
     }
   },
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization']
+  allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With'],
+  exposedHeaders: ['Content-Length', 'Content-Type'],
+  maxAge: 86400 // 24 小时
 }))
+
+// 处理 OPTIONS 预检请求（确保在所有路由之前）
+app.options('*', (req, res) => {
+  const origin = req.headers.origin
+  if (origin && (allowedOrigins.some(allowed => origin.includes(allowed)) || process.env.NODE_ENV !== 'production')) {
+    res.header('Access-Control-Allow-Origin', origin)
+    res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, PATCH, DELETE, OPTIONS')
+    res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization, X-Requested-With')
+    res.header('Access-Control-Allow-Credentials', 'true')
+    res.header('Access-Control-Max-Age', '86400')
+  }
+  res.sendStatus(200)
+})
 // 增加请求体大小限制到 50mb（用于整体更新，但推荐使用部分更新）
 app.use(express.json({ limit: '50mb' }))
 

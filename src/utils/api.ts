@@ -62,20 +62,31 @@ export const api = {
     if (!url) {
       throw new Error('API_BASE_URL not configured')
     }
-    const response = await fetch(url, {
-      method: 'PUT',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(data),
-    })
-    if (!response.ok) {
-      if (response.status === 413) {
-        throw new Error('Request too large. Please use partial update methods instead.')
+    try {
+      const response = await fetch(url, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(data),
+      })
+      if (!response.ok) {
+        if (response.status === 413) {
+          throw new Error('413 Content Too Large: Request too large. Please use partial update methods instead.')
+        }
+        const errorText = await response.text().catch(() => response.statusText)
+        throw new Error(`Failed to update site data: ${response.status} ${errorText}`)
       }
-      throw new Error(`Failed to update site data: ${response.statusText}`)
+      return response.json()
+    } catch (error) {
+      // 如果是网络错误（如 CORS），也检查是否是 413
+      if (error instanceof TypeError && error.message.includes('Failed to fetch')) {
+        // 可能是 CORS 或网络错误，但如果是 413，response 可能已经返回了
+        // 这里我们让调用者处理
+        throw error
+      }
+      throw error
     }
-    return response.json()
   },
 
   // 部分更新站点数据的指定部分
