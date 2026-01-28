@@ -163,10 +163,51 @@ npm run preview
 
 ## 数据管理
 
-- 网站内容配置：`src/data/site-data.json`
+- 网站内容配置：通过后端 API 管理（见下方服务器说明）
 - 多语言翻译：`src/i18n/locales/*.json`
-- 管理后台数据存储在浏览器 `localStorage`
-  如需重置，请清除浏览器缓存或删除对应的 JSON 键值
+- 数据存储：服务器端 JSON 文件（`server/data/`）
+- 前端默认数据：`src/data/site-data.json`（仅作为后备模板）
+
+## 后端服务器
+
+项目包含一个 Node.js 后端服务器，用于持久化存储站点数据。
+
+### 本地开发
+
+```bash
+# 启动后端服务器
+cd server
+npm install
+npm run dev
+```
+
+服务器将在 `http://localhost:4000` 启动。
+
+### 环境变量配置
+
+#### 本地开发
+
+在前端项目根目录创建 `.env` 文件（可选，默认使用 `http://localhost:4000/api`）：
+
+```
+VITE_API_BASE_URL=http://localhost:4000/api
+```
+
+#### 生产环境（GitHub Pages）
+
+1. 部署后端到云平台（Vercel、Render、Railway 等）
+2. 在 GitHub 仓库的 Settings > Secrets and variables > Actions 中添加：
+   - `VITE_API_BASE_URL`：后端 API 的完整 URL（例如：`https://your-api.vercel.app/api`）
+
+详细部署说明请参考 [DEPLOYMENT.md](DEPLOYMENT.md)
+
+### 数据存储说明
+
+- **开发环境**：数据存储在 `server/data/` 目录
+- **生产环境**：根据部署平台不同，可能需要使用数据库
+- **后备方案**：如果 API 不可用，前端会自动使用 localStorage 作为后备
+
+详细说明请参考 [server/README.md](server/README.md)
 
 ## 项目结构
 

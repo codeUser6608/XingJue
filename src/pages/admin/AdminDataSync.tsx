@@ -40,10 +40,11 @@ const siteDataSchema = z
   .passthrough()
 
 export const AdminDataSync = () => {
-  const { exportSiteData, importSiteData } = useSiteData()
+  const { exportSiteData, importSiteData, isLoading } = useSiteData()
   const { t } = useTranslation()
   const [importText, setImportText] = useState('')
   const [preview, setPreview] = useState<string>('')
+  const [isImporting, setIsImporting] = useState(false)
 
   const handleDownload = () => {
     const payload = exportSiteData()
@@ -61,8 +62,9 @@ export const AdminDataSync = () => {
     toast.success(t('misc.copied'))
   }
 
-  const handleImport = () => {
+  const handleImport = async () => {
     try {
+      setIsImporting(true)
       const data = JSON.parse(importText)
       const parsed = siteDataSchema.parse(data)
       // 确保 locales 是正确的类型
@@ -71,11 +73,17 @@ export const AdminDataSync = () => {
         locales: parsed.locales as ('en' | 'zh')[],
         defaultLocale: parsed.defaultLocale as 'en' | 'zh'
       }
-      importSiteData(typedData as SiteData)
+      await importSiteData(typedData as SiteData)
       setPreview(JSON.stringify(typedData, null, 2))
       toast.success(t('misc.updated'))
     } catch (error) {
-      toast.error(t('admin.dataSync.invalidJson'))
+      if (error instanceof Error && error.message.includes('Failed to')) {
+        toast.error(error.message)
+      } else {
+        toast.error(t('admin.dataSync.invalidJson'))
+      }
+    } finally {
+      setIsImporting(false)
     }
   }
 
@@ -108,9 +116,14 @@ export const AdminDataSync = () => {
           onChange={(event) => setImportText(event.target.value)}
           className="mt-4 min-h-[180px] w-full max-w-full rounded-2xl border border-white/10 bg-slate-950/80 p-4 text-xs text-white/70 overflow-x-auto"
         />
-        <button type="button" onClick={handleImport} className="btn-primary mt-4">
+        <button
+          type="button"
+          onClick={handleImport}
+          disabled={isImporting || isLoading}
+          className="btn-primary mt-4 disabled:opacity-50 disabled:cursor-not-allowed"
+        >
           <Upload className="h-4 w-4" />
-          {t('actions.import')}
+          {isImporting ? t('misc.loading') : t('actions.import')}
         </button>
       </div>
 

@@ -1,5 +1,6 @@
 import { useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
+import { toast } from 'react-hot-toast'
 import { Download } from 'lucide-react'
 import { useSiteData } from '../../context/SiteDataContext'
 import { formatDate } from '../../utils/format'
@@ -112,9 +113,13 @@ export const AdminInquiries = () => {
                 </div>
                 <select
                   value={inquiry.status}
-                  onChange={(event) =>
-                    updateInquiryStatus(inquiry.id, event.target.value as 'new' | 'processing' | 'closed')
-                  }
+                  onChange={async (event) => {
+                    try {
+                      await updateInquiryStatus(inquiry.id, event.target.value as 'new' | 'processing' | 'closed')
+                    } catch (error) {
+                      toast.error(error instanceof Error ? error.message : 'Failed to update inquiry status')
+                    }
+                  }}
                   className="rounded-full border border-white/10 bg-slate-950/60 px-3 py-1 text-xs text-white"
                 >
                   <option value="new">{t('admin.status.new')}</option>

@@ -141,7 +141,7 @@ export const AdminProducts = () => {
     reader.readAsDataURL(file)
   }
 
-  const onSubmit = (values: ProductFormValues): void => {
+  const onSubmit = async (values: ProductFormValues): Promise<void> => {
     if (images.length === 0) {
       toast.error(t('validation.required'))
       return
@@ -191,12 +191,16 @@ export const AdminProducts = () => {
       updatedAt: new Date().toISOString()
     }
 
-    upsertProduct(product)
-    toast.success(t('misc.updated'))
-    setActiveProduct(null)
-    reset(buildFormValues())
-    setImages([])
-    setMainImage('')
+    try {
+      await upsertProduct(product)
+      toast.success(t('misc.updated'))
+      setActiveProduct(null)
+      reset(buildFormValues())
+      setImages([])
+      setMainImage('')
+    } catch (error) {
+      toast.error(error instanceof Error ? error.message : t('misc.updated'))
+    }
   }
 
   return (
@@ -239,14 +243,19 @@ export const AdminProducts = () => {
                 </button>
                 <button
                   type="button"
-                  onClick={() => {
+                  onClick={async () => {
                     if (confirm(t('admin.products.deleteConfirm'))) {
-                      deleteProduct(product.id)
-                      if (activeProduct?.id === product.id) {
-                        setActiveProduct(null)
-                        reset(buildFormValues())
-                        setImages([])
-                        setMainImage('')
+                      try {
+                        await deleteProduct(product.id)
+                        toast.success(t('misc.updated'))
+                        if (activeProduct?.id === product.id) {
+                          setActiveProduct(null)
+                          reset(buildFormValues())
+                          setImages([])
+                          setMainImage('')
+                        }
+                      } catch (error) {
+                        toast.error(error instanceof Error ? error.message : 'Failed to delete product')
                       }
                     }
                   }}

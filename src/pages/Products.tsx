@@ -9,9 +9,20 @@ import type { Locale } from '../types/site'
 const PAGE_SIZE = 9
 
 export const Products = () => {
-  const { siteData } = useSiteData()
+  const { siteData, isLoading } = useSiteData()
   const { t, i18n } = useTranslation()
   const locale = i18n.language as Locale
+
+  if (isLoading) {
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        <div className="flex flex-col items-center gap-4">
+          <div className="h-12 w-12 border-4 border-amber-300/30 border-t-amber-300 rounded-full animate-spin" />
+          <p className="text-sm text-white/60">{t('misc.loading')}</p>
+        </div>
+      </div>
+    )
+  }
 
   const [search, setSearch] = useState('')
   const [categoryId, setCategoryId] = useState('all')

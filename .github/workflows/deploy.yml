@@ -31,8 +31,58 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      - name: Build
+      - name: Install backend dependencies
+        working-directory: ./server
+        run: npm ci
+
+      - name: Start backend server
+        working-directory: ./server
+        env:
+          PORT: 4000
+          FRONTEND_URL: http://localhost:5174
+        run: |
+          # 启动后端服务器作为后台进程
+          npm start > server.log 2>&1 &
+          echo $! > server.pid
+          echo "Backend server starting..."
+          
+          # 等待服务器启动（最多等待 10 秒）
+          for i in {1..10}; do
+            if curl -f http://localhost:4000/api/health > /dev/null 2>&1; then
+              echo "Backend server is ready!"
+              break
+            fi
+            if [ $i -eq 10 ]; then
+              echo "Backend server failed to start"
+              cat server.log
+              exit 1
+            fi
+            sleep 1
+          done
+
+      - name: Build frontend
+        env:
+          # 如果配置了生产环境 API URL，使用它；否则使用本地启动的后端
+          VITE_API_BASE_URL: ${{ secrets.VITE_API_BASE_URL || 'http://localhost:4000/api' }}
+          VITE_BASE_PATH: ${{ secrets.VITE_BASE_PATH || '/XingJue/' }}
         run: npm run build
+
+      - name: Stop backend server
+        working-directory: ./server
+        if: always()
+        run: |
+          if [ -f server.pid ]; then
+            PID=$(cat server.pid)
+            if ps -p $PID > /dev/null 2>&1; then
+              echo "Stopping backend server (PID: $PID)"
+              kill $PID || true
+              sleep 1
+              # 如果进程仍在运行，强制终止
+              kill -9 $PID 2>/dev/null || true
+            fi
+            rm -f server.pid
+          fi
+          echo "Backend server stopped"
 
       - name: Setup Pages
         uses: actions/configure-pages@v4
