@@ -154,6 +154,13 @@ app.get(`${API_PREFIX}/health`, (req, res) => {
 
 // GET /site-data - 获取站点数据
 app.get(`${API_PREFIX}/site-data`, async (req, res) => {
+  // 设置 CORS 头（确保在所有响应中都包含）
+  const origin = req.headers.origin
+  if (origin) {
+    res.header('Access-Control-Allow-Origin', origin)
+    res.header('Access-Control-Allow-Credentials', 'true')
+  }
+
   try {
     // 在 Vercel 环境下，每次请求时检查是否需要初始化
     if (isVercel) {
@@ -227,6 +234,13 @@ app.post(`${API_PREFIX}/site-data/upload`, upload.single('file'), async (req, re
 
 // PUT /site-data - 整体更新站点数据（向后兼容，不推荐，可能遇到 413 错误）
 app.put(`${API_PREFIX}/site-data`, async (req, res) => {
+  // 设置 CORS 头（确保在所有响应中都包含）
+  const origin = req.headers.origin
+  if (origin) {
+    res.header('Access-Control-Allow-Origin', origin)
+    res.header('Access-Control-Allow-Credentials', 'true')
+  }
+
   try {
     const data = req.body
     
@@ -234,7 +248,13 @@ app.put(`${API_PREFIX}/site-data`, async (req, res) => {
     const updatePromises = []
     
     if (data.locales !== undefined) updatePromises.push(updateSiteSection('locales', data.locales))
-    if (data.defaultLocale !== undefined) updatePromises.push(updateSiteSection('defaultLocale', data.defaultLocale))
+    if (data.defaultLocale !== undefined) {
+      // 确保 defaultLocale 是字符串
+      const defaultLocaleValue = typeof data.defaultLocale === 'string' 
+        ? data.defaultLocale 
+        : String(data.defaultLocale)
+      updatePromises.push(updateSiteSection('defaultLocale', defaultLocaleValue))
+    }
     if (data.settings) updatePromises.push(updateSiteSection('settings', data.settings))
     if (data.hero) updatePromises.push(updateSiteSection('hero', data.hero))
     if (data.advantages) updatePromises.push(updateSiteSection('advantages', data.advantages))
@@ -268,6 +288,13 @@ app.put(`${API_PREFIX}/site-data`, async (req, res) => {
 
 // PATCH /site-data/:section - 部分更新站点数据的指定部分
 app.patch(`${API_PREFIX}/site-data/:section`, async (req, res) => {
+  // 设置 CORS 头（确保在所有响应中都包含）
+  const origin = req.headers.origin
+  if (origin) {
+    res.header('Access-Control-Allow-Origin', origin)
+    res.header('Access-Control-Allow-Credentials', 'true')
+  }
+
   try {
     const { section } = req.params
     let data = req.body
@@ -284,25 +311,52 @@ app.patch(`${API_PREFIX}/site-data/:section`, async (req, res) => {
       return res.status(400).json({ error: `Invalid section: ${section}. Valid sections: ${validSections.join(', ')}` })
     }
     
-    // 验证数据是否存在
-    if (data === undefined) {
-      console.error(`No data provided for section: ${section}`)
-      return res.status(400).json({ error: `No data provided for section: ${section}` })
-    }
-    
-    // 对于 defaultLocale，确保它是字符串
-    if (section === 'defaultLocale' && typeof data !== 'string') {
-      // 如果传入的是对象，尝试提取值
+    // 对于 defaultLocale，特殊处理
+    if (section === 'defaultLocale') {
+      // defaultLocale 应该是字符串，但可能以不同格式传入
+      if (data === undefined || data === null) {
+        console.error(`No data provided for defaultLocale`)
+        return res.status(400).json({ error: 'No data provided for defaultLocale' })
+      }
+      
+      // 如果是对象，尝试提取值
       if (typeof data === 'object' && data !== null) {
-        data = Object.values(data)[0] || data
+        // 如果是数组，取第一个元素
+        if (Array.isArray(data)) {
+          data = data[0] || 'en'
+        } else {
+          // 如果是对象，尝试提取第一个值或 'value' 属性
+          data = data.value || Object.values(data)[0] || 'en'
+        }
       }
-      // 如果仍然是对象，转换为字符串
+      
+      // 确保最终是字符串
       if (typeof data !== 'string') {
-        data = String(data)
+        data = String(data).trim()
       }
+      
+      // 验证是否是有效的 locale
+      if (!data || data.length === 0) {
+        console.error(`Invalid defaultLocale value: empty string`)
+        return res.status(400).json({ error: 'defaultLocale cannot be empty' })
+      }
+      
+      console.log(`Updating defaultLocale to: "${data}"`)
+    } else {
+      // 其他 section 的验证
+      if (data === undefined) {
+        console.error(`No data provided for section: ${section}`)
+        return res.status(400).json({ error: `No data provided for section: ${section}` })
+      }
+      
+      // 检查数据是否为空对象（对于非 defaultLocale 的 section）
+      if (typeof data === 'object' && data !== null && !Array.isArray(data) && Object.keys(data).length === 0) {
+        console.error(`Attempted to update section ${section} with empty object`)
+        return res.status(400).json({ error: `Cannot update ${section} with empty data` })
+      }
+      
+      console.log(`Updating section: ${section}, data type: ${typeof data}, isArray: ${Array.isArray(data)}`)
     }
-    
-    console.log(`Updating section: ${section}, data type: ${typeof data}, isArray: ${Array.isArray(data)}, value: ${typeof data === 'string' ? data : JSON.stringify(data).substring(0, 100)}`)
     
     await updateSiteSection(section, data)
     console.log(`✅ Section ${section} updated successfully`)
