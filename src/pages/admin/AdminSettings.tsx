@@ -39,7 +39,7 @@ const settingsSchema = z.object({
 type SettingsFormValues = z.infer<typeof settingsSchema>
 
 export const AdminSettings = () => {
-  const { siteData, setSiteData } = useSiteData()
+  const { siteData, setSiteData, isLoading } = useSiteData()
   const { t } = useTranslation()
 
   const {
@@ -50,38 +50,76 @@ export const AdminSettings = () => {
   } = useForm<SettingsFormValues>({
     resolver: zodResolver(settingsSchema) as any,
     defaultValues: {
-      siteNameEn: siteData.settings.siteName.en,
-      siteNameZh: siteData.settings.siteName.zh,
-      taglineEn: siteData.settings.tagline.en,
-      taglineZh: siteData.settings.tagline.zh,
-      logoUrl: siteData.settings.logoUrl,
-      seoTitleEn: siteData.settings.seoDefaults.title.en,
-      seoTitleZh: siteData.settings.seoDefaults.title.zh,
-      seoDescEn: siteData.settings.seoDefaults.description.en,
-      seoDescZh: siteData.settings.seoDefaults.description.zh,
-      heroTitleEn: siteData.hero.title.en,
-      heroTitleZh: siteData.hero.title.zh,
-      heroSubtitleEn: siteData.hero.subtitle.en,
-      heroSubtitleZh: siteData.hero.subtitle.zh,
-      heroCtaEn: siteData.hero.ctaLabel.en,
-      heroCtaZh: siteData.hero.ctaLabel.zh,
-      heroBackgroundImage: siteData.hero.backgroundImage,
-      heroBackgroundVideo: siteData.hero.backgroundVideo ?? '',
-      phone: siteData.contact.phone,
-      email: siteData.contact.email,
-      whatsapp: siteData.contact.whatsapp,
-      addressEn: siteData.contact.address.en,
-      addressZh: siteData.contact.address.zh,
-      hoursEn: siteData.contact.hours.en,
-      hoursZh: siteData.contact.hours.zh,
-      mapLat: siteData.contact.map.lat,
-      mapLng: siteData.contact.map.lng,
-      mapZoom: siteData.contact.map.zoom,
-      socials: siteData.contact.socials
-        .map((item) => `${item.platform}|${item.url}`)
-        .join('\n')
+      siteNameEn: siteData.settings?.siteName?.en || '',
+      siteNameZh: siteData.settings?.siteName?.zh || '',
+      taglineEn: siteData.settings?.tagline?.en || '',
+      taglineZh: siteData.settings?.tagline?.zh || '',
+      logoUrl: siteData.settings?.logoUrl || '',
+      seoTitleEn: siteData.settings?.seoDefaults?.title?.en || '',
+      seoTitleZh: siteData.settings?.seoDefaults?.title?.zh || '',
+      seoDescEn: siteData.settings?.seoDefaults?.description?.en || '',
+      seoDescZh: siteData.settings?.seoDefaults?.description?.zh || '',
+      heroTitleEn: siteData.hero?.title?.en || '',
+      heroTitleZh: siteData.hero?.title?.zh || '',
+      heroSubtitleEn: siteData.hero?.subtitle?.en || '',
+      heroSubtitleZh: siteData.hero?.subtitle?.zh || '',
+      heroCtaEn: siteData.hero?.ctaLabel?.en || '',
+      heroCtaZh: siteData.hero?.ctaLabel?.zh || '',
+      heroBackgroundImage: siteData.hero?.backgroundImage || '',
+      heroBackgroundVideo: siteData.hero?.backgroundVideo || '',
+      phone: siteData.contact?.phone || '',
+      email: siteData.contact?.email || '',
+      whatsapp: siteData.contact?.whatsapp || '',
+      addressEn: siteData.contact?.address?.en || '',
+      addressZh: siteData.contact?.address?.zh || '',
+      hoursEn: siteData.contact?.hours?.en || '',
+      hoursZh: siteData.contact?.hours?.zh || '',
+      mapLat: siteData.contact?.map?.lat || 0,
+      mapLng: siteData.contact?.map?.lng || 0,
+      mapZoom: siteData.contact?.map?.zoom || 10,
+      socials: siteData.contact?.socials
+        ?.map((item) => `${item.platform}|${item.url}`)
+        .join('\n') || ''
     }
   })
+
+  // 当数据加载完成后，更新表单默认值
+  useEffect(() => {
+    if (!isLoading) {
+      reset({
+        siteNameEn: siteData.settings?.siteName?.en || '',
+        siteNameZh: siteData.settings?.siteName?.zh || '',
+        taglineEn: siteData.settings?.tagline?.en || '',
+        taglineZh: siteData.settings?.tagline?.zh || '',
+        logoUrl: siteData.settings?.logoUrl || '',
+        seoTitleEn: siteData.settings?.seoDefaults?.title?.en || '',
+        seoTitleZh: siteData.settings?.seoDefaults?.title?.zh || '',
+        seoDescEn: siteData.settings?.seoDefaults?.description?.en || '',
+        seoDescZh: siteData.settings?.seoDefaults?.description?.zh || '',
+        heroTitleEn: siteData.hero?.title?.en || '',
+        heroTitleZh: siteData.hero?.title?.zh || '',
+        heroSubtitleEn: siteData.hero?.subtitle?.en || '',
+        heroSubtitleZh: siteData.hero?.subtitle?.zh || '',
+        heroCtaEn: siteData.hero?.ctaLabel?.en || '',
+        heroCtaZh: siteData.hero?.ctaLabel?.zh || '',
+        heroBackgroundImage: siteData.hero?.backgroundImage || '',
+        heroBackgroundVideo: siteData.hero?.backgroundVideo || '',
+        phone: siteData.contact?.phone || '',
+        email: siteData.contact?.email || '',
+        whatsapp: siteData.contact?.whatsapp || '',
+        addressEn: siteData.contact?.address?.en || '',
+        addressZh: siteData.contact?.address?.zh || '',
+        hoursEn: siteData.contact?.hours?.en || '',
+        hoursZh: siteData.contact?.hours?.zh || '',
+        mapLat: siteData.contact?.map?.lat || 0,
+        mapLng: siteData.contact?.map?.lng || 0,
+        mapZoom: siteData.contact?.map?.zoom || 10,
+        socials: siteData.contact?.socials
+          ?.map((item) => `${item.platform}|${item.url}`)
+          .join('\n') || ''
+      })
+    }
+  }, [isLoading, siteData, reset])
 
   const onSubmit = async (values: SettingsFormValues): Promise<void> => {
     const socials = values.socials

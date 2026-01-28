@@ -52,18 +52,18 @@ export const Home = () => {
   const organizationSchema = {
     '@context': 'https://schema.org',
     '@type': 'Organization',
-    name: siteData.settings.siteName[locale],
+    name: siteData.settings?.siteName?.[locale] || '',
     url: `${window.location.origin}${window.location.pathname}`,
-    logo: siteData.settings.logoUrl,
+    logo: siteData.settings?.logoUrl || '',
     contactPoint: [
       {
         '@type': 'ContactPoint',
-        telephone: siteData.contact.phone,
-        email: siteData.contact.email,
+        telephone: siteData.contact?.phone || '',
+        email: siteData.contact?.email || '',
         contactType: 'sales'
       }
     ],
-    sameAs: siteData.contact.socials.map((social) => social.url)
+    sameAs: siteData.contact?.socials?.map((social) => social.url) || []
   }
 
   return (

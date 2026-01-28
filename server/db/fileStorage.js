@@ -61,6 +61,41 @@ const writeJsonFile = (filename, data) => {
   }
 }
 
+// 默认数据结构（确保所有嵌套字段都存在）
+const getDefaultSettings = () => ({
+  siteName: { en: '', zh: '' },
+  tagline: { en: '', zh: '' },
+  logoUrl: '',
+  adminPassword: '',
+  seoDefaults: {
+    title: { en: '', zh: '' },
+    description: { en: '', zh: '' }
+  },
+  twitterHandle: ''
+})
+
+const getDefaultHero = () => ({
+  title: { en: '', zh: '' },
+  subtitle: { en: '', zh: '' },
+  ctaLabel: { en: '', zh: '' },
+  backgroundImage: '',
+  backgroundVideo: ''
+})
+
+const getDefaultContact = () => ({
+  phone: '',
+  email: '',
+  whatsapp: '',
+  address: { en: '', zh: '' },
+  hours: { en: '', zh: '' },
+  map: { lat: 0, lng: 0, zoom: 10 },
+  socials: []
+})
+
+const getDefaultAbout = () => ({
+  overview: { en: '', zh: '' }
+})
+
 // 获取完整站点数据（从多个文件组装）
 export const getSiteData = async () => {
   try {
@@ -80,34 +115,54 @@ export const getSiteData = async () => {
     ] = await Promise.all([
       readJsonFile('locales.json', ['en', 'zh']),
       readJsonFile('defaultLocale.json', 'en'),
-      readJsonFile('settings.json', {}),
-      readJsonFile('hero.json', {}),
+      readJsonFile('settings.json', null),
+      readJsonFile('hero.json', null),
       readJsonFile('advantages.json', []),
       readJsonFile('partners.json', []),
       readJsonFile('tradeRegions.json', []),
       readJsonFile('categories.json', []),
       readJsonFile('featuredProductIds.json', []),
-      readJsonFile('about.json', {}),
-      readJsonFile('contact.json', {}),
-      readJsonFile('seo.json', { pages: {} })
+      readJsonFile('about.json', null),
+      readJsonFile('contact.json', null),
+      readJsonFile('seo.json', null)
     ])
 
     // 获取所有产品
     const products = await getAllProducts()
 
+    // 合并默认值，确保嵌套结构完整（深度合并）
+    const defaultSettings = getDefaultSettings()
+    const defaultHero = getDefaultHero()
+    const defaultContact = getDefaultContact()
+    const defaultAbout = getDefaultAbout()
+
+    // 深度合并函数
+    const deepMerge = (target, source) => {
+      if (!source || typeof source !== 'object') return target
+      const result = { ...target }
+      for (const key in source) {
+        if (source[key] && typeof source[key] === 'object' && !Array.isArray(source[key])) {
+          result[key] = deepMerge(result[key] || {}, source[key])
+        } else {
+          result[key] = source[key]
+        }
+      }
+      return result
+    }
+
     return {
       locales: locales || ['en', 'zh'],
       defaultLocale: defaultLocale || 'en',
-      settings: settings || {},
-      hero: hero || {},
+      settings: settings ? deepMerge(defaultSettings, settings) : defaultSettings,
+      hero: hero ? deepMerge(defaultHero, hero) : defaultHero,
       advantages: advantages || [],
       partners: partners || [],
       tradeRegions: tradeRegions || [],
       categories: categories || [],
       featuredProductIds: featuredProductIds || [],
       products: products,
-      about: about || {},
-      contact: contact || {},
+      about: about ? deepMerge(defaultAbout, about) : defaultAbout,
+      contact: contact ? deepMerge(defaultContact, contact) : defaultContact,
       seo: seo || { pages: {} }
     }
   } catch (error) {
