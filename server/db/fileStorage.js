@@ -38,21 +38,50 @@ const readJsonFile = (filename, defaultValue = null) => {
     // 对于 defaultLocale，特殊处理可能的双重序列化问题
     if (filename === 'defaultLocale.json') {
       try {
-        const parsed = JSON.parse(content)
-        // 如果解析后仍然是字符串（可能是双重序列化），再次解析
-        if (typeof parsed === 'string' && parsed.startsWith('"') && parsed.endsWith('"')) {
-          try {
-            return JSON.parse(parsed)
-          } catch {
-            // 如果再次解析失败，返回解析后的值
-            return parsed
+        // 先尝试直接解析
+        let parsed = JSON.parse(content)
+        
+        // 如果解析后仍然是字符串，检查是否是双重序列化
+        if (typeof parsed === 'string') {
+          // 检查字符串是否看起来像 JSON 字符串（以引号开头和结尾）
+          const trimmed = parsed.trim()
+          if (trimmed.startsWith('"') && trimmed.endsWith('"') && trimmed.length > 2) {
+            try {
+              // 尝试再次解析（双重序列化的情况）
+              const doubleParsed = JSON.parse(parsed)
+              if (typeof doubleParsed === 'string') {
+                console.log(`[defaultLocale] Detected double-serialized JSON, extracted: "${doubleParsed}"`)
+                return doubleParsed
+              }
+            } catch {
+              // 如果再次解析失败，可能是正常的带引号的字符串，去除外层引号
+              console.log(`[defaultLocale] Removing outer quotes from: "${parsed}"`)
+              return parsed.slice(1, -1)
+            }
           }
         }
+        
         return parsed
       } catch (error) {
         // 如果解析失败，尝试直接返回内容（去除引号）
-        console.warn(`Error parsing defaultLocale.json, trying to extract string value:`, error)
-        const trimmed = content.replace(/^["']|["']$/g, '')
+        console.warn(`[defaultLocale] Error parsing JSON, trying to extract string value:`, error.message)
+        console.warn(`[defaultLocale] Raw content:`, content)
+        
+        // 尝试多种方式提取字符串值
+        let trimmed = content.trim()
+        
+        // 去除外层引号
+        trimmed = trimmed.replace(/^["']|["']$/g, '')
+        
+        // 如果仍然包含转义引号，尝试解析
+        if (trimmed.includes('\\"')) {
+          try {
+            return JSON.parse(`"${trimmed}"`)
+          } catch {
+            // 如果还是失败，返回去除引号后的值
+          }
+        }
+        
         return trimmed || defaultValue
       }
     }

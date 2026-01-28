@@ -172,6 +172,8 @@ app.get(`${API_PREFIX}/site-data`, async (req, res) => {
     res.header('Access-Control-Allow-Origin', origin)
     res.header('Access-Control-Allow-Credentials', 'true')
   }
+  // 确保响应是 JSON 格式
+  res.setHeader('Content-Type', 'application/json')
 
   try {
     // 在 Vercel 环境下，每次请求时检查是否需要初始化
@@ -183,6 +185,46 @@ app.get(`${API_PREFIX}/site-data`, async (req, res) => {
   } catch (error) {
     console.error('Error getting site data:', error)
     res.status(500).json({ error: error.message })
+  }
+})
+
+// GET /site-data/:section - 获取站点数据的指定部分
+app.get(`${API_PREFIX}/site-data/:section`, async (req, res) => {
+  // 设置 CORS 头（确保在所有响应中都包含）
+  const origin = req.headers.origin
+  if (origin) {
+    res.header('Access-Control-Allow-Origin', origin)
+    res.header('Access-Control-Allow-Credentials', 'true')
+  }
+  // 确保响应是 JSON 格式
+  res.setHeader('Content-Type', 'application/json')
+
+  try {
+    const { section } = req.params
+    
+    // 验证 section 是否有效
+    const validSections = [
+      'settings', 'hero', 'advantages', 'partners', 'tradeRegions',
+      'categories', 'featuredProductIds', 'about', 'contact', 'seo',
+      'locales', 'defaultLocale'
+    ]
+    
+    if (!validSections.includes(section)) {
+      return res.status(400).json({ error: `Invalid section: ${section}. Valid sections: ${validSections.join(', ')}` })
+    }
+    
+    // 获取完整站点数据，然后返回指定部分
+    const siteData = await getSiteData()
+    const sectionData = siteData[section]
+    
+    if (sectionData === undefined) {
+      return res.status(404).json({ error: `Section ${section} not found` })
+    }
+    
+    res.json(sectionData)
+  } catch (error) {
+    console.error(`Error getting site section ${req.params.section}:`, error)
+    res.status(500).json({ error: error.message || 'Internal server error' })
   }
 })
 
@@ -252,9 +294,25 @@ app.put(`${API_PREFIX}/site-data`, async (req, res) => {
     res.header('Access-Control-Allow-Origin', origin)
     res.header('Access-Control-Allow-Credentials', 'true')
   }
+  // 确保响应是 JSON 格式
+  res.setHeader('Content-Type', 'application/json')
 
   try {
     const data = req.body
+    
+    // 检查请求体是否为空（可能是 Vercel 在请求体太大时没有解析 body）
+    if (!data || Object.keys(data).length === 0) {
+      return res.status(413).json({ 
+        error: 'Request too large. Vercel has a 4.5MB limit for request bodies.',
+        suggestion: 'Please use partial update methods (PATCH /site-data/:section) or file upload (POST /site-data/upload) instead.',
+        maxSize: '4.5MB',
+        alternatives: [
+          'Use PATCH /site-data/:section for individual sections',
+          'Use POST /site-data/upload for file upload (supports up to 4MB files)',
+          'Use multiple PATCH requests to update sections separately'
+        ]
+      })
+    }
     
     // 将整体数据拆分为各个部分并分别更新
     const updatePromises = []
@@ -294,7 +352,16 @@ app.put(`${API_PREFIX}/site-data`, async (req, res) => {
     res.json({ success: true, message: 'Site data updated successfully' })
   } catch (error) {
     console.error('Error updating site data:', error)
-    res.status(500).json({ error: error.message })
+    // 如果是 413 错误，提供更详细的错误信息
+    if (error.message && error.message.includes('413')) {
+      res.status(413).json({ 
+        error: 'Request too large. Please use partial update methods instead.',
+        suggestion: 'Use PATCH /site-data/:section for individual sections or POST /site-data/upload for file upload',
+        maxSize: '4.5MB'
+      })
+    } else {
+      res.status(500).json({ error: error.message || 'Internal server error' })
+    }
   }
 })
 
