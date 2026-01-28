@@ -69,10 +69,17 @@ jobs:
 
       - name: Build frontend
         env:
-          # 如果配置了生产环境 API URL，使用它；否则使用本地启动的后端
-          VITE_API_BASE_URL: ${{ secrets.VITE_API_BASE_URL || 'http://localhost:4000/api' }}
+          # 生产环境必须配置 VITE_API_BASE_URL，否则使用空字符串（会触发后备方案）
+          # 如果未配置，构建时会使用 localStorage 作为后备
+          VITE_API_BASE_URL: ${{ secrets.VITE_API_BASE_URL || '' }}
           VITE_BASE_PATH: ${{ secrets.VITE_BASE_PATH || '/XingJue/' }}
-        run: npm run build
+        run: |
+          if [ -z "$VITE_API_BASE_URL" ]; then
+            echo "⚠️  Warning: VITE_API_BASE_URL not configured. Frontend will use localStorage fallback."
+          else
+            echo "✅ Using API URL: $VITE_API_BASE_URL"
+          fi
+          npm run build
 
       - name: Stop backend server
         working-directory: ./server

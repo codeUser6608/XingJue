@@ -1,10 +1,11 @@
 // 根据环境自动选择 API 地址
 // 开发环境：http://localhost:4000/api
-// 生产环境：使用 VITE_API_BASE_URL 环境变量，如果未设置则尝试相对路径
+// 生产环境：使用 VITE_API_BASE_URL 环境变量，如果未设置则返回空（触发后备方案）
 const getApiBaseUrl = () => {
-  // 如果明确设置了环境变量，使用它
-  if (import.meta.env.VITE_API_BASE_URL) {
-    return import.meta.env.VITE_API_BASE_URL
+  // 如果明确设置了环境变量（且不为空字符串），使用它
+  const envApiUrl = import.meta.env.VITE_API_BASE_URL
+  if (envApiUrl && envApiUrl.trim() !== '') {
+    return envApiUrl.trim()
   }
   
   // 开发环境
@@ -12,9 +13,9 @@ const getApiBaseUrl = () => {
     return 'http://localhost:4000/api'
   }
   
-  // 生产环境：尝试使用相对路径（如果后端部署在同一域名下）
-  // 或者使用环境变量中配置的完整 URL
-  // 默认返回空字符串，让调用方处理
+  // 生产环境：如果未配置 API 地址，返回空字符串
+  // 这会触发后备方案（localStorage）
+  // 注意：生产环境应该配置 VITE_API_BASE_URL 指向实际的后端服务器
   return ''
 }
 

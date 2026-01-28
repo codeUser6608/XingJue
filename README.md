@@ -110,6 +110,9 @@ npm run preview
   - 或者使用环境变量：`VITE_BASE_PATH=/your-repo-name/`
 - ✅ **自动部署**：GitHub Actions 工作流已配置，推送到 main 分支即可自动部署
 - ✅ **构建输出**：构建产物输出到 `dist` 目录，符合 GitHub Pages 要求
+- ⚠️ **后端 API 配置**：生产环境必须配置 `VITE_API_BASE_URL` secret，指向实际的后端服务器地址
+  - 如果不配置，前端会使用 localStorage 作为后备（数据仅存储在浏览器本地）
+  - 配置方法：Settings > Secrets and variables > Actions > 添加 `VITE_API_BASE_URL`
 
 ### 站点类型说明
 
@@ -195,11 +198,29 @@ VITE_API_BASE_URL=http://localhost:4000/api
 
 #### 生产环境（GitHub Pages）
 
-1. 部署后端到云平台（Vercel、Render、Railway 等）
-2. 在 GitHub 仓库的 Settings > Secrets and variables > Actions 中添加：
-   - `VITE_API_BASE_URL`：后端 API 的完整 URL（例如：`https://your-api.vercel.app/api`）
+**重要**：生产环境必须配置后端 API 地址，否则前端会使用 localStorage 作为后备。
 
-详细部署说明请参考 [DEPLOYMENT.md](DEPLOYMENT.md)
+1. **部署后端到云平台**（Vercel、Render、Railway 等）
+   - 获取后端 API 的完整 URL，例如：`https://your-api.vercel.app/api`
+
+2. **配置 GitHub Secrets**：
+   - 进入 GitHub 仓库：Settings > Secrets and variables > Actions
+   - 点击 "New repository secret"
+   - 添加以下 secret：
+     - **Name**: `VITE_API_BASE_URL`
+     - **Value**: 你的后端 API 完整 URL（例如：`https://your-api.vercel.app/api`）
+   - 点击 "Add secret" 保存
+
+3. **重新触发部署**：
+   - 推送代码到 `main` 分支，或
+   - 在 Actions 页面手动触发 workflow
+
+4. **验证配置**：
+   - 部署完成后，打开浏览器开发者工具
+   - 检查 Network 标签，确认 API 请求指向正确的后端地址
+   - 如果看到 `localhost:4000`，说明 `VITE_API_BASE_URL` 未正确配置
+
+**注意**：如果不配置 `VITE_API_BASE_URL`，前端会自动使用 localStorage 作为后备，数据仅存储在浏览器本地，不会同步到服务器。
 
 ### 数据存储说明
 
