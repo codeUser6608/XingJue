@@ -70,7 +70,92 @@ export const api = {
       body: JSON.stringify(data),
     })
     if (!response.ok) {
+      if (response.status === 413) {
+        throw new Error('Request too large. Please use partial update methods instead.')
+      }
       throw new Error(`Failed to update site data: ${response.statusText}`)
+    }
+    return response.json()
+  },
+
+  // 部分更新站点数据的指定部分
+  async updateSiteSection(section: string, data: unknown) {
+    const url = buildApiUrl(`/site-data/${section}`)
+    if (!url) {
+      throw new Error('API_BASE_URL not configured')
+    }
+    const response = await fetch(url, {
+      method: 'PATCH',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(data),
+    })
+    if (!response.ok) {
+      throw new Error(`Failed to update ${section}: ${response.statusText}`)
+    }
+    return response.json()
+  },
+
+  // 产品 CRUD
+  async getProduct(id: string) {
+    const url = buildApiUrl(`/site-data/products/${id}`)
+    if (!url) {
+      throw new Error('API_BASE_URL not configured')
+    }
+    const response = await fetch(url)
+    if (!response.ok) {
+      throw new Error(`Failed to fetch product: ${response.statusText}`)
+    }
+    return response.json()
+  },
+
+  async upsertProduct(product: unknown) {
+    const url = buildApiUrl('/site-data/products')
+    if (!url) {
+      throw new Error('API_BASE_URL not configured')
+    }
+    const response = await fetch(url, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(product),
+    })
+    if (!response.ok) {
+      throw new Error(`Failed to upsert product: ${response.statusText}`)
+    }
+    return response.json()
+  },
+
+  async updateProduct(id: string, updates: unknown) {
+    const url = buildApiUrl(`/site-data/products/${id}`)
+    if (!url) {
+      throw new Error('API_BASE_URL not configured')
+    }
+    const response = await fetch(url, {
+      method: 'PATCH',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(updates),
+    })
+    if (!response.ok) {
+      throw new Error(`Failed to update product: ${response.statusText}`)
+    }
+    return response.json()
+  },
+
+  async deleteProduct(id: string) {
+    const url = buildApiUrl(`/site-data/products/${id}`)
+    if (!url) {
+      throw new Error('API_BASE_URL not configured')
+    }
+    const response = await fetch(url, {
+      method: 'DELETE',
+    })
+    if (!response.ok) {
+      throw new Error(`Failed to delete product: ${response.statusText}`)
     }
     return response.json()
   },

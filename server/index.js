@@ -1,70 +1,57 @@
 import express from 'express'
 import cors from 'cors'
-import { readFileSync, writeFileSync, existsSync, mkdirSync } from 'fs'
+import { readFileSync, existsSync } from 'fs'
 import { fileURLToPath } from 'url'
 import { dirname, join } from 'path'
-import { randomUUID } from 'crypto'
+import {
+  getSiteData,
+  updateSiteSection,
+  getProduct,
+  getAllProducts,
+  upsertProduct,
+  deleteProduct,
+  getInquiries,
+  createInquiry,
+  updateInquiry,
+  initializeDefaultData
+} from './db/fileStorage.js'
 
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = dirname(__filename)
 
 const app = express()
 const PORT = process.env.PORT || 4000
-
-// Vercel Serverless Functions 环境：使用 /tmp 目录（可写）
-// 本地开发环境：使用项目目录
 const isVercel = process.env.VERCEL === '1'
-const DATA_DIR = isVercel ? '/tmp/xingjue-data' : join(__dirname, 'data')
-const SITE_DATA_FILE = join(DATA_DIR, 'site-data.json')
-const INQUIRIES_FILE = join(DATA_DIR, 'inquiries.json')
 
-// 确保数据目录存在
-if (!existsSync(DATA_DIR)) {
+// 初始化默认数据（如果文件不存在）
+const initDefaultDataIfNeeded = async () => {
   try {
-    mkdirSync(DATA_DIR, { recursive: true })
-  } catch (error) {
-    console.error('Failed to create data directory:', error)
-  }
-}
-
-// 初始化数据文件（如果不存在）
-const initDataFiles = () => {
-  try {
-    if (!existsSync(SITE_DATA_FILE)) {
-      // 尝试从前端复制初始数据
-      try {
-        const defaultSiteData = readFileSync(join(__dirname, '../src/data/site-data.json'), 'utf-8')
-        writeFileSync(SITE_DATA_FILE, defaultSiteData, 'utf-8')
-        console.log('Initialized site-data.json from template')
-      } catch (error) {
-        // 如果无法读取模板文件，使用默认空数据
-        console.warn('Could not read template file, using default data:', error.message)
-        const defaultData = {
-          featuredProductIds: [],
-          products: [],
-          categories: [],
-          about: { overview: { en: '', zh: '' } },
-          contact: { email: '', phone: '', address: { en: '', zh: '' }, socials: [] },
-          seo: { pages: {} },
-          settings: { siteName: { en: '', zh: '' }, logoUrl: '' }
-        }
-        writeFileSync(SITE_DATA_FILE, JSON.stringify(defaultData, null, 2), 'utf-8')
+    // 检查是否已初始化
+    const siteData = await getSiteData()
+    if (siteData && siteData.settings && Object.keys(siteData.settings).length > 0) {
+      console.log('Data already initialized in file storage')
+      return
+    }
+    
+    // 尝试从模板文件读取
+    try {
+      const templatePath = join(__dirname, '../src/data/site-data.json')
+      if (existsSync(templatePath)) {
+        const defaultData = JSON.parse(readFileSync(templatePath, 'utf-8'))
+        await initializeDefaultData(defaultData)
+        console.log('Initialized default data from template')
       }
-    }
-
-    if (!existsSync(INQUIRIES_FILE)) {
-      writeFileSync(INQUIRIES_FILE, JSON.stringify([], null, 2), 'utf-8')
-      console.log('Initialized inquiries.json')
+    } catch (error) {
+      console.warn('Could not read template file:', error.message)
     }
   } catch (error) {
-    console.error('Error initializing data files:', error)
-    // 在 Serverless 环境中，如果无法写入文件，使用内存存储
+    console.error('Error initializing default data:', error)
   }
 }
 
-// 仅在非 Serverless 环境或可以写入时初始化
-if (!isVercel || existsSync('/tmp')) {
-  initDataFiles()
+// 异步初始化（不阻塞服务器启动）
+if (!isVercel) {
+  initDefaultDataIfNeeded().catch(console.error)
 }
 
 // 中间件
@@ -93,102 +80,8 @@ app.use(cors({
   },
   credentials: true
 }))
-app.use(express.json({ limit: '10mb' }))
-
-// 内存存储（作为后备，用于 Serverless 环境）
-let memoryStore = {
-  siteData: null,
-  inquiries: []
-}
-
-// 读取站点数据
-const readSiteData = () => {
-  try {
-    if (existsSync(SITE_DATA_FILE)) {
-      const data = readFileSync(SITE_DATA_FILE, 'utf-8')
-      const parsed = JSON.parse(data)
-      memoryStore.siteData = parsed // 缓存到内存
-      return parsed
-    } else if (memoryStore.siteData) {
-      // 如果文件不存在但内存中有数据，使用内存数据
-      return memoryStore.siteData
-    } else {
-      // 尝试从模板文件读取
-      try {
-        const defaultData = readFileSync(join(__dirname, '../src/data/site-data.json'), 'utf-8')
-        const parsed = JSON.parse(defaultData)
-        memoryStore.siteData = parsed
-        return parsed
-      } catch {
-        throw new Error('No site data available')
-      }
-    }
-  } catch (error) {
-    console.error('Error reading site data:', error)
-    if (memoryStore.siteData) {
-      return memoryStore.siteData
-    }
-    throw new Error('Failed to read site data')
-  }
-}
-
-// 保存站点数据
-const saveSiteData = (data) => {
-  try {
-    // 先保存到内存
-    memoryStore.siteData = data
-    // 尝试保存到文件
-    try {
-      writeFileSync(SITE_DATA_FILE, JSON.stringify(data, null, 2), 'utf-8')
-    } catch (fileError) {
-      console.warn('Could not save to file, using memory storage:', fileError.message)
-      // 在 Serverless 环境中，如果无法写入文件，仅使用内存存储
-    }
-    return true
-  } catch (error) {
-    console.error('Error saving site data:', error)
-    throw new Error('Failed to save site data')
-  }
-}
-
-// 读取询盘数据
-const readInquiries = () => {
-  try {
-    if (existsSync(INQUIRIES_FILE)) {
-      const data = readFileSync(INQUIRIES_FILE, 'utf-8')
-      const parsed = JSON.parse(data)
-      memoryStore.inquiries = parsed // 缓存到内存
-      return parsed
-    } else if (memoryStore.inquiries.length > 0) {
-      // 如果文件不存在但内存中有数据，使用内存数据
-      return memoryStore.inquiries
-    } else {
-      return []
-    }
-  } catch (error) {
-    console.error('Error reading inquiries:', error)
-    return memoryStore.inquiries || []
-  }
-}
-
-// 保存询盘数据
-const saveInquiries = (inquiries) => {
-  try {
-    // 先保存到内存
-    memoryStore.inquiries = inquiries
-    // 尝试保存到文件
-    try {
-      writeFileSync(INQUIRIES_FILE, JSON.stringify(inquiries, null, 2), 'utf-8')
-    } catch (fileError) {
-      console.warn('Could not save to file, using memory storage:', fileError.message)
-      // 在 Serverless 环境中，如果无法写入文件，仅使用内存存储
-    }
-    return true
-  } catch (error) {
-    console.error('Error saving inquiries:', error)
-    throw new Error('Failed to save inquiries')
-  }
-}
+// 增加请求体大小限制到 50mb（用于整体更新，但推荐使用部分更新）
+app.use(express.json({ limit: '50mb' }))
 
 // API 路由
 // 在 Vercel 中，所有请求都路由到根路径，所以不需要 /api 前缀
@@ -206,80 +99,176 @@ app.get(`${API_PREFIX}/health`, (req, res) => {
 })
 
 // GET /site-data - 获取站点数据
-app.get(`${API_PREFIX}/site-data`, (req, res) => {
+app.get(`${API_PREFIX}/site-data`, async (req, res) => {
   try {
-    const data = readSiteData()
+    const data = await getSiteData()
     res.json(data)
   } catch (error) {
+    console.error('Error getting site data:', error)
     res.status(500).json({ error: error.message })
   }
 })
 
-// PUT /site-data - 更新站点数据
-app.put(`${API_PREFIX}/site-data`, (req, res) => {
+// PUT /site-data - 整体更新站点数据（向后兼容，不推荐，可能遇到 413 错误）
+app.put(`${API_PREFIX}/site-data`, async (req, res) => {
   try {
     const data = req.body
-    saveSiteData(data)
+    
+    // 将整体数据拆分为各个部分并分别更新
+    const updatePromises = []
+    
+    if (data.locales !== undefined) updatePromises.push(updateSiteSection('locales', data.locales))
+    if (data.defaultLocale !== undefined) updatePromises.push(updateSiteSection('defaultLocale', data.defaultLocale))
+    if (data.settings) updatePromises.push(updateSiteSection('settings', data.settings))
+    if (data.hero) updatePromises.push(updateSiteSection('hero', data.hero))
+    if (data.advantages) updatePromises.push(updateSiteSection('advantages', data.advantages))
+    if (data.partners) updatePromises.push(updateSiteSection('partners', data.partners))
+    if (data.tradeRegions) updatePromises.push(updateSiteSection('tradeRegions', data.tradeRegions))
+    if (data.categories) updatePromises.push(updateSiteSection('categories', data.categories))
+    if (data.featuredProductIds) updatePromises.push(updateSiteSection('featuredProductIds', data.featuredProductIds))
+    if (data.about) updatePromises.push(updateSiteSection('about', data.about))
+    if (data.contact) updatePromises.push(updateSiteSection('contact', data.contact))
+    if (data.seo) updatePromises.push(updateSiteSection('seo', data.seo))
+    
+    // 更新产品
+    if (data.products && Array.isArray(data.products)) {
+      for (const product of data.products) {
+        updatePromises.push(upsertProduct(product))
+      }
+    }
+    
+    await Promise.all(updatePromises)
+    
     res.json({ success: true, message: 'Site data updated successfully' })
   } catch (error) {
+    console.error('Error updating site data:', error)
+    res.status(500).json({ error: error.message })
+  }
+})
+
+// PATCH /site-data/:section - 部分更新站点数据的指定部分
+app.patch(`${API_PREFIX}/site-data/:section`, async (req, res) => {
+  try {
+    const { section } = req.params
+    const data = req.body
+    
+    const validSections = [
+      'settings', 'hero', 'advantages', 'partners', 'tradeRegions',
+      'categories', 'featuredProductIds', 'about', 'contact', 'seo',
+      'locales', 'defaultLocale'
+    ]
+    
+    if (!validSections.includes(section)) {
+      return res.status(400).json({ error: `Invalid section: ${section}` })
+    }
+    
+    await updateSiteSection(section, data)
+    res.json({ success: true, message: `${section} updated successfully` })
+  } catch (error) {
+    console.error(`Error updating site section ${req.params.section}:`, error)
+    res.status(500).json({ error: error.message })
+  }
+})
+
+// GET /site-data/products/:id - 获取单个产品
+app.get(`${API_PREFIX}/site-data/products/:id`, async (req, res) => {
+  try {
+    const { id } = req.params
+    const product = await getProduct(id)
+    
+    if (!product) {
+      return res.status(404).json({ error: 'Product not found' })
+    }
+    
+    res.json(product)
+  } catch (error) {
+    console.error(`Error getting product ${req.params.id}:`, error)
+    res.status(500).json({ error: error.message })
+  }
+})
+
+// POST /site-data/products - 创建产品
+app.post(`${API_PREFIX}/site-data/products`, async (req, res) => {
+  try {
+    const product = req.body
+    const newProduct = await upsertProduct(product)
+    res.status(201).json(newProduct)
+  } catch (error) {
+    console.error('Error creating product:', error)
+    res.status(500).json({ error: error.message })
+  }
+})
+
+// PATCH /site-data/products/:id - 更新产品
+app.patch(`${API_PREFIX}/site-data/products/:id`, async (req, res) => {
+  try {
+    const { id } = req.params
+    const updates = req.body
+    
+    const existingProduct = await getProduct(id)
+    if (!existingProduct) {
+      return res.status(404).json({ error: 'Product not found' })
+    }
+    
+    const updatedProduct = { ...existingProduct, ...updates, id }
+    const result = await upsertProduct(updatedProduct)
+    res.json(result)
+  } catch (error) {
+    console.error(`Error updating product ${req.params.id}:`, error)
+    res.status(500).json({ error: error.message })
+  }
+})
+
+// DELETE /site-data/products/:id - 删除产品
+app.delete(`${API_PREFIX}/site-data/products/:id`, async (req, res) => {
+  try {
+    const { id } = req.params
+    await deleteProduct(id)
+    res.json({ success: true, message: 'Product deleted successfully' })
+  } catch (error) {
+    console.error(`Error deleting product ${req.params.id}:`, error)
     res.status(500).json({ error: error.message })
   }
 })
 
 // GET /inquiries - 获取所有询盘
-app.get(`${API_PREFIX}/inquiries`, (req, res) => {
+app.get(`${API_PREFIX}/inquiries`, async (req, res) => {
   try {
-    const inquiries = readInquiries()
+    const inquiries = await getInquiries()
     res.json(inquiries)
   } catch (error) {
+    console.error('Error getting inquiries:', error)
     res.status(500).json({ error: error.message })
   }
 })
 
 // POST /inquiries - 创建新询盘
-app.post(`${API_PREFIX}/inquiries`, (req, res) => {
+app.post(`${API_PREFIX}/inquiries`, async (req, res) => {
   try {
     const inquiry = req.body
-    const inquiries = readInquiries()
-    
-    // 生成 ID 和时间戳
-    const id = randomUUID()
-    
-    const newInquiry = {
-      ...inquiry,
-      id,
-      createdAt: new Date().toISOString(),
-      status: 'new'
-    }
-    
-    inquiries.unshift(newInquiry) // 添加到开头
-    saveInquiries(inquiries)
-    
+    const newInquiry = await createInquiry(inquiry)
     res.status(201).json(newInquiry)
   } catch (error) {
+    console.error('Error creating inquiry:', error)
     res.status(500).json({ error: error.message })
   }
 })
 
-// PATCH /inquiries/:id - 更新询盘状态
-app.patch(`${API_PREFIX}/inquiries/:id`, (req, res) => {
+// PATCH /inquiries/:id - 更新询盘
+app.patch(`${API_PREFIX}/inquiries/:id`, async (req, res) => {
   try {
     const { id } = req.params
-    const { status } = req.body
+    const updates = req.body
     
-    const inquiries = readInquiries()
-    const index = inquiries.findIndex(inq => inq.id === id)
-    
-    if (index === -1) {
-      return res.status(404).json({ error: 'Inquiry not found' })
-    }
-    
-    inquiries[index] = { ...inquiries[index], status }
-    saveInquiries(inquiries)
-    
-    res.json(inquiries[index])
+    const updatedInquiry = await updateInquiry(id, updates)
+    res.json(updatedInquiry)
   } catch (error) {
-    res.status(500).json({ error: error.message })
+    console.error(`Error updating inquiry ${req.params.id}:`, error)
+    if (error.message === 'Inquiry not found') {
+      res.status(404).json({ error: error.message })
+    } else {
+      res.status(500).json({ error: error.message })
+    }
   }
 })
 

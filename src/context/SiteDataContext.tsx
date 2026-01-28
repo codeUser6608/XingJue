@@ -137,20 +137,35 @@ export const SiteDataProvider = ({ children }: { children: ReactNode }) => {
 
   const upsertProduct = async (product: Product) => {
     try {
-      const existingIndex = siteData.products.findIndex((item) => item.id === product.id)
-      const products =
-        existingIndex >= 0
-          ? siteData.products.map((item) => (item.id === product.id ? product : item))
-          : [product, ...siteData.products]
-      const next = { ...siteData, products }
-      setSiteDataState(next)
-      // 先保存到 localStorage
-      saveDataToStorage(next)
-      // 尝试保存到服务器
+      // 使用新的部分更新 API（只更新单个产品）
       try {
-        await api.updateSiteData(next)
+        await api.upsertProduct(product)
+        // 更新本地状态
+        const existingIndex = siteData.products.findIndex((item) => item.id === product.id)
+        const products =
+          existingIndex >= 0
+            ? siteData.products.map((item) => (item.id === product.id ? product : item))
+            : [product, ...siteData.products]
+        const next = { ...siteData, products }
+        setSiteDataState(next)
+        // 同步到 localStorage
+        saveDataToStorage(next)
       } catch (serverError) {
-        console.warn('Failed to save product to server, saved to localStorage:', serverError)
+        // 如果服务器更新失败，回退到整体更新（向后兼容）
+        console.warn('Partial update failed, falling back to full update:', serverError)
+        const existingIndex = siteData.products.findIndex((item) => item.id === product.id)
+        const products =
+          existingIndex >= 0
+            ? siteData.products.map((item) => (item.id === product.id ? product : item))
+            : [product, ...siteData.products]
+        const next = { ...siteData, products }
+        setSiteDataState(next)
+        saveDataToStorage(next)
+        try {
+          await api.updateSiteData(next)
+        } catch (fallbackError) {
+          console.warn('Failed to save product to server, saved to localStorage:', fallbackError)
+        }
       }
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : 'Failed to save product'
@@ -161,15 +176,25 @@ export const SiteDataProvider = ({ children }: { children: ReactNode }) => {
 
   const deleteProduct = async (productId: string) => {
     try {
-      const next = { ...siteData, products: siteData.products.filter((item) => item.id !== productId) }
-      setSiteDataState(next)
-      // 先保存到 localStorage
-      saveDataToStorage(next)
-      // 尝试保存到服务器
+      // 使用新的删除 API
       try {
-        await api.updateSiteData(next)
+        await api.deleteProduct(productId)
+        // 更新本地状态
+        const next = { ...siteData, products: siteData.products.filter((item) => item.id !== productId) }
+        setSiteDataState(next)
+        // 同步到 localStorage
+        saveDataToStorage(next)
       } catch (serverError) {
-        console.warn('Failed to delete product on server, saved to localStorage:', serverError)
+        // 如果服务器删除失败，回退到整体更新（向后兼容）
+        console.warn('Partial delete failed, falling back to full update:', serverError)
+        const next = { ...siteData, products: siteData.products.filter((item) => item.id !== productId) }
+        setSiteDataState(next)
+        saveDataToStorage(next)
+        try {
+          await api.updateSiteData(next)
+        } catch (fallbackError) {
+          console.warn('Failed to delete product on server, saved to localStorage:', fallbackError)
+        }
       }
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : 'Failed to delete product'

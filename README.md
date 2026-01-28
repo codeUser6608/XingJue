@@ -238,9 +238,22 @@ VITE_API_BASE_URL=http://localhost:4000/api
 
 ### 数据存储说明
 
-- **开发环境**：数据存储在 `server/data/` 目录
-- **生产环境**：根据部署平台不同，可能需要使用数据库
+- **开发环境**：数据存储在 `server/data/` 目录，分为多个 JSON 文件
+  - `settings.json` - 站点设置
+  - `categories.json` - 分类
+  - `products/{id}.json` - 每个产品单独文件
+  - `inquiries/{id}.json` - 每个询盘单独文件
+  - 等等...
+- **生产环境（Vercel）**：数据存储在 `/tmp/xingjue-data/` 目录
+  - ⚠️ **注意**：Vercel Serverless Functions 的 `/tmp` 目录在函数重启后会被清空
+  - 如果需要持久化，建议使用外部存储服务或定期备份
 - **后备方案**：如果 API 不可用，前端会自动使用 localStorage 作为后备
+
+### 数据更新方式
+
+- **部分更新**：使用 `PATCH /site-data/:section` 更新指定部分（推荐，避免 413 错误）
+- **整体更新**：使用 `PUT /site-data` 整体替换（向后兼容，但可能遇到 413 错误）
+- **产品操作**：使用 `POST/PATCH/DELETE /site-data/products/:id` 进行产品 CRUD
 
 详细说明请参考 [server/README.md](server/README.md)
 

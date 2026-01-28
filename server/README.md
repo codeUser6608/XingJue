@@ -36,9 +36,36 @@ npm run dev
 
 ## 数据存储
 
-数据存储在 `server/data/` 目录：
-- `site-data.json` - 站点配置和产品数据
-- `inquiries.json` - 询盘数据
+数据存储在文件系统中，分为多个 JSON 文件：
+
+### 文件结构
+
+```
+server/data/  (本地开发) 或 /tmp/xingjue-data/ (Vercel)
+├── settings.json           - 站点设置
+├── hero.json               - 首页内容
+├── categories.json         - 分类
+├── featuredProductIds.json - 精选产品 ID 列表
+├── about.json              - 关于我们
+├── contact.json            - 联系方式
+├── seo.json                - SEO 配置
+├── productIds.json         - 所有产品 ID 列表
+├── products/               - 产品目录
+│   ├── {product-id}.json   - 每个产品单独文件
+├── inquiryIds.json         - 所有询盘 ID 列表
+└── inquiries/              - 询盘目录
+    ├── {inquiry-id}.json   - 每个询盘单独文件
+```
+
+### 存储位置
+
+- **本地开发**：`server/data/` 目录
+- **Vercel 生产环境**：`/tmp/xingjue-data/` 目录
+
+⚠️ **重要**：Vercel Serverless Functions 的 `/tmp` 目录在函数重启后会被清空。如果需要持久化，建议：
+- 使用外部存储服务（如 Vercel Blob Storage）
+- 定期备份数据
+- 或使用数据库服务
 
 首次运行时会自动从前端模板文件初始化数据。
 
