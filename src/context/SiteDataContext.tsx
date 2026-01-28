@@ -304,8 +304,52 @@ export const SiteDataProvider = ({ children }: { children: ReactNode }) => {
           await api.uploadSiteData(file)
           console.log('✅ Data successfully uploaded to server via file upload')
         } catch (uploadError) {
-          console.error('Failed to upload file:', uploadError)
-          throw new Error(`文件上传失败: ${uploadError instanceof Error ? uploadError.message : 'Unknown error'}`)
+          // 如果文件上传失败（可能是 413 或 CORS），自动回退到部分更新方式
+          const errorMessage = uploadError instanceof Error ? uploadError.message : 'Unknown error'
+          const is413Error = errorMessage.includes('413') || 
+                            errorMessage.includes('Content Too Large') ||
+                            errorMessage.includes('文件太大')
+          const isNetworkError = uploadError instanceof TypeError && 
+                                (errorMessage.includes('Failed to fetch') || 
+                                 errorMessage.includes('网络错误'))
+          
+          if (is413Error || isNetworkError) {
+            console.warn('File upload failed, falling back to partial updates:', uploadError)
+            // 回退到部分更新方式
+            try {
+              // 分别更新各个部分
+              await Promise.all([
+                api.updateSiteSection('locales', data.locales),
+                api.updateSiteSection('defaultLocale', data.defaultLocale),
+                api.updateSiteSection('settings', data.settings),
+                api.updateSiteSection('hero', data.hero),
+                api.updateSiteSection('advantages', data.advantages),
+                api.updateSiteSection('partners', data.partners),
+                api.updateSiteSection('tradeRegions', data.tradeRegions),
+                api.updateSiteSection('categories', data.categories),
+                api.updateSiteSection('featuredProductIds', data.featuredProductIds),
+                api.updateSiteSection('about', data.about),
+                api.updateSiteSection('contact', data.contact),
+                api.updateSiteSection('seo', data.seo)
+              ])
+              
+              // 分批更新产品（避免一次性更新太多）
+              const batchSize = 10
+              for (let i = 0; i < data.products.length; i += batchSize) {
+                const batch = data.products.slice(i, i + batchSize)
+                await Promise.all(batch.map(product => api.upsertProduct(product)))
+              }
+              
+              console.log('✅ Data successfully saved to server using partial updates (fallback)')
+            } catch (partialError) {
+              console.error('Failed to import using partial updates:', partialError)
+              throw new Error(`文件上传失败，且部分更新也失败: ${partialError instanceof Error ? partialError.message : 'Unknown error'}`)
+            }
+          } else {
+            // 其他错误，直接抛出
+            console.error('Failed to upload file:', uploadError)
+            throw new Error(`文件上传失败: ${errorMessage}`)
+          }
         }
       } else {
         // 如果没有文件，使用原来的方式（向后兼容）

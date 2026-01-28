@@ -72,8 +72,51 @@ export const AdminDataSync = () => {
       return
     }
 
+    // 检查文件大小（Vercel 限制约 4.5MB）
+    const MAX_FILE_SIZE = 4 * 1024 * 1024 // 4MB，留一些余量
+    if (file.size > MAX_FILE_SIZE) {
+      // 文件太大，使用解析后部分更新的方式
+      try {
+        setIsImporting(true)
+        toast.loading('文件较大，使用分块上传方式...', { id: 'upload-progress' })
+        
+        // 读取文件内容并验证
+        const text = await file.text()
+        const data = JSON.parse(text)
+        const parsed = siteDataSchema.parse(data)
+        // 确保 locales 是正确的类型
+        const typedData = {
+          ...parsed,
+          locales: parsed.locales as ('en' | 'zh')[],
+          defaultLocale: parsed.defaultLocale as 'en' | 'zh'
+        }
+        
+        // 使用部分更新方式导入（不传 file 参数）
+        await importSiteData(typedData as SiteData)
+        setPreview(JSON.stringify(typedData, null, 2))
+        toast.success(t('misc.updated'), { id: 'upload-progress' })
+      } catch (error) {
+        toast.error(
+          error instanceof Error && error.message.includes('Failed to')
+            ? error.message
+            : t('admin.dataSync.invalidJson'),
+          { id: 'upload-progress' }
+        )
+      } finally {
+        setIsImporting(false)
+        // 清空文件选择
+        if (fileInputRef.current) {
+          fileInputRef.current.value = ''
+        }
+      }
+      return
+    }
+
+    // 文件较小，尝试直接上传
     try {
       setIsImporting(true)
+      toast.loading('正在上传文件...', { id: 'upload-progress' })
+      
       // 读取文件内容并验证
       const text = await file.text()
       const data = JSON.parse(text)
@@ -85,21 +128,31 @@ export const AdminDataSync = () => {
         defaultLocale: parsed.defaultLocale as 'en' | 'zh'
       }
       
-      // 使用文件上传方式导入
-      await importSiteData(typedData as SiteData, file)
-      setPreview(JSON.stringify(typedData, null, 2))
-      toast.success(t('misc.updated'))
+      // 尝试使用文件上传方式导入
+      try {
+        await importSiteData(typedData as SiteData, file)
+        setPreview(JSON.stringify(typedData, null, 2))
+        toast.success(t('misc.updated'), { id: 'upload-progress' })
+      } catch (uploadError) {
+        // 如果上传失败（可能是 413 或其他错误），回退到部分更新方式
+        console.warn('File upload failed, falling back to partial updates:', uploadError)
+        toast.loading('上传失败，改用分块上传方式...', { id: 'upload-progress' })
+        await importSiteData(typedData as SiteData) // 不传 file，使用部分更新
+        setPreview(JSON.stringify(typedData, null, 2))
+        toast.success(t('misc.updated'), { id: 'upload-progress' })
+      }
       
       // 清空文件选择
       if (fileInputRef.current) {
         fileInputRef.current.value = ''
       }
     } catch (error) {
-      if (error instanceof Error && error.message.includes('Failed to')) {
-        toast.error(error.message)
-      } else {
-        toast.error(t('admin.dataSync.invalidJson'))
-      }
+      toast.error(
+        error instanceof Error && error.message.includes('Failed to')
+          ? error.message
+          : t('admin.dataSync.invalidJson'),
+        { id: 'upload-progress' }
+      )
     } finally {
       setIsImporting(false)
     }

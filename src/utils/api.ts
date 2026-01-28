@@ -90,6 +90,7 @@ export const api = {
   },
 
   // 通过文件上传更新站点数据（推荐方式，避免 413 错误）
+  // 注意：如果文件超过 4MB，建议使用部分更新方式
   async uploadSiteData(file: File) {
     const url = buildApiUrl('/site-data/upload')
     if (!url) {
@@ -98,15 +99,27 @@ export const api = {
     const formData = new FormData()
     formData.append('file', file)
     
-    const response = await fetch(url, {
-      method: 'POST',
-      body: formData,
-    })
-    if (!response.ok) {
-      const errorText = await response.text().catch(() => response.statusText)
-      throw new Error(`Failed to upload site data: ${response.status} ${errorText}`)
+    try {
+      const response = await fetch(url, {
+        method: 'POST',
+        body: formData,
+      })
+      if (!response.ok) {
+        // 如果是 413 错误，提供更友好的错误信息
+        if (response.status === 413) {
+          throw new Error('413 Content Too Large: 文件太大，请使用部分更新方式或减小文件大小')
+        }
+        const errorText = await response.text().catch(() => response.statusText)
+        throw new Error(`Failed to upload site data: ${response.status} ${errorText}`)
+      }
+      return response.json()
+    } catch (error) {
+      // 如果是网络错误（可能是 CORS 或 413），提供更详细的错误信息
+      if (error instanceof TypeError && error.message.includes('Failed to fetch')) {
+        throw new Error('网络错误：可能是 CORS 问题或文件太大。请尝试使用部分更新方式。')
+      }
+      throw error
     }
-    return response.json()
   },
 
   // 部分更新站点数据的指定部分

@@ -121,11 +121,11 @@ app.use((req, res, next) => {
 // 增加请求体大小限制到 50mb（用于整体更新，但推荐使用部分更新）
 app.use(express.json({ limit: '50mb' }))
 
-// 配置 multer 用于文件上传（内存存储，最大 50MB）
+// 配置 multer 用于文件上传（内存存储，最大 4MB，因为 Vercel 限制约 4.5MB）
 const upload = multer({
   storage: multer.memoryStorage(),
   limits: {
-    fileSize: 50 * 1024 * 1024 // 50MB
+    fileSize: 4 * 1024 * 1024 // 4MB，留一些余量给 Vercel 的限制
   },
   fileFilter: (req, file, cb) => {
     // 只接受 JSON 文件
@@ -168,7 +168,15 @@ app.get(`${API_PREFIX}/site-data`, async (req, res) => {
 })
 
 // POST /site-data/upload - 通过文件上传更新站点数据（推荐方式）
+// 注意：Vercel 对请求体大小有限制（约 4.5MB），大文件会自动使用部分更新方式
 app.post(`${API_PREFIX}/site-data/upload`, upload.single('file'), async (req, res) => {
+  // 设置 CORS 头（确保在所有响应中都包含）
+  const origin = req.headers.origin
+  if (origin) {
+    res.header('Access-Control-Allow-Origin', origin)
+    res.header('Access-Control-Allow-Credentials', 'true')
+  }
+
   try {
     if (!req.file) {
       return res.status(400).json({ error: '未上传文件' })
