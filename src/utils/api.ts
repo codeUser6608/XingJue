@@ -50,14 +50,10 @@ export const api = {
     if (!url) {
       throw new Error('API_BASE_URL not configured')
     }
-    // 添加缓存控制，确保每次都获取最新数据
+    // 使用 cache: 'no-store' 禁用缓存，确保每次都获取最新数据
+    // 不添加自定义缓存头，避免触发 CORS 预检请求
     const response = await fetch(url, {
-      cache: 'no-store', // 禁用缓存，确保获取最新数据
-      headers: {
-        'Cache-Control': 'no-cache, no-store, must-revalidate',
-        'Pragma': 'no-cache',
-        'Expires': '0'
-      }
+      cache: 'no-store'
     })
     if (!response.ok) {
       throw new Error(`Failed to fetch site data: ${response.statusText}`)
