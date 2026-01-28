@@ -31,9 +31,16 @@ const readJsonFile = (filename, defaultValue = null) => {
   try {
     const filePath = getFilePath(filename)
     if (!existsSync(filePath)) {
+      console.log(`[readJsonFile] File not found: ${filename}, returning default:`, defaultValue)
       return defaultValue
     }
     const content = readFileSync(filePath, 'utf-8').trim()
+    
+    // 如果文件内容为空，返回默认值
+    if (!content || content.length === 0) {
+      console.log(`[readJsonFile] File is empty: ${filename}, returning default:`, defaultValue)
+      return defaultValue
+    }
     
     // 对于 defaultLocale，特殊处理可能的双重序列化问题
     if (filename === 'defaultLocale.json') {

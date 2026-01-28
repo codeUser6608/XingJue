@@ -50,25 +50,47 @@ const initDefaultDataIfNeeded = async () => {
       siteData.settings.siteName.en.trim() !== ''
     
     if (hasRealData) {
-      console.log('Data already initialized in file storage')
+      console.log('✅ Data already initialized, has real content')
       return
     }
     
-    // 尝试从模板文件读取
-    try {
-      const templatePath = join(__dirname, '../src/data/site-data.json')
-      if (existsSync(templatePath)) {
-        const defaultData = JSON.parse(readFileSync(templatePath, 'utf-8'))
-        await initializeDefaultData(defaultData)
-        console.log('✅ Initialized default data from template')
-      } else {
-        console.warn('Template file not found:', templatePath)
+    console.log('⚠️ No real data found, attempting to initialize from template...')
+    
+    // 尝试从多个可能的路径读取模板文件
+    const possiblePaths = [
+      join(__dirname, '../src/data/site-data.json'), // 标准路径
+      join(__dirname, '../../src/data/site-data.json'), // Vercel 可能的路径
+      join(process.cwd(), 'src/data/site-data.json'), // 工作目录路径
+      join(process.cwd(), 'data/site-data.json') // 备用路径
+    ]
+    
+    let defaultData = null
+    let templatePath = null
+    
+    for (const path of possiblePaths) {
+      try {
+        if (existsSync(path)) {
+          console.log(`Found template file at: ${path}`)
+          defaultData = JSON.parse(readFileSync(path, 'utf-8'))
+          templatePath = path
+          break
+        }
+      } catch (error) {
+        console.warn(`Could not read template from ${path}:`, error.message)
       }
-    } catch (error) {
-      console.warn('Could not read template file:', error.message)
+    }
+    
+    if (defaultData) {
+      console.log('✅ Loading template data, initializing...')
+      await initializeDefaultData(defaultData)
+      console.log('✅ Initialized default data from template')
+    } else {
+      console.error('❌ Template file not found in any of the expected paths:', possiblePaths)
+      console.error('Will return empty data structure. Please import data via admin panel.')
     }
   } catch (error) {
     console.error('Error initializing default data:', error)
+    console.error('Stack:', error.stack)
   }
 }
 
@@ -188,7 +210,27 @@ app.get(`${API_PREFIX}/site-data`, async (req, res) => {
       await initDefaultDataIfNeeded()
     }
     const data = await getSiteData()
-    res.json(data)
+    
+    // 记录数据状态用于调试
+    const hasProducts = data?.products && data.products.length > 0
+    const hasSettings = data?.settings?.siteName?.en?.trim()
+    const hasHero = data?.hero?.title?.en?.trim()
+    
+    console.log(`[GET /site-data] Data status: products=${hasProducts ? data.products.length : 0}, hasSettings=${!!hasSettings}, hasHero=${!!hasHero}`)
+    
+    // 检查数据是否为空，如果为空且是 Vercel 环境，尝试再次初始化
+    const isEmpty = !hasProducts && !hasSettings && !hasHero
+    
+    if (isEmpty && isVercel) {
+      console.warn('⚠️ Data appears empty, attempting re-initialization...')
+      await initDefaultDataIfNeeded()
+      // 重新获取数据
+      const retryData = await getSiteData()
+      console.log(`[GET /site-data] After re-init: products=${retryData?.products?.length || 0}`)
+      res.json(retryData)
+    } else {
+      res.json(data)
+    }
   } catch (error) {
     console.error('Error getting site data:', error)
     res.status(500).json({ error: error.message })
