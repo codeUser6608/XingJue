@@ -3,8 +3,7 @@
     "home": "Home",
     "products": "Products",
     "about": "About",
-    "contact": "Contact",
-    "admin": "Admin"
+    "contact": "Contact"
   },
   "languages": {
     "en": "English",
@@ -111,115 +110,6 @@
     "whatsapp": "WhatsApp",
     "social": "Social Media"
   },
-  "admin": {
-    "loginTitle": "Admin Access",
-    "passwordLabel": "Admin Password",
-    "loginHint": "Password is stored in site-data.json",
-    "loginButton": "Enter Admin Portal",
-    "invalidPassword": "Incorrect password. Please try again.",
-    "dashboardTitle": "Admin Dashboard",
-    "nav": {
-      "products": "Products",
-      "inquiries": "Inquiries",
-      "settings": "Settings",
-      "dataSync": "Data Sync"
-    },
-    "products": {
-      "title": "Product Management",
-      "newProduct": "New Product",
-      "editProduct": "Edit Product",
-      "imageHint": "Drag image or paste URL to add gallery images.",
-      "translations": "Translation Status",
-      "deleteConfirm": "Are you sure to delete this product?",
-      "form": {
-        "id": "Product ID (slug)",
-        "sku": "SKU",
-        "nameEn": "Name (EN)",
-        "nameZh": "Name (ZH)",
-        "shortEn": "Short description (EN)",
-        "shortZh": "Short description (ZH)",
-        "descEn": "Description (EN)",
-        "descZh": "Description (ZH)",
-        "price": "Price",
-        "currency": "Currency",
-        "unitEn": "Unit (EN)",
-        "unitZh": "Unit (ZH)",
-        "moq": "MOQ",
-        "leadTimeEn": "Lead time (EN)",
-        "leadTimeZh": "Lead time (ZH)",
-        "featuresEn": "Features (EN) - one per line",
-        "featuresZh": "Features (ZH) - one per line",
-        "specLabelEn": "Label (EN)",
-        "specLabelZh": "Label (ZH)",
-        "specValueEn": "Value (EN)",
-        "specValueZh": "Value (ZH)",
-        "certifications": "Certifications (comma separated)",
-        "imagesTitle": "Images",
-        "imageUrlPlaceholder": "https://",
-        "addUrl": "Add URL",
-        "upload": "Upload",
-        "main": "Main"
-      }
-    },
-    "inquiries": {
-      "title": "Inquiry Management",
-      "export": "Export Inquiries",
-      "filters": {
-        "status": "Status",
-        "product": "Product",
-        "date": "Date"
-      }
-    },
-    "settings": {
-      "title": "Settings",
-      "heroTitle": "Hero Section",
-      "contactTitle": "Contact Information",
-      "siteTitle": "Site Information",
-      "form": {
-        "siteNameEn": "Site Name (EN)",
-        "siteNameZh": "Site Name (ZH)",
-        "taglineEn": "Tagline (EN)",
-        "taglineZh": "Tagline (ZH)",
-        "logoUrl": "Logo URL",
-        "seoTitleEn": "SEO Title (EN)",
-        "seoTitleZh": "SEO Title (ZH)",
-        "seoDescEn": "SEO Description (EN)",
-        "seoDescZh": "SEO Description (ZH)",
-        "heroTitleEn": "Hero Title (EN)",
-        "heroTitleZh": "Hero Title (ZH)",
-        "heroSubtitleEn": "Hero Subtitle (EN)",
-        "heroSubtitleZh": "Hero Subtitle (ZH)",
-        "heroCtaEn": "CTA (EN)",
-        "heroCtaZh": "CTA (ZH)",
-        "heroBackgroundImage": "Hero Background Image URL",
-        "heroBackgroundVideo": "Hero Background Video URL",
-        "phone": "Phone",
-        "email": "Email",
-        "whatsapp": "WhatsApp",
-        "addressEn": "Address (EN)",
-        "addressZh": "Address (ZH)",
-        "hoursEn": "Business Hours (EN)",
-        "hoursZh": "Business Hours (ZH)",
-        "mapLat": "Latitude",
-        "mapLng": "Longitude",
-        "mapZoom": "Zoom",
-        "socials": "Socials (Platform|URL per line)"
-      }
-    },
-    "dataSync": {
-      "title": "Data Sync",
-      "exportHint": "Download or copy the updated JSON and replace src/data/site-data.json.",
-      "importHint": "Paste JSON to validate and preview updates.",
-      "preview": "Preview",
-      "invalidJson": "Invalid JSON format."
-    },
-    "status": {
-      "new": "New",
-      "processing": "Processing",
-      "closed": "Closed"
-    },
-    "empty": "No data available."
-  },
   "validation": {
     "required": "This field is required.",
     "email": "Please enter a valid email.",
@@ -237,7 +127,6 @@
   "misc": {
     "loading": "Loading...",
     "copied": "Copied to clipboard.",
-    "updated": "Updated successfully.",
-    "inquirySent": "Inquiry sent. We will reply within 24 hours."
+    "updated": "Updated successfully."
   }
 }

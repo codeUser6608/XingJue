@@ -48,12 +48,6 @@ export const Header = () => {
               {t(link.key)}
             </NavLink>
           ))}
-          <NavLink
-            to="/admin"
-            className="rounded-full border border-white/20 px-3 py-1.5 text-xs text-white/70 transition hover:border-white/40"
-          >
-            {t('nav.admin')}
-          </NavLink>
           <LanguageSwitcher />
         </nav>
 
@@ -81,13 +75,7 @@ export const Header = () => {
               {t(link.key)}
             </NavLink>
           ))}
-          <div className="flex items-center justify-between pt-2">
-            <NavLink
-              to="/admin"
-              className="rounded-full border border-white/20 px-3 py-1.5 text-xs text-white/70 transition hover:border-white/40"
-            >
-              {t('nav.admin')}
-            </NavLink>
+          <div className="flex items-center justify-end pt-2">
             <LanguageSwitcher />
           </div>
         </div>

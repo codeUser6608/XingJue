@@ -3,8 +3,7 @@
     "home": "首页",
     "products": "产品中心",
     "about": "关于我们",
-    "contact": "联系方式",
-    "admin": "后台"
+    "contact": "联系方式"
   },
   "languages": {
     "en": "English",
@@ -111,115 +110,6 @@
     "whatsapp": "WhatsApp",
     "social": "社交媒体"
   },
-  "admin": {
-    "loginTitle": "后台登录",
-    "passwordLabel": "管理密码",
-    "loginHint": "密码存储在 site-data.json 中",
-    "loginButton": "进入后台",
-    "invalidPassword": "密码错误，请重试。",
-    "dashboardTitle": "后台总览",
-    "nav": {
-      "products": "产品管理",
-      "inquiries": "询盘管理",
-      "settings": "配置中心",
-      "dataSync": "数据同步"
-    },
-    "products": {
-      "title": "产品管理",
-      "newProduct": "新增产品",
-      "editProduct": "编辑产品",
-      "imageHint": "拖拽图片或粘贴 URL 添加图库。",
-      "translations": "翻译状态",
-      "deleteConfirm": "确定删除该产品？",
-      "form": {
-        "id": "产品 ID（slug）",
-        "sku": "SKU",
-        "nameEn": "英文名称",
-        "nameZh": "中文名称",
-        "shortEn": "英文简短描述",
-        "shortZh": "中文简短描述",
-        "descEn": "英文详细描述",
-        "descZh": "中文详细描述",
-        "price": "价格",
-        "currency": "币种",
-        "unitEn": "英文单位",
-        "unitZh": "中文单位",
-        "moq": "起订量",
-        "leadTimeEn": "英文交期",
-        "leadTimeZh": "中文交期",
-        "featuresEn": "英文特性（每行一条）",
-        "featuresZh": "中文特性（每行一条）",
-        "specLabelEn": "英文名称",
-        "specLabelZh": "中文名称",
-        "specValueEn": "英文值",
-        "specValueZh": "中文值",
-        "certifications": "认证信息（逗号分隔）",
-        "imagesTitle": "图片",
-        "imageUrlPlaceholder": "https://",
-        "addUrl": "添加链接",
-        "upload": "上传",
-        "main": "主图"
-      }
-    },
-    "inquiries": {
-      "title": "询盘管理",
-      "export": "导出询盘",
-      "filters": {
-        "status": "状态",
-        "product": "产品",
-        "date": "日期"
-      }
-    },
-    "settings": {
-      "title": "配置中心",
-      "heroTitle": "首页 Hero",
-      "contactTitle": "联系方式",
-      "siteTitle": "网站信息",
-      "form": {
-        "siteNameEn": "英文站点名称",
-        "siteNameZh": "中文站点名称",
-        "taglineEn": "英文标语",
-        "taglineZh": "中文标语",
-        "logoUrl": "Logo 链接",
-        "seoTitleEn": "英文 SEO 标题",
-        "seoTitleZh": "中文 SEO 标题",
-        "seoDescEn": "英文 SEO 描述",
-        "seoDescZh": "中文 SEO 描述",
-        "heroTitleEn": "英文 Hero 标题",
-        "heroTitleZh": "中文 Hero 标题",
-        "heroSubtitleEn": "英文 Hero 副标题",
-        "heroSubtitleZh": "中文 Hero 副标题",
-        "heroCtaEn": "英文 CTA 文案",
-        "heroCtaZh": "中文 CTA 文案",
-        "heroBackgroundImage": "Hero 背景图链接",
-        "heroBackgroundVideo": "Hero 背景视频链接",
-        "phone": "电话",
-        "email": "邮箱",
-        "whatsapp": "WhatsApp",
-        "addressEn": "英文地址",
-        "addressZh": "中文地址",
-        "hoursEn": "英文营业时间",
-        "hoursZh": "中文营业时间",
-        "mapLat": "纬度",
-        "mapLng": "经度",
-        "mapZoom": "缩放级别",
-        "socials": "社交媒体（每行：平台|链接）"
-      }
-    },
-    "dataSync": {
-      "title": "数据同步",
-      "exportHint": "下载或复制更新后的 JSON，并替换 src/data/site-data.json。",
-      "importHint": "粘贴 JSON 以验证并预览更新。",
-      "preview": "预览",
-      "invalidJson": "JSON 格式无效。"
-    },
-    "status": {
-      "new": "新询盘",
-      "processing": "跟进中",
-      "closed": "已关闭"
-    },
-    "empty": "暂无数据。"
-  },
   "validation": {
     "required": "此字段必填。",
     "email": "请输入有效的邮箱。",
@@ -237,7 +127,6 @@
   "misc": {
     "loading": "加载中...",
     "copied": "已复制到剪贴板。",
-    "updated": "更新成功。",
-    "inquirySent": "询盘已发送，我们将在 24 小时内回复。"
+    "updated": "更新成功。"
   }
 }

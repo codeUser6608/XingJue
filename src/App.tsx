@@ -9,11 +9,6 @@ import { Products } from './pages/Products'
 import { ProductDetail } from './pages/ProductDetail'
 import { About } from './pages/About'
 import { Contact } from './pages/Contact'
-import { AdminLayout } from './pages/admin/AdminLayout'
-import { AdminProducts } from './pages/admin/AdminProducts'
-import { AdminInquiries } from './pages/admin/AdminInquiries'
-import { AdminSettings } from './pages/admin/AdminSettings'
-import { AdminDataSync } from './pages/admin/AdminDataSync'
 import { setLanguageParam, getQueryLanguage } from './i18n/utils'
 import type { Locale } from './types/site'
 
@@ -47,12 +42,6 @@ const App = () => {
           <Route path="/products/:productId" element={<ProductDetail />} />
           <Route path="/about" element={<About />} />
           <Route path="/contact" element={<Contact />} />
-        </Route>
-        <Route path="/admin" element={<AdminLayout />}>
-          <Route index element={<AdminProducts />} />
-          <Route path="inquiries" element={<AdminInquiries />} />
-          <Route path="settings" element={<AdminSettings />} />
-          <Route path="data-sync" element={<AdminDataSync />} />
         </Route>
       </Routes>
       <Toaster

@@ -119,7 +119,6 @@ export interface SeoPages {
   productDetail: SeoContent
   about: SeoContent
   contact: SeoContent
-  admin: SeoContent
 }
 
 export interface SiteData {
@@ -138,18 +137,4 @@ export interface SiteData {
   seo: {
     pages: SeoPages
   }
-}
-
-export interface Inquiry {
-  id: string
-  productId?: string
-  name: string
-  email: string
-  phone?: string
-  company?: string
-  message: string
-  quantity?: number
-  locale: Locale
-  createdAt: string
-  status: 'new' | 'processing' | 'closed'
 }

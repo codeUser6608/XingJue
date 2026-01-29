@@ -1,10 +1,6 @@
 import { useEffect, useMemo, useState } from 'react'
 import { Link, useParams } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
-import { useForm } from 'react-hook-form'
-import { z } from 'zod'
-import { zodResolver } from '@hookform/resolvers/zod'
-import { toast } from 'react-hot-toast'
 import { X, ChevronLeft, ChevronRight } from 'lucide-react'
 import { useSiteData } from '../context/SiteDataContext'
 import { Seo } from '../components/common/Seo'
@@ -12,20 +8,9 @@ import { ProductCard } from '../components/products/ProductCard'
 import { formatCurrency } from '../utils/format'
 import type { Locale } from '../types/site'
 
-const inquirySchema = z.object({
-  name: z.string().min(2),
-  email: z.string().email(),
-  phone: z.string().optional(),
-  company: z.string().optional(),
-  quantity: z.string().optional(),
-  message: z.string().min(6)
-})
-
-type InquiryFormValues = z.infer<typeof inquirySchema>
-
 export const ProductDetail = () => {
   const { productId } = useParams()
-  const { siteData, addInquiry } = useSiteData()
+  const { siteData } = useSiteData()
   const { t, i18n } = useTranslation()
   const locale = i18n.language as Locale
 
@@ -95,15 +80,6 @@ export const ProductDetail = () => {
       .slice(0, 3)
   }, [product, siteData.products])
 
-  const {
-    register,
-    handleSubmit,
-    formState: { errors },
-    reset
-  } = useForm<InquiryFormValues>({
-    resolver: zodResolver(inquirySchema)
-  })
-
   const productSchema = product
     ? {
         '@context': 'https://schema.org',
@@ -136,25 +112,6 @@ export const ProductDetail = () => {
         </div>
       </section>
     )
-  }
-
-  const onSubmit = async (values: InquiryFormValues) => {
-    try {
-      await addInquiry({
-      productId: product.id,
-      name: values.name,
-      email: values.email,
-      phone: values.phone,
-      company: values.company,
-      message: values.message,
-      quantity: values.quantity ? Number(values.quantity) : undefined,
-      locale
-    })
-    toast.success(t('misc.inquirySent'))
-    reset()
-    } catch (error) {
-      toast.error(error instanceof Error ? error.message : 'Failed to send inquiry')
-    }
   }
 
   return (
@@ -291,61 +248,12 @@ export const ProductDetail = () => {
           <aside className="h-fit rounded-3xl border border-white/10 bg-slate-950/70 p-6 lg:sticky lg:top-28">
             <p className="text-lg font-semibold text-white">{t('productDetail.inquiryTitle')}</p>
             <p className="mt-2 text-sm text-white/60">{t('productDetail.inquirySubtitle')}</p>
-
-            <form onSubmit={handleSubmit(onSubmit)} className="mt-6 space-y-4 text-sm">
-              <div>
-                <input
-                  {...register('name')}
-                  placeholder={t('contact.fields.name')}
-                  className="w-full rounded-xl border border-white/10 bg-white/5 px-4 py-3 text-white/80 placeholder:text-white/40"
-                />
-                {errors.name && (
-                  <p className="mt-1 text-xs text-rose-300">{t('validation.required')}</p>
-                )}
-              </div>
-              <div>
-                <input
-                  {...register('email')}
-                  placeholder={t('contact.fields.email')}
-                  className="w-full rounded-xl border border-white/10 bg-white/5 px-4 py-3 text-white/80 placeholder:text-white/40"
-                />
-                {errors.email && (
-                  <p className="mt-1 text-xs text-rose-300">{t('validation.email')}</p>
-                )}
-              </div>
-              <input
-                {...register('phone')}
-                placeholder={t('contact.fields.phone')}
-                className="w-full rounded-xl border border-white/10 bg-white/5 px-4 py-3 text-white/80 placeholder:text-white/40"
-              />
-              <input
-                {...register('company')}
-                placeholder={t('contact.fields.company')}
-                className="w-full rounded-xl border border-white/10 bg-white/5 px-4 py-3 text-white/80 placeholder:text-white/40"
-              />
-              <input
-                {...register('quantity')}
-                placeholder={t('contact.fields.quantity')}
-                className="w-full rounded-xl border border-white/10 bg-white/5 px-4 py-3 text-white/80 placeholder:text-white/40"
-              />
-              <div>
-                <textarea
-                  {...register('message')}
-                  placeholder={t('contact.fields.message')}
-                  rows={4}
-                  className="w-full rounded-xl border border-white/10 bg-white/5 px-4 py-3 text-white/80 placeholder:text-white/40"
-                />
-                {errors.message && (
-                  <p className="mt-1 text-xs text-rose-300">{t('validation.required')}</p>
-                )}
-              </div>
-              <button type="submit" className="btn-primary w-full">
-                {t('actions.submit')}
-              </button>
-              <Link to="/contact" className="btn-ghost w-full">
+            <div className="mt-6 space-y-3 text-sm text-white/70">
+              <p>{t('contact.formSubtitle')}</p>
+              <Link to="/contact" className="btn-primary w-full">
                 {t('actions.learnMore')}
               </Link>
-            </form>
+            </div>
           </aside>
         </div>
       </section>

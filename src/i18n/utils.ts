@@ -18,16 +18,18 @@ const getSearchParam = (search: string): string | null => {
 }
 
 export const getQueryLanguage = (): Locale | null => {
-  const fromSearch = getSearchParam(window.location.search)
-  const normalizedSearch = normalizeLanguage(fromSearch)
-  if (normalizedSearch) return normalizedSearch
-
+  // 优先从哈希中的查询参数读取（HashRouter 场景：#/path?lang=zh）
   const hash = window.location.hash
   const queryIndex = hash.indexOf('?')
   if (queryIndex >= 0) {
     const query = hash.slice(queryIndex + 1)
     return normalizeLanguage(getSearchParam(query))
   }
+
+  // 其次从普通 search 读取（兼容历史 URL，如 ?lang=zh#/path）
+  const fromSearch = getSearchParam(window.location.search)
+  const normalizedSearch = normalizeLanguage(fromSearch)
+  if (normalizedSearch) return normalizedSearch
 
   return null
 }
@@ -45,22 +47,24 @@ export const getInitialLanguage = (): Locale => {
 
 export const setLanguageParam = (lang: Locale) => {
   const url = new URL(window.location.href)
-  const hash = url.hash
+  let hash = url.hash || '#/'
+
+  // 拆分哈希中的路径和查询字符串：#/path?lang=xx
   const queryIndex = hash.indexOf('?')
+  let hashPath = hash
+  let hashQuery = ''
   if (queryIndex >= 0) {
-    const hashPath = hash.slice(0, queryIndex)
-    const params = new URLSearchParams(hash.slice(queryIndex + 1))
-    params.set('lang', lang)
-    url.hash = `${hashPath}?${params.toString()}`
-  } else if (hash) {
-    const params = new URLSearchParams()
-    params.set('lang', lang)
-    url.hash = `${hash}?${params.toString()}`
-  } else {
-    const params = url.searchParams
-    params.set('lang', lang)
-    url.search = params.toString()
+    hashPath = hash.slice(0, queryIndex)
+    hashQuery = hash.slice(queryIndex + 1)
   }
+
+  const params = new URLSearchParams(hashQuery)
+  params.set('lang', lang)
+  url.hash = `${hashPath}?${params.toString()}`
+
+  // 可选：清理 search 中旧的 lang，避免同时存在 ?lang=xx#/path?lang=yy 这种形式
+  url.searchParams.delete('lang')
+  url.search = url.searchParams.toString()
 
   window.history.replaceState({}, '', url.toString())
   localStorage.setItem(LANGUAGE_STORAGE_KEY, lang)
