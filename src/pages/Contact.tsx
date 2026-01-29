@@ -36,16 +36,16 @@ export const Contact = () => {
   const onSubmit = async (values: ContactFormValues) => {
     try {
       await addInquiry({
-        name: values.name,
-        email: values.email,
-        phone: values.phone,
-        company: values.company,
-        message: values.message,
-        quantity: values.quantity ? Number(values.quantity) : undefined,
-        locale
-      })
-      toast.success(t('misc.inquirySent'))
-      reset()
+      name: values.name,
+      email: values.email,
+      phone: values.phone,
+      company: values.company,
+      message: values.message,
+      quantity: values.quantity ? Number(values.quantity) : undefined,
+      locale
+    })
+    toast.success(t('misc.inquirySent'))
+    reset()
     } catch (error) {
       toast.error(error instanceof Error ? error.message : 'Failed to send inquiry')
     }

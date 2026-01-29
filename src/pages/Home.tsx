@@ -21,8 +21,8 @@ export const Home = () => {
   const featuredProducts = isLoading
     ? []
     : siteData.products.filter((product) =>
-        siteData.featuredProductIds.includes(product.id)
-      )
+    siteData.featuredProductIds.includes(product.id)
+  )
 
   useEffect(() => {
     if (isLoading || featuredProducts.length === 0) return

@@ -52,7 +52,15 @@ const readJsonBlob = async (filename, defaultValue = null) => {
     const text = (await response.text()).trim()
     
     if (!text || text.length === 0) {
-      console.log(`[readJsonBlob] Blob ${blobPath} is empty, returning default`)
+      console.warn(`⚠️ [readJsonBlob] Blob ${blobPath} exists but is empty (${text.length} bytes)`)
+      console.warn(`   This might indicate a write failure. Returning default value.`)
+      return defaultValue
+    }
+    
+    // 检查是否是无效的 JSON（例如只有空白字符或 "null"）
+    const trimmedText = text.trim()
+    if (trimmedText === '' || trimmedText === 'null' || trimmedText === '{}' || trimmedText === '[]') {
+      console.warn(`⚠️ [readJsonBlob] Blob ${blobPath} contains only empty/invalid JSON: "${trimmedText}"`)
       return defaultValue
     }
     
@@ -182,11 +190,33 @@ const writeJsonBlob = async (filename, data) => {
     
     console.log(`✅ [writeJsonBlob] Successfully wrote ${filename} (${content.length} bytes) to ${blobPath}`)
     
-    // 立即验证写入是否成功（读取回来检查）
+    // 立即验证写入是否成功（读取回来检查内容）
     try {
+      // 等待一小段时间，确保 Blob 已经写入完成
+      await new Promise(resolve => setTimeout(resolve, 100))
+      
       const verifyInfo = await head(blobPath)
       if (verifyInfo && verifyInfo.url) {
         console.log(`✅ [writeJsonBlob] Verified ${filename} exists at ${blobPath}`)
+        
+        // 尝试读取内容验证
+        try {
+          const verifyResponse = await fetch(verifyInfo.url)
+          if (verifyResponse.ok) {
+            const verifyText = (await verifyResponse.text()).trim()
+            if (verifyText === content.trim()) {
+              console.log(`✅ [writeJsonBlob] Content verification passed for ${filename}`)
+            } else {
+              console.warn(`⚠️ [writeJsonBlob] Content mismatch for ${filename}`)
+              console.warn(`   Written: ${content.substring(0, 100)}...`)
+              console.warn(`   Read back: ${verifyText.substring(0, 100)}...`)
+            }
+          }
+        } catch (readError) {
+          console.warn(`⚠️ [writeJsonBlob] Could not read back ${filename} for verification:`, readError.message)
+        }
+      } else {
+        console.warn(`⚠️ [writeJsonBlob] Could not verify ${filename} exists after write`)
       }
     } catch (verifyError) {
       console.warn(`⚠️ [writeJsonBlob] Could not verify ${filename} after write:`, verifyError.message)
@@ -335,6 +365,23 @@ export const getSiteData = async () => {
     
     console.log(`[getSiteData] Reading all sections from Blob Storage...`)
     console.log(`[getSiteData] settings: ${settings ? 'exists' : 'null'}, hero: ${hero ? 'exists' : 'null'}, products: ${products.length}`)
+    
+    // 检查是否所有关键数据都是默认值（空）
+    const settingsIsEmpty = !settings || 
+      !settings.siteName || 
+      !settings.siteName.en || 
+      settings.siteName.en.trim() === ''
+    const heroIsEmpty = !hero || 
+      !hero.title || 
+      !hero.title.en || 
+      hero.title.en.trim() === ''
+    const productsIsEmpty = !products || products.length === 0
+    
+    if (settingsIsEmpty && heroIsEmpty && productsIsEmpty) {
+      console.warn('⚠️ [getSiteData] All critical data appears empty!')
+      console.warn('   This might indicate that data was not properly saved to Blob Storage.')
+      console.warn('   Please check Vercel function logs for write errors.')
+    }
 
     // 确保 seo.pages 有完整的结构
     const defaultSeo = {
@@ -411,10 +458,45 @@ export const updateSiteSection = async (section, data) => {
     
     await writeJsonBlob(filename, data)
     
+    // 等待一小段时间，确保 Blob 已经写入完成
+    await new Promise(resolve => setTimeout(resolve, 200))
+    
     // 立即验证文件是否可读
     const verifyRead = await readJsonBlob(filename, null)
+    
+    // 对于对象类型，比较关键字段
     if (verifyRead === null && data !== null && data !== undefined) {
-      console.warn(`⚠️ [updateSiteSection] Warning: ${section} was written but read back as null`)
+      console.error(`❌ [updateSiteSection] CRITICAL: ${section} was written but read back as null!`)
+      console.error(`   This indicates a write/read failure. Data may not be persisted.`)
+      
+      // 对于 settings 和 hero，输出更详细的错误信息
+      if (section === 'settings' && data.siteName) {
+        console.error(`   Original data had siteName.en = "${data.siteName.en}"`)
+      }
+      if (section === 'hero' && data.title) {
+        console.error(`   Original data had title.en = "${data.title.en}"`)
+      }
+    } else if (verifyRead !== null && data !== null && typeof data === 'object' && typeof verifyRead === 'object') {
+      // 验证关键字段是否一致
+      if (section === 'settings' && data.siteName && verifyRead.siteName) {
+        const originalValue = data.siteName.en || ''
+        const readValue = verifyRead.siteName.en || ''
+        if (originalValue !== readValue) {
+          console.warn(`⚠️ [updateSiteSection] ${section} siteName.en mismatch: "${originalValue}" vs "${readValue}"`)
+        } else {
+          console.log(`✅ [updateSiteSection] Successfully updated ${section}, verified read back (siteName.en = "${readValue}")`)
+        }
+      } else if (section === 'hero' && data.title && verifyRead.title) {
+        const originalValue = data.title.en || ''
+        const readValue = verifyRead.title.en || ''
+        if (originalValue !== readValue) {
+          console.warn(`⚠️ [updateSiteSection] ${section} title.en mismatch: "${originalValue}" vs "${readValue}"`)
+        } else {
+          console.log(`✅ [updateSiteSection] Successfully updated ${section}, verified read back (title.en = "${readValue}")`)
+        }
+      } else {
+        console.log(`✅ [updateSiteSection] Successfully updated ${section}, verified read back`)
+      }
     } else {
       console.log(`✅ [updateSiteSection] Successfully updated ${section}, verified read back`)
     }

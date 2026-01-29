@@ -136,38 +136,38 @@ export const AdminSettings = () => {
 
     try {
       await setSiteData({
-        ...siteData,
-        settings: {
-          ...siteData.settings,
-          siteName: { en: values.siteNameEn, zh: values.siteNameZh },
-          tagline: { en: values.taglineEn, zh: values.taglineZh },
-          logoUrl: values.logoUrl,
-          seoDefaults: {
-            title: { en: values.seoTitleEn, zh: values.seoTitleZh },
-            description: { en: values.seoDescEn, zh: values.seoDescZh }
-          }
-        },
-        hero: {
-          ...siteData.hero,
-          title: { en: values.heroTitleEn, zh: values.heroTitleZh },
-          subtitle: { en: values.heroSubtitleEn, zh: values.heroSubtitleZh },
-          ctaLabel: { en: values.heroCtaEn, zh: values.heroCtaZh },
-          backgroundImage: values.heroBackgroundImage,
-          backgroundVideo: values.heroBackgroundVideo
-        },
-        contact: {
-          ...siteData.contact,
-          phone: values.phone,
-          email: values.email,
-          whatsapp: values.whatsapp,
-          address: { en: values.addressEn, zh: values.addressZh },
-          hours: { en: values.hoursEn, zh: values.hoursZh },
-          map: { lat: values.mapLat, lng: values.mapLng, zoom: values.mapZoom },
-          socials
+      ...siteData,
+      settings: {
+        ...siteData.settings,
+        siteName: { en: values.siteNameEn, zh: values.siteNameZh },
+        tagline: { en: values.taglineEn, zh: values.taglineZh },
+        logoUrl: values.logoUrl,
+        seoDefaults: {
+          title: { en: values.seoTitleEn, zh: values.seoTitleZh },
+          description: { en: values.seoDescEn, zh: values.seoDescZh }
         }
-      })
-      toast.success(t('misc.updated'))
-      reset(values)
+      },
+      hero: {
+        ...siteData.hero,
+        title: { en: values.heroTitleEn, zh: values.heroTitleZh },
+        subtitle: { en: values.heroSubtitleEn, zh: values.heroSubtitleZh },
+        ctaLabel: { en: values.heroCtaEn, zh: values.heroCtaZh },
+        backgroundImage: values.heroBackgroundImage,
+        backgroundVideo: values.heroBackgroundVideo
+      },
+      contact: {
+        ...siteData.contact,
+        phone: values.phone,
+        email: values.email,
+        whatsapp: values.whatsapp,
+        address: { en: values.addressEn, zh: values.addressZh },
+        hours: { en: values.hoursEn, zh: values.hoursZh },
+        map: { lat: values.mapLat, lng: values.mapLng, zoom: values.mapZoom },
+        socials
+      }
+    })
+    toast.success(t('misc.updated'))
+    reset(values)
     } catch (error) {
       toast.error(error instanceof Error ? error.message : 'Failed to update settings')
     }

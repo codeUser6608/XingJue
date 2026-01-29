@@ -176,7 +176,7 @@ export const AdminDataSync = () => {
       if (error instanceof Error && error.message.includes('Failed to')) {
         toast.error(error.message)
       } else {
-        toast.error(t('admin.dataSync.invalidJson'))
+      toast.error(t('admin.dataSync.invalidJson'))
       }
     } finally {
       setIsImporting(false)
@@ -234,21 +234,21 @@ export const AdminDataSync = () => {
         {/* 文本粘贴方式（备用） */}
         <div className="mt-4">
           <label className="block text-sm text-white/70 mb-2">或粘贴 JSON 文本</label>
-          <textarea
-            value={importText}
-            onChange={(event) => setImportText(event.target.value)}
+        <textarea
+          value={importText}
+          onChange={(event) => setImportText(event.target.value)}
             className="mt-2 min-h-[180px] w-full max-w-full rounded-2xl border border-white/10 bg-slate-950/80 p-4 text-xs text-white/70 overflow-x-auto"
             placeholder="粘贴 JSON 数据..."
-          />
+        />
           <button
             type="button"
             onClick={handleImport}
             disabled={isImporting || isLoading || !importText.trim()}
             className="btn-primary mt-4 disabled:opacity-50 disabled:cursor-not-allowed"
           >
-            <Upload className="h-4 w-4" />
+          <Upload className="h-4 w-4" />
             {isImporting ? t('misc.loading') : t('actions.import')}
-          </button>
+        </button>
         </div>
       </div>
 

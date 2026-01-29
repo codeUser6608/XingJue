@@ -33,7 +33,7 @@ const getStoredInquiries = (): Inquiry[] => {
 
 const saveDataToStorage = (data: SiteData) => {
   try {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(data, null, 2))
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(data, null, 2))
   } catch (error) {
     console.error('Failed to save to localStorage:', error)
   }
@@ -41,7 +41,7 @@ const saveDataToStorage = (data: SiteData) => {
 
 const saveInquiriesToStorage = (inquiries: Inquiry[]) => {
   try {
-    localStorage.setItem(INQUIRIES_KEY, JSON.stringify(inquiries, null, 2))
+  localStorage.setItem(INQUIRIES_KEY, JSON.stringify(inquiries, null, 2))
   } catch (error) {
     console.error('Failed to save inquiries to localStorage:', error)
   }
@@ -179,7 +179,7 @@ export const SiteDataProvider = ({ children }: { children: ReactNode }) => {
 
   const setSiteData = async (data: SiteData) => {
     try {
-      setSiteDataState(data)
+    setSiteDataState(data)
       // 先保存到 localStorage 作为后备
       saveDataToStorage(data)
       // 尝试保存到服务器
@@ -215,8 +215,8 @@ export const SiteDataProvider = ({ children }: { children: ReactNode }) => {
         // 如果服务器更新失败，回退到整体更新（向后兼容）
         console.warn('Partial update failed, falling back to full update:', serverError)
         const existingIndex = siteData.products.findIndex((item) => item.id === product.id)
-        const products =
-          existingIndex >= 0
+      const products =
+        existingIndex >= 0
             ? siteData.products.map((item) => (item.id === product.id ? product : item))
             : [product, ...siteData.products]
         const next = { ...siteData, products }
@@ -272,8 +272,8 @@ export const SiteDataProvider = ({ children }: { children: ReactNode }) => {
         setInquiries((prev) => {
           const next = [newInquiry, ...prev]
           saveInquiriesToStorage(next)
-          return next
-        })
+      return next
+    })
       } catch (serverError) {
         // 如果服务器不可用，使用本地生成
         console.warn('Failed to create inquiry on server, using local storage:', serverError)
@@ -281,17 +281,17 @@ export const SiteDataProvider = ({ children }: { children: ReactNode }) => {
           ? crypto.randomUUID() 
           : `${Date.now()}-${Math.random()}`
         const newInquiry: Inquiry = {
-          ...inquiry,
-          id,
-          createdAt: new Date().toISOString(),
-          status: 'new'
-        }
-        setInquiries((prev) => {
+      ...inquiry,
+      id,
+      createdAt: new Date().toISOString(),
+      status: 'new'
+    }
+    setInquiries((prev) => {
           const next = [newInquiry, ...prev]
           saveInquiriesToStorage(next)
-          return next
-        })
-      }
+      return next
+    })
+  }
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : 'Failed to create inquiry'
       setError(errorMessage)
@@ -302,11 +302,11 @@ export const SiteDataProvider = ({ children }: { children: ReactNode }) => {
   const updateInquiryStatus = async (id: string, status: Inquiry['status']) => {
     try {
       // 先更新本地状态
-      setInquiries((prev) => {
-        const next = prev.map((item) => (item.id === id ? { ...item, status } : item))
+    setInquiries((prev) => {
+      const next = prev.map((item) => (item.id === id ? { ...item, status } : item))
         saveInquiriesToStorage(next)
-        return next
-      })
+      return next
+    })
       // 尝试更新服务器
       try {
         await api.updateInquiryStatus(id, status)
@@ -483,7 +483,7 @@ export const SiteDataProvider = ({ children }: { children: ReactNode }) => {
       }
       
       // 服务器保存成功后，更新本地状态和 localStorage
-      setSiteDataState(data)
+    setSiteDataState(data)
       saveDataToStorage(data)
       
       // 刷新数据以确保同步

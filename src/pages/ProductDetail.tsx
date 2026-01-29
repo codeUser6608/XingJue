@@ -141,17 +141,17 @@ export const ProductDetail = () => {
   const onSubmit = async (values: InquiryFormValues) => {
     try {
       await addInquiry({
-        productId: product.id,
-        name: values.name,
-        email: values.email,
-        phone: values.phone,
-        company: values.company,
-        message: values.message,
-        quantity: values.quantity ? Number(values.quantity) : undefined,
-        locale
-      })
-      toast.success(t('misc.inquirySent'))
-      reset()
+      productId: product.id,
+      name: values.name,
+      email: values.email,
+      phone: values.phone,
+      company: values.company,
+      message: values.message,
+      quantity: values.quantity ? Number(values.quantity) : undefined,
+      locale
+    })
+    toast.success(t('misc.inquirySent'))
+    reset()
     } catch (error) {
       toast.error(error instanceof Error ? error.message : 'Failed to send inquiry')
     }
@@ -177,11 +177,11 @@ export const ProductDetail = () => {
                   onClick={() => openLightbox(activeImage)}
                   className="block w-full cursor-zoom-in transition-opacity hover:opacity-90"
                 >
-                  <img
-                    src={activeImage}
+                <img
+                  src={activeImage}
                     alt={product.name?.[locale] || ''}
-                    className="h-80 w-full object-cover"
-                  />
+                  className="h-80 w-full object-cover"
+                />
                 </button>
               </div>
               <div className="mt-4 grid grid-cols-3 gap-3 sm:grid-cols-4">

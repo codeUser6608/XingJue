@@ -246,24 +246,52 @@ app.get(`${API_PREFIX}/site-data`, async (req, res) => {
     const hasProducts = data?.products && data.products.length > 0
     const hasSettings = data?.settings?.siteName?.en?.trim()
     const hasHero = data?.hero?.title?.en?.trim()
+    const settingsValue = data?.settings?.siteName?.en || ''
+    const heroValue = data?.hero?.title?.en || ''
     
-    console.log(`[GET /site-data] Data status: products=${hasProducts ? data.products.length : 0}, hasSettings=${!!hasSettings}, hasHero=${!!hasHero}`)
+    console.log(`[GET /site-data] Data status:`)
+    console.log(`   - products: ${hasProducts ? data.products.length : 0}`)
+    console.log(`   - settings.siteName.en: "${settingsValue}" (hasSettings: ${!!hasSettings})`)
+    console.log(`   - hero.title.en: "${heroValue}" (hasHero: ${!!hasHero})`)
+    console.log(`   - Storage: ${useBlobStorage ? 'Blob Storage' : 'File System'}`)
     
     // 检查数据是否为空，如果为空且是 Vercel 环境，尝试再次初始化
     const isEmpty = !hasProducts && !hasSettings && !hasHero
     
     if (isEmpty && isVercel) {
-      console.warn('⚠️ Data appears empty, attempting re-initialization...')
+      console.warn('⚠️ [GET /site-data] Data appears empty, attempting re-initialization...')
+      console.warn('   This might indicate:')
+      console.warn('   1. Data was not properly saved to Blob Storage')
+      console.warn('   2. BLOB_READ_WRITE_TOKEN is not configured correctly')
+      console.warn('   3. Blob files exist but are empty (write failure)')
+      
       await initDefaultDataIfNeeded()
       // 重新获取数据
       const retryData = await getSiteData()
-      console.log(`[GET /site-data] After re-init: products=${retryData?.products?.length || 0}`)
+      const retryHasProducts = retryData?.products && retryData.products.length > 0
+      const retryHasSettings = retryData?.settings?.siteName?.en?.trim()
+      const retryHasHero = retryData?.hero?.title?.en?.trim()
+      
+      console.log(`[GET /site-data] After re-init:`)
+      console.log(`   - products: ${retryHasProducts ? retryData.products.length : 0}`)
+      console.log(`   - hasSettings: ${!!retryHasSettings}`)
+      console.log(`   - hasHero: ${!!retryHasHero}`)
+      
+      if (!retryHasProducts && !retryHasSettings && !retryHasHero) {
+        console.error('❌ [GET /site-data] CRITICAL: Data is still empty after re-initialization!')
+        console.error('   Please check:')
+        console.error('   1. Vercel environment variables (BLOB_READ_WRITE_TOKEN)')
+        console.error('   2. Vercel function logs for write errors')
+        console.error('   3. Whether template file exists and is readable')
+      }
+      
       res.json(retryData)
     } else {
       res.json(data)
     }
   } catch (error) {
-    console.error('Error getting site data:', error)
+    console.error('❌ [GET /site-data] Error getting site data:', error)
+    console.error('   Stack:', error.stack)
     res.status(500).json({ error: error.message })
   }
 })
@@ -371,31 +399,76 @@ app.post(`${API_PREFIX}/site-data/upload`, upload.single('file'), async (req, re
     
     await Promise.all(updatePromises)
     
+    // 等待一小段时间，确保所有 Blob 写入完成
+    await new Promise(resolve => setTimeout(resolve, 500))
+    
     // 验证数据是否成功保存（在 Vercel 环境下特别重要）
     console.log('✅ [POST /site-data/upload] All sections updated, verifying...')
     try {
       const verifyData = await getSiteData()
       const hasProducts = verifyData?.products && verifyData.products.length > 0
       const hasSettings = verifyData?.settings?.siteName?.en?.trim()
+      const hasHero = verifyData?.hero?.title?.en?.trim()
       const settingsValue = verifyData?.settings?.siteName?.en || ''
+      const heroValue = verifyData?.hero?.title?.en || ''
       
       console.log(`✅ [POST /site-data/upload] Verification results:`)
       console.log(`   - products: ${hasProducts ? verifyData.products.length : 0}`)
-      console.log(`   - settings.siteName.en: "${settingsValue}"`)
-      console.log(`   - hasSettings: ${!!hasSettings}`)
+      console.log(`   - settings.siteName.en: "${settingsValue}" (hasSettings: ${!!hasSettings})`)
+      console.log(`   - hero.title.en: "${heroValue}" (hasHero: ${!!hasHero})`)
+      console.log(`   - Storage: ${useBlobStorage ? 'Blob Storage' : 'File System'}`)
       
       if (isVercel && !useBlobStorage) {
         console.warn('⚠️ WARNING: Data saved to /tmp but may not persist across serverless instances!')
+        console.warn('   Please configure BLOB_READ_WRITE_TOKEN in Vercel environment variables.')
       }
       
+      // 检查关键数据是否成功保存
+      const verificationFailed = []
       if (!hasSettings && data.settings?.siteName?.en) {
+        verificationFailed.push('settings')
         console.error('❌ [POST /site-data/upload] CRITICAL: Settings were written but not readable!')
-        console.error('   Original value:', data.settings.siteName.en)
-        console.error('   Read back value:', settingsValue)
+        console.error(`   Original value: "${data.settings.siteName.en}"`)
+        console.error(`   Read back value: "${settingsValue}"`)
       }
+      if (!hasHero && data.hero?.title?.en) {
+        verificationFailed.push('hero')
+        console.error('❌ [POST /site-data/upload] CRITICAL: Hero was written but not readable!')
+        console.error(`   Original value: "${data.hero.title.en}"`)
+        console.error(`   Read back value: "${heroValue}"`)
+      }
+      if (!hasProducts && data.products && data.products.length > 0) {
+        verificationFailed.push('products')
+        console.error('❌ [POST /site-data/upload] CRITICAL: Products were written but not readable!')
+        console.error(`   Original count: ${data.products.length}`)
+        console.error(`   Read back count: ${verifyData.products.length}`)
+      }
+      
+      if (verificationFailed.length > 0) {
+        console.error(`❌ [POST /site-data/upload] Verification failed for: ${verificationFailed.join(', ')}`)
+        console.error('   This indicates a write/read failure. Please check:')
+        console.error('   1. Vercel function logs for write errors')
+        console.error('   2. BLOB_READ_WRITE_TOKEN configuration')
+        console.error('   3. Blob Storage quota/limits')
+        
+        // 仍然返回成功，但添加警告信息
+        return res.json({ 
+          success: true, 
+          message: '站点数据已更新，但部分数据验证失败',
+          warning: `以下部分可能未正确保存: ${verificationFailed.join(', ')}`,
+          verification: {
+            settings: hasSettings,
+            hero: hasHero,
+            products: hasProducts
+          }
+        })
+      }
+      
+      console.log('✅ [POST /site-data/upload] All data verified successfully!')
     } catch (verifyError) {
       console.error('⚠️ [POST /site-data/upload] Warning: Could not verify saved data:', verifyError.message)
       console.error('   Stack:', verifyError.stack)
+      // 即使验证失败，也返回成功（因为写入操作本身可能已经成功）
     }
     
     res.json({ success: true, message: '站点数据已成功更新' })

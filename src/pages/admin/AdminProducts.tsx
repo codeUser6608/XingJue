@@ -193,11 +193,11 @@ export const AdminProducts = () => {
 
     try {
       await upsertProduct(product)
-      toast.success(t('misc.updated'))
-      setActiveProduct(null)
-      reset(buildFormValues())
-      setImages([])
-      setMainImage('')
+    toast.success(t('misc.updated'))
+    setActiveProduct(null)
+    reset(buildFormValues())
+    setImages([])
+    setMainImage('')
     } catch (error) {
       toast.error(error instanceof Error ? error.message : t('misc.updated'))
     }
@@ -248,11 +248,11 @@ export const AdminProducts = () => {
                       try {
                         await deleteProduct(product.id)
                         toast.success(t('misc.updated'))
-                        if (activeProduct?.id === product.id) {
-                          setActiveProduct(null)
-                          reset(buildFormValues())
-                          setImages([])
-                          setMainImage('')
+                      if (activeProduct?.id === product.id) {
+                        setActiveProduct(null)
+                        reset(buildFormValues())
+                        setImages([])
+                        setMainImage('')
                         }
                       } catch (error) {
                         toast.error(error instanceof Error ? error.message : 'Failed to delete product')

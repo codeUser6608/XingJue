@@ -38,8 +38,8 @@ export const Products = () => {
 
   useEffect(() => {
     if (!isLoading && siteData.products && siteData.products.length > 0) {
-      setMinPrice(priceRange.min)
-      setMaxPrice(priceRange.max)
+    setMinPrice(priceRange.min)
+    setMaxPrice(priceRange.max)
     }
   }, [priceRange.min, priceRange.max, isLoading, siteData.products])
 
