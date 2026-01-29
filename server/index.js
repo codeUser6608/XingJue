@@ -62,26 +62,62 @@ const initDefaultDataIfNeeded = async () => {
       return
     }
     
-    // 在 Blob Storage 模式下，如果已经有任何 Blob 文件存在，不应该用模板覆盖
-    // 因为用户可能已经导入过数据（即使内容为空）
+    // 在 Blob Storage 模式下，检查 Blob 文件是否存在且有效
     if (useBlobStorage) {
-      console.log('[initDefaultDataIfNeeded] Using Blob Storage, checking if any blobs exist...')
+      console.log('[initDefaultDataIfNeeded] Using Blob Storage, checking if blobs exist and have content...')
       try {
-        // 尝试检查 settings.json 是否存在
         const { head } = await import('@vercel/blob')
         const blobPath = `xingjue-data/settings.json`
         try {
           const blobInfo = await head(blobPath)
-          if (blobInfo) {
-            console.log('⚠️ [initDefaultDataIfNeeded] Blob files exist but appear empty.')
-            console.log('   Not overwriting with template. User should import data via admin panel.')
-            return
+          if (blobInfo && blobInfo.url) {
+            // 文件存在，尝试读取内容检查是否为空
+            try {
+              const response = await fetch(blobInfo.url)
+              if (response.ok) {
+                const content = (await response.text()).trim()
+                // 如果内容为空或只是空对象，应该重新初始化
+                if (!content || content === '' || content === 'null' || content === '{}') {
+                  console.log('⚠️ [initDefaultDataIfNeeded] Blob file exists but is empty, will re-initialize')
+                  // 继续执行初始化逻辑
+                } else {
+                  // 尝试解析 JSON 检查是否有实际内容
+                  try {
+                    const parsed = JSON.parse(content)
+                    if (parsed && parsed.siteName && parsed.siteName.en && parsed.siteName.en.trim() !== '') {
+                      console.log('✅ [initDefaultDataIfNeeded] Blob file exists with real content, skipping initialization')
+                      return
+                    } else {
+                      console.log('⚠️ [initDefaultDataIfNeeded] Blob file exists but has no real content, will re-initialize')
+                      // 继续执行初始化逻辑
+                    }
+                  } catch {
+                    console.log('⚠️ [initDefaultDataIfNeeded] Blob file exists but is invalid JSON, will re-initialize')
+                    // 继续执行初始化逻辑
+                  }
+                }
+              } else {
+                console.log('⚠️ [initDefaultDataIfNeeded] Blob file exists but cannot be read, will re-initialize')
+                // 继续执行初始化逻辑
+              }
+            } catch (fetchError) {
+              console.warn('[initDefaultDataIfNeeded] Could not fetch blob content:', fetchError.message)
+              console.log('   Will attempt to initialize from template')
+              // 继续执行初始化逻辑
+            }
+          } else {
+            console.log('[initDefaultDataIfNeeded] Blob file does not exist, will initialize')
+            // 继续执行初始化逻辑
           }
-        } catch {
+        } catch (headError) {
           // 文件不存在，可以初始化
+          console.log('[initDefaultDataIfNeeded] Blob file does not exist (head failed), will initialize')
+          // 继续执行初始化逻辑
         }
       } catch (error) {
         console.warn('[initDefaultDataIfNeeded] Could not check blob existence:', error.message)
+        console.log('   Will attempt to initialize from template')
+        // 继续执行初始化逻辑
       }
     }
     
@@ -220,8 +256,89 @@ app.get(`${API_PREFIX}/health`, (req, res) => {
     status: 'ok', 
     timestamp: new Date().toISOString(),
     environment: process.env.NODE_ENV || 'development',
-    vercel: isVercel
+    vercel: isVercel,
+    blobStorage: useBlobStorage,
+    hasBlobToken: !!process.env.BLOB_READ_WRITE_TOKEN
   })
+})
+
+// GET /debug/blob-status - 诊断 Blob Storage 状态（仅用于调试）
+app.get(`${API_PREFIX}/debug/blob-status`, async (req, res) => {
+  const origin = req.headers.origin
+  if (origin) {
+    res.header('Access-Control-Allow-Origin', origin)
+    res.header('Access-Control-Allow-Credentials', 'true')
+  }
+  res.setHeader('Content-Type', 'application/json')
+
+  try {
+    const status = {
+      isVercel,
+      useBlobStorage,
+      hasBlobToken: !!process.env.BLOB_READ_WRITE_TOKEN,
+      blobTokenLength: process.env.BLOB_READ_WRITE_TOKEN?.length || 0,
+      timestamp: new Date().toISOString()
+    }
+
+    if (useBlobStorage) {
+      try {
+        const { head, list } = await import('@vercel/blob')
+        const testPath = 'xingjue-data/settings.json'
+        
+        // 检查 settings.json 是否存在
+        try {
+          const blobInfo = await head(testPath)
+          status.settingsBlobExists = !!blobInfo
+          if (blobInfo && blobInfo.url) {
+            try {
+              const response = await fetch(blobInfo.url)
+              const content = await response.text()
+              status.settingsBlobSize = content.length
+              status.settingsBlobIsEmpty = !content.trim() || content.trim() === 'null' || content.trim() === '{}'
+              
+              if (!status.settingsBlobIsEmpty) {
+                try {
+                  const parsed = JSON.parse(content)
+                  status.settingsHasRealData = !!(parsed?.siteName?.en?.trim())
+                } catch {
+                  status.settingsIsValidJson = false
+                }
+              }
+            } catch (fetchError) {
+              status.settingsBlobFetchError = fetchError.message
+            }
+          }
+        } catch (headError) {
+          status.settingsBlobExists = false
+          status.settingsBlobError = headError.message
+        }
+
+        // 列出所有 Blob 文件
+        try {
+          const { blobs } = await list({ prefix: 'xingjue-data/' })
+          status.totalBlobs = blobs.length
+          status.blobFiles = blobs.map(b => ({
+            path: b.pathname,
+            size: b.size,
+            uploadedAt: b.uploadedAt
+          }))
+        } catch (listError) {
+          status.listBlobsError = listError.message
+        }
+      } catch (importError) {
+        status.blobImportError = importError.message
+      }
+    } else {
+      status.message = 'Not using Blob Storage (using file system)'
+    }
+
+    res.json(status)
+  } catch (error) {
+    res.status(500).json({ 
+      error: error.message,
+      stack: process.env.NODE_ENV === 'development' ? error.stack : undefined
+    })
+  }
 })
 
 // GET /site-data - 获取站点数据
@@ -255,34 +372,69 @@ app.get(`${API_PREFIX}/site-data`, async (req, res) => {
     console.log(`   - hero.title.en: "${heroValue}" (hasHero: ${!!hasHero})`)
     console.log(`   - Storage: ${useBlobStorage ? 'Blob Storage' : 'File System'}`)
     
-    // 检查数据是否为空，如果为空且是 Vercel 环境，尝试再次初始化
+    // 检查数据是否为空，如果为空且是 Vercel 环境，强制重新初始化
     const isEmpty = !hasProducts && !hasSettings && !hasHero
     
     if (isEmpty && isVercel) {
-      console.warn('⚠️ [GET /site-data] Data appears empty, attempting re-initialization...')
+      console.warn('⚠️ [GET /site-data] Data appears empty, forcing re-initialization...')
       console.warn('   This might indicate:')
       console.warn('   1. Data was not properly saved to Blob Storage')
       console.warn('   2. BLOB_READ_WRITE_TOKEN is not configured correctly')
       console.warn('   3. Blob files exist but are empty (write failure)')
+      console.warn('   4. Template file was not found during initialization')
       
-      await initDefaultDataIfNeeded()
+      // 强制重新初始化（即使 Blob 文件存在）
+      try {
+        // 尝试从多个可能的路径读取模板文件
+        const possiblePaths = [
+          join(__dirname, '../src/data/site-data.json'),
+          join(__dirname, '../../src/data/site-data.json'),
+          join(process.cwd(), 'src/data/site-data.json'),
+          join(process.cwd(), 'data/site-data.json')
+        ]
+        
+        let defaultData = null
+        for (const path of possiblePaths) {
+          try {
+            if (existsSync(path)) {
+              console.log(`[GET /site-data] Found template file at: ${path}`)
+              defaultData = JSON.parse(readFileSync(path, 'utf-8'))
+              break
+            }
+          } catch (error) {
+            console.warn(`[GET /site-data] Could not read template from ${path}:`, error.message)
+          }
+        }
+        
+        if (defaultData) {
+          console.log('[GET /site-data] Force initializing from template...')
+          await initializeDefaultData(defaultData)
+          console.log('[GET /site-data] Force initialization completed')
+        } else {
+          console.error('❌ [GET /site-data] Template file not found, cannot force initialize')
+        }
+      } catch (initError) {
+        console.error('❌ [GET /site-data] Error during force initialization:', initError.message)
+      }
+      
       // 重新获取数据
       const retryData = await getSiteData()
       const retryHasProducts = retryData?.products && retryData.products.length > 0
       const retryHasSettings = retryData?.settings?.siteName?.en?.trim()
       const retryHasHero = retryData?.hero?.title?.en?.trim()
       
-      console.log(`[GET /site-data] After re-init:`)
+      console.log(`[GET /site-data] After force re-init:`)
       console.log(`   - products: ${retryHasProducts ? retryData.products.length : 0}`)
       console.log(`   - hasSettings: ${!!retryHasSettings}`)
       console.log(`   - hasHero: ${!!retryHasHero}`)
       
       if (!retryHasProducts && !retryHasSettings && !retryHasHero) {
-        console.error('❌ [GET /site-data] CRITICAL: Data is still empty after re-initialization!')
+        console.error('❌ [GET /site-data] CRITICAL: Data is still empty after force re-initialization!')
         console.error('   Please check:')
         console.error('   1. Vercel environment variables (BLOB_READ_WRITE_TOKEN)')
         console.error('   2. Vercel function logs for write errors')
         console.error('   3. Whether template file exists and is readable')
+        console.error('   4. Blob Storage write permissions')
       }
       
       res.json(retryData)

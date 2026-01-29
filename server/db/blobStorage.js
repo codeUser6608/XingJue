@@ -672,17 +672,53 @@ export const initializeDefaultData = async (defaultData) => {
       return
     }
     
-    // 检查是否有任何 Blob 文件存在（即使内容为空）
-    // 如果已经有文件存在，说明用户可能已经导入过数据，不应该用默认数据覆盖
+    // 检查 Blob 文件是否存在且有效（不是空文件）
+    // 如果文件存在但内容为空，应该重新初始化
     try {
       const testBlob = await head(getBlobPath('settings.json'))
-      if (testBlob) {
-        console.log('⚠️ [initializeDefaultData] Blob files exist but appear empty. Not overwriting with defaults.')
-        console.log('   User should import data via admin panel instead.')
-        return
+      if (testBlob && testBlob.url) {
+        // 文件存在，检查内容是否为空
+        try {
+          const response = await fetch(testBlob.url)
+          if (response.ok) {
+            const content = (await response.text()).trim()
+            // 如果内容为空、null 或空对象，应该重新初始化
+            if (!content || content === '' || content === 'null' || content === '{}') {
+              console.log('⚠️ [initializeDefaultData] Blob file exists but is empty, will re-initialize')
+              // 继续执行初始化逻辑
+            } else {
+              // 尝试解析 JSON 检查是否有实际内容
+              try {
+                const parsed = JSON.parse(content)
+                if (parsed && parsed.siteName && parsed.siteName.en && parsed.siteName.en.trim() !== '') {
+                  console.log('✅ [initializeDefaultData] Blob file exists with real content, skipping initialization')
+                  return
+                } else {
+                  console.log('⚠️ [initializeDefaultData] Blob file exists but has no real content, will re-initialize')
+                  // 继续执行初始化逻辑
+                }
+              } catch {
+                console.log('⚠️ [initializeDefaultData] Blob file exists but is invalid JSON, will re-initialize')
+                // 继续执行初始化逻辑
+              }
+            }
+          } else {
+            console.log('⚠️ [initializeDefaultData] Blob file exists but cannot be read, will re-initialize')
+            // 继续执行初始化逻辑
+          }
+        } catch (fetchError) {
+          console.warn('[initializeDefaultData] Could not fetch blob content:', fetchError.message)
+          console.log('   Will attempt to initialize from template')
+          // 继续执行初始化逻辑
+        }
+      } else {
+        console.log('[initializeDefaultData] Blob file does not exist or has no URL, will initialize')
+        // 继续执行初始化逻辑
       }
-    } catch {
+    } catch (headError) {
       // 文件不存在，可以初始化
+      console.log('[initializeDefaultData] Blob file does not exist (head failed), will initialize')
+      // 继续执行初始化逻辑
     }
 
     console.log('[initializeDefaultData] No existing data found, initializing from template...')
